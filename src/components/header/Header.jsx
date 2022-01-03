@@ -1,7 +1,7 @@
 import React from 'react'
 import logo from '../../logo.svg';
 import { Link } from 'react-router-dom';
-import { Search } from './Search';
+import { Searcha } from './Search';
 import { connect } from 'react-redux';
 import { actionProfilData } from '../../actions';
 import { backURL } from '../../helpers';
@@ -37,7 +37,7 @@ const Header = () => {
     return (
         <div className='Header'>
             <Logo />
-            <Search />
+            <Searcha />
             <CUserNav />
         </div>
     )

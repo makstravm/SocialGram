@@ -1,10 +1,17 @@
+import { Input } from 'antd'
 import React from 'react'
 
-export const Search = () => {
+const { Search } = Input;
+
+export const Searcha = () => {
     return (
         <div className='Search'>
-            <input />
-            <button>Lupa</button>
+            <Search
+                onSearch={value => console.log(value)}
+                placeholder="Search users"
+                allowClear
+                enterButton="Search"
+                enterButton />
         </div>
     )
 }

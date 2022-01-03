@@ -55,8 +55,8 @@ export const myFolowingPosts = () =>
         query: JSON.stringify([{},
         {
             sort: [{ _id: -1 }],
-            skip: [3],
-            limit: [150],
+            skip: [1],
+            limit: [5],
         }
         ])
     }))

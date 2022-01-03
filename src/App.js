@@ -1,3 +1,4 @@
+import 'antd/dist/antd.css'
 import './App.scss';
 import { Router, Route, Switch, Redirect } from 'react-router-dom';
 import createHistory from "history/createBrowserHistory";
@@ -5,7 +6,6 @@ import { connect, Provider } from 'react-redux';
 import { store } from './redux/redux-store';
 import { Authorization } from './pages/Authorization';
 import { Content } from './pages/Content';
-
 
 
 
@@ -17,13 +17,15 @@ const AppContent = ({ isToken }) =>
         {!isToken
             ?
             <Switch>
-                <Route path='/login' component={Authorization} />
-                <Redirect from='/*' to='/login' />
+                <Route path='/auth/:_id'
+                    component={Authorization} />
+    
+                <Redirect from='/*' to='/auth/login' />
             </Switch>
             :
             <Switch>
                 <Route path='/' component={Content} exact />
-                {/* <Redirect from='/*' to='/' /> */}
+                <Redirect from='/*' to='/' />
             </Switch>
         }
     </Router >
