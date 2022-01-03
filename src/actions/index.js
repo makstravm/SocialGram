@@ -26,13 +26,30 @@ export const actionLogin = (login, password) =>
             login(login:$login, password:$password)
         }`, { login, password }))
 
-export const actionFullLogin = (login, password) =>
+export const actionFullLogin = (login, password, remember) =>
     async dispatch => {
         let token = await dispatch(actionLogin(login, password))
         if (token) {
-            dispatch(actionAuthLogin(token))
+            dispatch(actionAuthLogin(token, remember))
         }
     }
+
+const actionRegister = (login, password) =>
+    actionPromise('register', gql(`mutation rega ($login:String!, $password:String!){
+                                    createUser(login: $login, password: $password){
+                                        _id login
+                                    }
+                                }`, { login, password }))
+
+export const actionFullRegister = (login, password, remember) =>
+    async dispatch => {
+        await actionRegister(login, password)
+        let token = await dispatch(actionLogin(login, password))
+        if (token) {
+            dispatch(actionAuthLogin(token, remember))
+        }
+    }
+
 
 export const actionProfilData = (_id) =>
     actionPromise('dataProfileAuth', gql(`query userOned($id:String!){
