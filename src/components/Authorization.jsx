@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React  from 'react'
 import authBg from '../images/authBg.png'
 import { connect } from 'react-redux'
-import { NavLink, Route } from 'react-router-dom'
+import { NavLink} from 'react-router-dom'
 import { actionFullLogin, actionFullRegister } from '../actions'
 
 import { Form, Input, Button, Row, Col, Card, Divider, Checkbox } from 'antd';

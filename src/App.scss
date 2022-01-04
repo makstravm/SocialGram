@@ -55,13 +55,18 @@ select {
     background-color: #ececec;
     justify-content: space-between;
     align-items: center;
+    &__inner {
+        max-width: 1250px;
+        margin: 0 auto;
+    }
+    &__search {
+        display: block;
+        padding: 0 10px;
+    }
 }
 .UserNav {
-    display: flex;
-    width: 25vw;
-    align-items: center;
     img {
-        width: 100px;
+        width: 50px;
         border-radius: 50%;
         overflow: hidden;
         border: 1px solid #000;
@@ -92,10 +97,19 @@ select {
         }
     }
 }
-.qq {
-    display: flex;
-    justify-content: space-between;
-    div {
-        width: 50%;
+.ant-layout-header {
+    height: 58px;
+    line-height: 58px;
+    padding: 0 10px;
+    background-color: #fff;
+    box-shadow: 0 0 9px 5px rgba($color: #001529, $alpha: 0.4);
+}
+.Main {
+    padding-top: 58px;
+    &__inner{
+        padding-top: 15px;
     }
+}
+.Post {
+    padding: 10px 0;
 }

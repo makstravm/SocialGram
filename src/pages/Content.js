@@ -1,34 +1,21 @@
-import React, { useEffect } from 'react'
-import { connect } from 'react-redux'
-import { Route, Switch } from 'react-router-dom'
-import { myFolowingPosts } from '../actions'
-import Header from '../components/header/Header'
-import { CMainContent } from '../components/main/MainContent'
+import { Col, Row } from 'antd'
+import React from 'react'
 
 
 
-const Main = ({ children }) =>
-    <div className='qq'>{children}</div>
+
+export const Main = ({ children }) =>
+    <Row justify='center' className='Main'>
+        <Col xs={{ span: 24 }} sm={{ span: 20 }} md={{ span: 16 }} lg={{ span: 14 }} xl={{span:12}}className='Main__inner'>
+            {children}
+        </Col>
+    </Row>
 
 
-export const CMain = connect(null, { postsFollowing: myFolowingPosts })(Main)
 
-const Aside = () =>
-    <div>sdfsdgsgsdg</div>
+// export const CMain = connect(null, { postsFollowing: myFolowingPosts })(Main)
 
-export const Content = () => {
-    return (
-        <>
-            <Header />
-            <Main>
-                <Switch>
-                    <CMainContent />
-                    <Route path='/message' componernt={Aside} />
-                </Switch>
 
-            </Main>
-        </>
-    )
-}
-
+export const Content = ({ children }) =>
+    <>{children}</>
 

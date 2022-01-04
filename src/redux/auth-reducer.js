@@ -5,7 +5,7 @@ export const authReducer = (state, { type, token, remember }) => {
     if (!state) {
         if (localStorage.authToken || sessionStorage.authToken) {
             type = 'AUTH_LOGIN'
-            token = localStorage.authToken || sessionStorage.authTokenauth
+            token = localStorage.authToken || sessionStorage.authToken
         } else state = {}
     }
 

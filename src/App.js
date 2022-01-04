@@ -1,17 +1,19 @@
-import 'antd/dist/antd.css'
+import 'antd/dist/antd.min.css'
 import './App.scss';
 import { Router, Route, Switch, Redirect } from 'react-router-dom';
 import createHistory from "history/createBrowserHistory";
 import { connect, Provider } from 'react-redux';
 import { store } from './redux/redux-store';
-import { Authorization } from './pages/Authorization';
-import { Content } from './pages/Content';
-
-
+import { Authorization } from './components/Authorization';
+import { Content, Main } from './pages/Content';
+import HeaderComponent from './components/header/Header';
+import { CMainPostFeed } from './components/main/MainPostFeed.js';
 
 export const history = createHistory()
 
 
+const Aside = () =>
+    <div>sdfsdgsgsdg</div>
 const AppContent = ({ isToken }) =>
     <Router history={history}>
         {!isToken
@@ -22,7 +24,17 @@ const AppContent = ({ isToken }) =>
                 <Redirect from='/*' to='/auth/login' />
             </Switch>
             :
-            <Content />
+            <Switch>
+                <Content>
+                    <HeaderComponent />
+                    <Main>
+                        <Route path='/' component={CMainPostFeed} exact />
+                        <Route path='/message' component={Aside} />
+                        <Redirect path='/*' from='/' />
+                    </Main>
+                </Content >
+            </Switch>
+
             // <Switch>
             //     <Route path='/' component={Content} exact />
             //     <Redirect from='/auth/*' to='/' />
