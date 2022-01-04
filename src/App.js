@@ -19,14 +19,14 @@ const AppContent = ({ isToken }) =>
             <Switch>
                 <Route path='/auth/:_id'
                     component={Authorization} />
-    
                 <Redirect from='/*' to='/auth/login' />
             </Switch>
             :
-            <Switch>
-                <Route path='/' component={Content} exact />
-                <Redirect from='/*' to='/' />
-            </Switch>
+            <Content />
+            // <Switch>
+            //     <Route path='/' component={Content} exact />
+            //     <Redirect from='/auth/*' to='/' />
+            // </Switch>
         }
     </Router >
 

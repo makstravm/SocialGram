@@ -18,7 +18,8 @@ const getGQL = url =>
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
-                Authorization: localStorage.authToken ? 'Bearer ' + localStorage.authToken : {},
+                ...(localStorage.authToken ? { Authorization: 'Bearer ' + localStorage.authToken } :
+                    sessionStorage.authToken ? { Authorization: 'Bearer ' + sessionStorage.authToken } : {})
             },
             body: JSON.stringify({ query, variables })
         })

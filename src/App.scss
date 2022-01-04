@@ -83,12 +83,19 @@ select {
     }
     &__form {
         height: 100vh;
-        padding-right:calc(10vw + 25px)
+        padding-right: calc(10vw + 25px);
     }
     .login-form {
         text-align: center;
         button {
             width: 75%;
         }
+    }
+}
+.qq {
+    display: flex;
+    justify-content: space-between;
+    div {
+        width: 50%;
     }
 }
