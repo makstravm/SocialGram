@@ -106,10 +106,72 @@ select {
 }
 .Main {
     padding-top: 58px;
-    &__inner{
+    &__inner {
         padding-top: 15px;
     }
 }
 .Post {
     padding: 10px 0;
+    position: relative;
+    img {
+        margin: 0 auto;
+        padding: 1px;
+    }
+    &__dots.slick-dots {
+        bottom: -14px;
+        li {
+            border-radius: 50%;
+            background-color: rgba($color: #1890ff, $alpha: 0.5);
+            width: 10px;
+            height: 10px;
+            overflow: hidden;
+            &.slick-active {
+                border-radius: 5px;
+                width: 20px;
+                button {
+                    background-color: #1890ff;
+                }
+            }
+            button {
+                height: 10px;
+            }
+        }
+    }
+    .ant-empty-image {
+        height: 300px;
+        img {
+            margin: 0 auto;
+        }
+    }
+    &__btn {
+        border: none;
+        position: absolute;
+        padding: 0;
+        background-color: rgba(0, 0, 0, 0.165);
+        bottom: 1px;
+        top: 1px;
+        width: 50px;
+        transition: 0.4s;
+        cursor: pointer;
+        svg {
+            fill: #fff;
+            opacity: 0.5;
+            width: 50px;
+            height: 30px;
+            transition: 0.4s;
+        }
+
+    }
+    &__prev {
+        left: -50px;
+        &.--active {
+            left: 1px;
+        }
+    }
+    &__next {
+        right: -50px;
+        &.--active {
+            right: 1px;
+        }
+    }
 }

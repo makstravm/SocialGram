@@ -30,7 +30,7 @@ const AppContent = ({ isToken }) =>
                     <Main>
                         <Route path='/' component={CMainPostFeed} exact />
                         <Route path='/message' component={Aside} />
-                        <Redirect path='/*' from='/' />
+                        <Redirect from='/*' to='/' />
                     </Main>
                 </Content >
             </Switch>

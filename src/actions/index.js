@@ -64,7 +64,7 @@ export const myFolowingPosts = () =>
             _id, text, title,
             owner{_id, nick, login, avatar {url}
             }, 
-            images{url},
+            images{url _id},
             comments{text},
             createdAt
         }

@@ -1,39 +1,80 @@
-import { Card, Col, Row, Carousel } from 'antd'
+import { Card, Col, Row, Carousel, Empty } from 'antd'
 import Meta from 'antd/lib/card/Meta'
-import React, { useEffect } from 'react'
+import React, { createRef, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { myFolowingPosts } from '../../actions'
 import { backURL } from '../../helpers'
 import { UserAvatar } from '../header/Header'
+import nodata from '../../images/nodata.png'
+import { LeftCircleOutlined, RightCircleOutlined } from '@ant-design/icons'
+
 
 const PostTitle = ({ owner }) =>
     <Link to={`/${owner?._id}`} className='owner'>
         <Row justify="start" align='middle'>
             <Col >
-                <UserAvatar avatar={owner.avatar} login={owner.login} nick={owner.nick} />
+                <UserAvatar avatar={owner?.avatar} login={owner?.login} nick={owner?.nick} />
             </Col>
             <Col offset={1}>
-                <span>{owner?.nick ? owner.nick : owner.login}</span>
+                <span>{owner?.nick ? owner.nick : owner?.login ? owner.login : 'Null'}</span>
             </Col>
         </Row>
     </Link >
 
-const PostImage = ({ images }) => {
-    function onChange(a, b, c) {
-        console.log(a, b, c);
+
+
+class PostImage extends React.Component {
+    constructor(props) {
+        super(props);
+        this.carouselRef = createRef();
+        this.state = {
+            movePrev: false,
+            moveNext: false
+        }
     }
 
-    return (
-        <>
-            <Carousel >
-                
-            </Carousel>
-        </>
-    )
+    handleNext = () => this.carouselRef.current.next(this);
+
+    handlePrev = () => this.carouselRef.current.prev(this);
+
+    moveOnDivArray = (length, index) => {
+        if (index === 0) {
+            this.setState({ movePrev: false, moveNext: true })
+        } else if (index === length - 1) {
+            this.setState({ movePrev: true, moveNext: false })
+        } else {
+            this.setState({ movePrev: true, moveNext: true })
+        }
+    }
+
+    downOnDivArray = () => this.setState({ movePrev: false, moveNext: false })
+
+    render() {
+
+        const { images } = this.props
+        return (
+            <Carousel ref={this.carouselRef}
+                effect="fade"
+                dots={{ className: 'Post__dots' }
+                }>
+                {!!images ?
+                    images.map((i, index) => i?.url ? <div key={i._id}
+                        onMouseEnter={() => this.moveOnDivArray(images.length, index)}
+                        onMouseLeave={this.downOnDivArray}>
+                        <button onClick={() => this.handlePrev()}
+                            className={`Post__prev Post__btn ${this.state.movePrev ? '--active' : ''}`}><LeftCircleOutlined /></button>
+                        <button onClick={() => this.handleNext()}
+                            className={`Post__next Post__btn ${this.state.moveNext ? '--active' : ''}`}><RightCircleOutlined /></button>
+                        <img src={backURL + '/' + i.url} />
+                    </div> :
+                        <Empty key={i._id} image={nodata} description={false} />) :
+                    <Empty image={nodata} description={false} />
+                }
+            </Carousel >
+        );
+    }
 }
-
-
 
 const Post = ({ postData: { text, title, owner, images, createdAt, comments } }) => {
     const date = new Date(createdAt * 1)
@@ -50,24 +91,6 @@ const Post = ({ postData: { text, title, owner, images, createdAt, comments } })
                 <Meta title="Europe Street beat" description="www.instagram.com" />
             </Card>
         </div>
-
-        // <div>
-        //     <a href='/asd'>asd</a>
-        //     
-        //     {images && images[0] && images[0].url && < img src={backURL + '/' + images[0].url} alt='post' />}
-        //     <div>
-        //         <span>
-        //             {resultDate}
-        //         </span>
-        //         <span>
-        //             {title}
-        //         </span>
-        //         <span>
-        //             {text}
-        //         </span>
-        //     </div>
-        //     {comments ? 'yes' : 'no'}
-        // </div>
     )
 }
 
@@ -79,7 +102,6 @@ const MainPostFeed = ({ posts, postsFollowing }) => {
         <>
             {posts.map(p => <Post key={p._id} postData={p} />)}
         </>
-
     )
 }
 
