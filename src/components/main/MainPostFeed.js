@@ -56,6 +56,7 @@ class PostImage extends React.Component {
         return (
             <Carousel ref={this.carouselRef}
                 effect="fade"
+                infinite={false}
                 dots={{ className: 'Post__dots' }
                 }>
                 {!!images ?
