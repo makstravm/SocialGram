@@ -39,9 +39,11 @@ class PostImage extends React.Component {
     handlePrev = () => this.carouselRef.current.prev(this);
 
     moveOnDivArray = (length, index) => {
-        if (index === 0) {
+        if (length === 1) {
+            this.setState({ movePrev: false, moveNext: false })
+        } else if (index === 0) {
             this.setState({ movePrev: false, moveNext: true })
-        } else if (index === length - 1) {
+        } else if (index === length - 1 && length > 1) {
             this.setState({ movePrev: true, moveNext: false })
         } else {
             this.setState({ movePrev: true, moveNext: true })
@@ -85,8 +87,6 @@ const Post = ({ postData: { text, title, owner, images, createdAt, comments } })
         <div className='Post'>
             <Card
                 title={<PostTitle owner={owner} />}
-                // hoverable
-
                 cover={<PostImage images={images} />}
             >
                 <Meta title="Europe Street beat" description="www.instagram.com" />

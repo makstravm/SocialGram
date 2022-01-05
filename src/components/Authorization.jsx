@@ -20,6 +20,7 @@ const FormInput = ({ buttonTitle, onSignIn }) => {
             }}
             labelCol={{ flex: '25px' }}
             layout={'vertical'}
+            size='middle'
             onFinish={onFinish}
         >
             <Form.Item
