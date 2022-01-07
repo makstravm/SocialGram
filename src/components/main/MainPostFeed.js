@@ -1,14 +1,14 @@
-import { Card, Col, Row, Carousel, Empty } from 'antd'
+import { Card, Col, Row, Carousel, Empty, Button } from 'antd'
 import Meta from 'antd/lib/card/Meta'
-import React, { createRef, useEffect } from 'react'
+import React, { createRef, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { myFolowingPosts } from '../../actions'
+import { actionAddLikePost, actionLikeUpdatePost, actionMyFolowingPosts, actionMyLikes, actionOwnerId, actionRemoveLikePost, myFolowingPosts } from '../../actions'
 import { backURL } from '../../helpers'
 import { UserAvatar } from '../header/Header'
 import nodata from '../../images/nodata.png'
-import { LeftCircleOutlined, RightCircleOutlined } from '@ant-design/icons'
-
+import { CheckCircleTwoTone, HeartFilled, HeartOutlined, HeartTwoTone, LeftCircleOutlined, RightCircleOutlined, SmileTwoTone } from '@ant-design/icons'
+import { actionAddPostsFeed, actionFullAddLikePost, actionFullRemoveLikePost, actionRemoveLikePosts } from '../../redux/postFeed-reducer'
 
 const PostTitle = ({ owner }) =>
     <Link to={`/${owner?._id}`} className='owner'>
@@ -21,8 +21,6 @@ const PostTitle = ({ owner }) =>
             </Col>
         </Row>
     </Link >
-
-
 
 class PostImage extends React.Component {
     constructor(props) {
@@ -79,21 +77,99 @@ class PostImage extends React.Component {
     }
 }
 
-const Post = ({ postData: { text, title, owner, images, createdAt, comments } }) => {
-    const date = new Date(createdAt * 1)
-    const resultDate = new Intl.DateTimeFormat('default').format(date)
+const HeartLike = ({ styleLike, likeStatus, changeLike }) =>
+    <Button
+        onClick={() => changeLike()}
+        type="none"
+        shape="circle"
+        icon={
+            likeStatus ?
+                <HeartFilled style={styleLike} /> :
+                <HeartOutlined style={styleLike} />}
+    />
 
+
+
+const PostUserPanel = ({ myLikes, postId, likes, addLikePost, removeLikePost }) => {
+
+    let likeStatus;
+    let likePOstId
+
+    myLikes.find(l => {
+        if (l.post._id === postId) {
+            likeStatus = true
+            likePOstId = l._id
+        } else {
+            likeStatus = false
+        }
+    })
+    let changeLike = () => likeStatus ? removeLikePost(likePOstId, postId) : addLikePost(postId)
+    const styleLikeBtn = {
+        fontSize: '1.7em',
+        color: '#1890ff'
+    }
+    return (
+        <>
+            <Row className="Post__panel-btn">
+                <Col className='Post__heart'>
+                    <HeartLike
+                        changeLike={changeLike}
+                        likeStatus={likeStatus}
+                        styleLike={styleLikeBtn} />
+                </Col>
+                <Col>
+                </Col>
+                <div >
+
+                </div>
+
+            </Row>
+            {!!likes.length && <strong>Likes: {likes.length}</strong>}
+        </>
+    )
+}
+
+const CPostUserPanel = connect(state => ({
+    myLikes: state?.promise?.myLikes?.payload || [],
+}), {
+    addLikePost: actionFullAddLikePost,
+    removeLikePost: actionFullRemoveLikePost,
+})(PostUserPanel)
+
+
+const PostDescription = () => {
+    
+
+    return(
+        <>
+
+        
+        </>
+    )
+}
+
+
+const Post = ({ postData: { _id, text, title, owner, images, createdAt, comments, likes } }) => {
+    // const date = new Date(createdAt * 1)
+    // const resultDate = new Intl.DateTimeFormat('default').format(date)
     return (
         <div className='Post'>
             <Card
                 title={<PostTitle owner={owner} />}
                 cover={<PostImage images={images} />}
             >
-                <Meta title="Europe Street beat" description="www.instagram.com" />
+                <CPostUserPanel postId={_id} likes={likes} />
+                <PostDescription />
+                {/* <Meta title="Europe Street beat" description="www.instagram.com" /> */}
             </Card>
         </div>
     )
 }
+
+
+
+
+
 
 const MainPostFeed = ({ posts, postsFollowing }) => {
     useEffect(() => {
@@ -106,4 +182,8 @@ const MainPostFeed = ({ posts, postsFollowing }) => {
     )
 }
 
-export const CMainPostFeed = connect(state => ({ posts: state.promise?.followingPosts?.payload || [] }), { postsFollowing: myFolowingPosts })(MainPostFeed)
+export const CMainPostFeed = connect(state => ({
+    posts: state?.postsFeed?.posts || []
+}), {
+    postsFollowing: actionAddPostsFeed,
+})(MainPostFeed)

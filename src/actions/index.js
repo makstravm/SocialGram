@@ -55,25 +55,34 @@ export const actionProfilData = (_id) =>
     actionPromise('dataProfileAuth', gql(`query userOned($id:String!){
                         UserFindOne(query: $id){
                             _id  login avatar{ _id url }
-    }
-}`, { id: JSON.stringify([{ _id }]) }))
+                           following{_id} 
+                                } LikeFind(query:$id){
+                                _id
+                               post { _id}
+                  }
+                }`, { id: JSON.stringify([{ ___owner: _id }]) }))
 
-export const myFolowingPosts = () =>
-    actionPromise('followingPosts', gql(`query allposts($query: String!){
-        PostFind(query: $query){
-            _id, text, title,
-            owner{_id, nick, login, avatar {url}
-            }, 
-            images{url _id},
-            comments{text},
-            createdAt
+
+
+export const actionAddLikePost = (_id) =>
+    actionPromise('likePost', gql(`mutation LikePost($like:LikeInput){
+        LikeUpsert(like:$like){
+            _id
         }
-    }`, {
-        query: JSON.stringify([{},
-        {
-            sort: [{ _id: -1 }],
-            skip: [19],
-            limit: [3],
+    }`, { like: { post: { _id } } }))
+
+export const actionRemoveLikePost = (_id) =>
+    actionPromise('removelikePost', gql(`mutation LikeRemove($like:LikeInput){
+        LikeDelete(like:$like){
+            _id
         }
-        ])
-    }))
+    }`, { like: { _id } }))
+
+
+
+export const actionLikeUpdatePost = (id) =>
+    actionPromise('likeUpdatePost', gql(`query userOned($id: String!) {
+                                        PostFindOne(query: $id) {
+                                            likes {_id}
+                                        }
+}`, { id: JSON.stringify([{ _id: id }]) }))

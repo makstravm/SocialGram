@@ -96,7 +96,7 @@ select {
             width: 75%;
         }
     }
-    .ant-divider{
+    .ant-divider {
         margin-bottom: 0;
     }
 }
@@ -163,18 +163,32 @@ select {
             height: 30px;
             transition: 0.4s;
         }
-
     }
     &__prev {
-        left: -50px;
+        left: 0px;
+        opacity: 0;
         &.--active {
-            left: 1px;
+            opacity: 1;
         }
     }
     &__next {
-        right: -50px;
+        right: 0px;
+        opacity: 0;
         &.--active {
-            right: 1px;
+            opacity: 1;
+        }
+    }
+    &__heart {
+        button {
+            min-width: auto;
+            width: 30px;
+            height: 30px;
+            border: none;
+            padding: 0;
+            box-shadow: none;
+        }
+        strong {
+            display: block;
         }
     }
 }
