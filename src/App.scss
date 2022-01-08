@@ -191,4 +191,17 @@ select {
             display: block;
         }
     }
+    &__comments {
+        a {
+            font-size: 1.1em;
+            color: #000;
+            font-weight: 500;
+        }
+    }
+    &__send-comment {
+        button{
+            border: none;
+            box-shadow: none;
+        }
+    }
 }

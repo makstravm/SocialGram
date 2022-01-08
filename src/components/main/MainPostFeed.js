@@ -1,14 +1,15 @@
 import { Card, Col, Row, Carousel, Empty, Button } from 'antd'
-import Meta from 'antd/lib/card/Meta'
 import React, { createRef, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { actionAddLikePost, actionLikeUpdatePost, actionMyFolowingPosts, actionMyLikes, actionOwnerId, actionRemoveLikePost, myFolowingPosts } from '../../actions'
 import { backURL } from '../../helpers'
 import { UserAvatar } from '../header/Header'
 import nodata from '../../images/nodata.png'
-import { CheckCircleTwoTone, HeartFilled, HeartOutlined, HeartTwoTone, LeftCircleOutlined, RightCircleOutlined, SmileTwoTone } from '@ant-design/icons'
-import { actionAddPostsFeed, actionFullAddLikePost, actionFullRemoveLikePost, actionRemoveLikePosts } from '../../redux/postFeed-reducer'
+import { HeartFilled, HeartOutlined, LeftCircleOutlined, RightCircleOutlined, SendOutlined, } from '@ant-design/icons'
+import Paragraph from 'antd/lib/typography/Paragraph'
+import Text from 'antd/lib/typography/Text'
+import TextArea from 'antd/lib/input/TextArea'
+import { actionAddPostsFeed, actionFullAddComment, actionFullAddLikePost, actionFullRemoveLikePost } from '../../redux/redux-thunk'
 
 const PostTitle = ({ owner }) =>
     <Link to={`/${owner?._id}`} className='owner'>
@@ -77,37 +78,32 @@ class PostImage extends React.Component {
     }
 }
 
-const HeartLike = ({ styleLike, likeStatus, changeLike }) =>
+const HeartLike = ({ styleFontSize, likeStatus, changeLike }) =>
     <Button
         onClick={() => changeLike()}
         type="none"
         shape="circle"
         icon={
             likeStatus ?
-                <HeartFilled style={styleLike} /> :
-                <HeartOutlined style={styleLike} />}
+                <HeartFilled style={{ color: '#ff6969', fontSize: `${styleFontSize}` }} /> :
+                <HeartOutlined style={{ color: '#1890ff', fontSize: `${styleFontSize}` }} />}
     />
 
-
-
-const PostUserPanel = ({ myLikes, postId, likes, addLikePost, removeLikePost }) => {
-
-    let likeStatus;
-    let likePOstId
-
-    myLikes.find(l => {
-        if (l.post._id === postId) {
+const PostUserPanel = ({ myID, myLikes, postId, likes, addLikePost, removeLikePost }) => {
+    let likeStatus
+    let likeId
+    likes.find(l => {
+        if (l.owner._id === myID) {
             likeStatus = true
-            likePOstId = l._id
+            likeId = l._id
         } else {
             likeStatus = false
         }
     })
-    let changeLike = () => likeStatus ? removeLikePost(likePOstId, postId) : addLikePost(postId)
-    const styleLikeBtn = {
-        fontSize: '1.7em',
-        color: '#1890ff'
-    }
+
+    const changeLike = () => likeStatus ? removeLikePost(likeId, postId) : addLikePost(postId)
+    const styleFontSize = '1.7em'
+
     return (
         <>
             <Row className="Post__panel-btn">
@@ -115,14 +111,10 @@ const PostUserPanel = ({ myLikes, postId, likes, addLikePost, removeLikePost }) 
                     <HeartLike
                         changeLike={changeLike}
                         likeStatus={likeStatus}
-                        styleLike={styleLikeBtn} />
+                        styleFontSize={styleFontSize} />
                 </Col>
                 <Col>
                 </Col>
-                <div >
-
-                </div>
-
             </Row>
             {!!likes.length && <strong>Likes: {likes.length}</strong>}
         </>
@@ -130,46 +122,105 @@ const PostUserPanel = ({ myLikes, postId, likes, addLikePost, removeLikePost }) 
 }
 
 const CPostUserPanel = connect(state => ({
+    myID: state.auth.payload.sub.id || '',
     myLikes: state?.promise?.myLikes?.payload || [],
 }), {
     addLikePost: actionFullAddLikePost,
     removeLikePost: actionFullRemoveLikePost,
 })(PostUserPanel)
 
+const PostDescription = ({ title, description, date }) =>
+    <>
+        <Row justify='space-between'>
+            <Col >
+                {!!title && <Text level={3} strong>{title}</Text>}
+            </Col>
+            <Col >
+                <Text type='secondary'>{date}</Text>
+            </Col>
+        </Row>
+        <Paragraph ellipsis={true ? { rows: 1, expandable: true, symbol: 'more' } : false}>
+            {description}
+        </Paragraph>
+    </>
 
-const PostDescription = () => {
-    
+const Comments = ({ comments }) =>
+    <>
+        {comments && comments.length > 2 &&
+            <Link to={`/#`}>
+                <Text type={'secondary'} level={3}>{`Посмотреть все ${comments.length} комментария`}</Text>
+            </Link>}
+        {comments && <div>
+            <div className='Post__comments'>
+                <Link to={`/#`}>{comments[comments?.length - 2]?.owner?.nick || comments[comments?.length - 2]?.owner?.login}: </Link>
+                <span>{comments[comments?.length - 2]?.text}</span>
+            </div>
+            <div className='Post__comments'>
+                <Link to={`/#`}>{comments[comments?.length - 1]?.owner?.login || comments[comments?.length - 1]?.owner?.login}: </Link>
+                <span>{comments[comments?.length - 1]?.text}</span>
+            </div>
+        </div>}
+    </>
 
-    return(
+
+const FieldCommentSend = ({ postId, sentComment }) => {
+    const [commentValue, setCommentValue] = useState('')
+    const [error, setError] = useState(false)
+
+    const changeComentTextarea = (e) => {
+        setCommentValue(e.currentTarget.value)
+        setError(false)
+    }
+    const sendCommentValid = (value) => {
+        if (value.trim() !== '') {
+            sentComment(postId, value.trim())
+            setCommentValue('')
+        } else {
+            setError(true)
+        }
+    }
+    return (
         <>
-
-        
+            {error && <Text type='danger'>Field is required</Text>}
+            <Row align='middle' className='Post__send-comment'>
+                <Col flex='auto' offset={1}>
+                    <TextArea value={commentValue}
+                        placeholder="Add a comment ..."
+                        autoSize={{ minRows: 1, maxRows: 2 }}
+                        onChange={changeComentTextarea}
+                        bordered={false}
+                    />
+                </Col>
+                <Col span={2}>
+                    <Button
+                        onClick={() => sendCommentValid(commentValue)}
+                        icon={< SendOutlined
+                            style={{ fontSize: '1.2em', opacity: .6 }} />} />
+                </Col>
+            </Row>
         </>
     )
 }
 
+const CFieldCommentSend = connect(null, { sentComment: actionFullAddComment })(FieldCommentSend)
 
 const Post = ({ postData: { _id, text, title, owner, images, createdAt, comments, likes } }) => {
-    // const date = new Date(createdAt * 1)
-    // const resultDate = new Intl.DateTimeFormat('default').format(date)
+    const date = new Date(createdAt * 1)
+    const resultDate = new Intl.DateTimeFormat('default').format(date)
     return (
         <div className='Post'>
             <Card
                 title={<PostTitle owner={owner} />}
                 cover={<PostImage images={images} />}
+                actions={[<CFieldCommentSend postId={_id} />]}
             >
                 <CPostUserPanel postId={_id} likes={likes} />
-                <PostDescription />
-                {/* <Meta title="Europe Street beat" description="www.instagram.com" /> */}
+                <PostDescription title={title} description={text} date={resultDate} />
+                <Comments comments={comments} />
             </Card>
         </div>
     )
 }
-
-
-
-
-
 
 const MainPostFeed = ({ posts, postsFollowing }) => {
     useEffect(() => {

@@ -2,10 +2,10 @@ import React  from 'react'
 import authBg from '../images/authBg.png'
 import { connect } from 'react-redux'
 import { NavLink} from 'react-router-dom'
-import { actionFullLogin, actionFullRegister } from '../actions'
 
 import { Form, Input, Button, Row, Col, Card, Divider, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { actionFullLogin, actionFullRegister } from '../redux/redux-thunk';
 
 const FormInput = ({ buttonTitle, onSignIn }) => {
     const onFinish = ({ login, password, remember }) => {
