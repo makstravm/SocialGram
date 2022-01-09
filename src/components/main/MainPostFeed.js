@@ -224,7 +224,7 @@ const Post = ({ postData: { _id, text, title, owner, images, createdAt, comments
 
 const MainPostFeed = ({ posts, postsFollowing }) => {
     const [checkScroll, setCheckScroll] = useState(true)
-    console.log(posts.length);
+    
     useEffect(async () => {
         if (checkScroll) {
             await postsFollowing(posts.length)

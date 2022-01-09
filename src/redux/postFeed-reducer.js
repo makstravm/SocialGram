@@ -6,7 +6,6 @@ export const postFeedReducer = (state = {}, { type, addPosts, newLike, postId, l
     const { posts } = state
     const types = {
         'ADD-POST-FEED': () => {
-            console.log(posts, addPosts);
             return {
                 ...state,
                 posts: !!posts ? [...posts, ...addPosts] : [...addPosts]
@@ -59,10 +58,10 @@ export const actionMyFolowisgPosts = (skip) =>
             createdAt
         }
     }`, {
-            query: JSON.stringify([{},
-            {
-                sort: [{ _id: -1 }],
-                skip: [skip +735],
-                limit: [10]
-            }])
+                query: JSON.stringify([{},
+                {
+                    sort: [{ _id: -1 }],
+                    skip: [skip +735],
+                    limit: [10]
+                }])
         }))

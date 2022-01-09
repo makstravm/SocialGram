@@ -1,7 +1,7 @@
 import React from 'react'
 import logo from '../../logo.svg';
 import { Link } from 'react-router-dom';
-import { Searcha } from './Search';
+import { CFieldSearch, Searcha } from './Search';
 import { connect } from 'react-redux';
 import { actionProfilData } from '../../actions';
 import { backURL } from '../../helpers';
@@ -33,7 +33,7 @@ export const UserAvatar = ({ avatar, login = "user", nick }) => {
                         color: '#040c80',
                         backgroundColor: '#f8cff0'
                     }}>
-                        <span style={{ fontWeight: 500, fontSize: '1.3em', lineHeight: '40px' }}>{nick ? nick[0].toUpperCase() : login[0].toUpperCase()}
+                        <span style={{ fontWeight: 500, fontSize: '1.3em', lineHeight: '40px' }}>{nick ? nick[0].toUpperCase() : login ? login[0].toUpperCase() : 'U'}
                         </span>
                     </Avatar >
             }
@@ -44,20 +44,20 @@ export const UserAvatar = ({ avatar, login = "user", nick }) => {
 
 
 const UserNavIcon = ({ userData: { _id, avatar, login } }) =>
-    <Row justify="space-between" align="middle">
-        <Col span={4}>
+    <Row justify="end" align="middle" className='Header__userNav'>
+        <Col >
             <Link to='/'>Home</Link>
         </Col>
-        <Col span={4}>
+        <Col >
             <Link to='/message'>Messsege</Link>
         </Col>
-        <Col span={4}>
+        <Col >
             <Link to='/add'>addq</Link>
         </Col>
-        <Col span={4}>
+        <Col >
             <Link to='/rar'>Random</Link>
         </Col>
-        <Col span={4}>
+        <Col>
             <Link to={`/${_id}`}>
                 <UserAvatar avatar={avatar} login={login} />
             </Link>
@@ -81,7 +81,7 @@ const HeaderComponent = () =>
                     <Logo />
                 </Col>
                 <Col span={8}>
-                    <Searcha />
+                    <CFieldSearch />
                 </Col>
                 <Col span={8}>
                     <CUserNav />

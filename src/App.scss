@@ -63,15 +63,41 @@ select {
         display: block;
         padding: 0 10px;
     }
-}
-.UserNav {
-    img {
-        width: 50px;
-        border-radius: 50%;
-        overflow: hidden;
-        border: 1px solid #000;
+    &__search-link {
+        display: flex;
+        align-items: center;
+        padding: 5px 20px;
+        transition: all 0.3s;
+        strong {
+            padding-left: 15px;
+            color: #000;
+        }
+        &:hover {
+            background-color: #0057ff1f;
+        }
+    }
+    &__userNav {
+        div {
+            padding-left: 20px;
+        }
     }
 }
+.ant-popover-inner-content {
+    max-width: 500px;
+    min-width: 320px;
+    max-height: 500px;
+    padding: 16px 0;
+    overflow: auto;
+}
+// .UserNav {
+//     img {
+//         width: 50px;
+//         border-radius: 50%;
+//         overflow: hidden;
+//         border: 1px solid #000;
+//     }
+// }
+
 .Authorization {
     height: 100%;
     background-position: right top;
@@ -100,19 +126,22 @@ select {
         margin-bottom: 0;
     }
 }
+
 .ant-layout-header {
     height: 58px;
     line-height: 58px;
-    padding: 0 10px;
+    padding: 0 20px;
     background-color: #fff;
     box-shadow: 0 0 9px 5px rgba($color: #001529, $alpha: 0.4);
 }
+
 .Main {
     padding-top: 58px;
     &__inner {
         padding-top: 15px;
     }
 }
+
 .Post {
     padding: 10px 0;
     position: relative;
@@ -199,7 +228,7 @@ select {
         }
     }
     &__send-comment {
-        button{
+        button {
             border: none;
             box-shadow: none;
         }

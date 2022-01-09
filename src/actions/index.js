@@ -37,6 +37,24 @@ export const actionProfilData = (_id) =>
                   }
                 }`, { id: JSON.stringify([{ ___owner: _id }]) }))
 
+//****************---Action FindUsers ---*************************//
+
+export const actionFindUsers = (value) =>
+    actionPromise('findUsersAll', gql(`query findUsersAll($query:String!) {
+                                UserFind(query: $query) {
+                                    _id login nick 
+                                    avatar { _id url } 
+                                }
+    }`, {
+        query: JSON.stringify([{
+            $or: [{ nick: `/${value}/` }, { login: `/${value}/` }]
+        },
+        {
+            sort: [{ login: 1 }]
+        },
+            ,])
+    }))
+
 //****************---Action Like ---*************************//
 
 export const actionRemoveLikePost = (_id) =>
