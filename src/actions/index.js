@@ -7,6 +7,8 @@ export const actionPending = name => ({ type: 'PROMISE', status: 'PENDING', name
 export const actionResolved = (name, payload) => ({ type: 'PROMISE', status: 'RESOLVED', name, payload })
 export const actionRejected = (name, error) => ({ type: 'PROMISE', status: 'REJECTED', name, error })
 
+export const actionAuthLogin = (token, remember) => ({ type: 'AUTH_LOGIN', token, remember })
+export const actionAuthLogout = () => ({ type: 'AUTH_LOGOUT' })
 
 export const actionAddPostsFeedAC = (addPosts, myLikes) => ({ type: 'ADD-POST-FEED', addPosts, myLikes })
 export const actionAddLikePostAC = (postId, newResult) => ({ type: 'ADD-POST-LIKE', postId, newResult })

@@ -1,12 +1,13 @@
 import React from 'react'
 import logo from '../../logo.svg';
 import { Link } from 'react-router-dom';
-import { CFieldSearch, Searcha } from './Search';
+import { CFieldSearch } from './Search';
 import { connect } from 'react-redux';
-import { actionProfilData } from '../../actions';
+import { actionAuthLogout, actionProfilData } from '../../actions';
 import { backURL } from '../../helpers';
 import Layout, { Header } from 'antd/lib/layout/layout';
-import { Avatar, Col, Image, Row } from 'antd';
+import { Avatar, Col, Menu, Popover, Row } from 'antd';
+import { UserOutlined, CompassOutlined, SettingOutlined, HomeOutlined, ImportOutlined, MessageOutlined, PlusCircleOutlined } from '@ant-design/icons/lib/icons';
 
 const UserNav = ({ id, profileData }) => {
     profileData(id)
@@ -15,61 +16,75 @@ const UserNav = ({ id, profileData }) => {
     </div>
 }
 
-export const UserAvatar = ({ avatar, login = "user", nick }) => {
+export const UserAvatar = ({ avatarSize, avatar, login = "user", nick }) => {
     return (
         <>
             {
                 avatar && avatar?.url ?
                     <Avatar style={{
-                        width: 40,
-                        height: 40
+                        width: avatarSize,
+                        height: avatarSize
                     }}
                         src={
                             <img src={(backURL + '/' + avatar.url)} alt='avatar' />
                         } /> :
                     <Avatar style={{
-                        width: '40px',
-                        height: '40px',
+                        width: avatarSize,
+                        height: avatarSize,
                         color: '#040c80',
                         backgroundColor: '#f8cff0'
                     }}>
-                        <span style={{ fontWeight: 500, fontSize: '1.3em', lineHeight: '40px' }}>{nick ? nick[0].toUpperCase() : login ? login[0].toUpperCase() : 'U'}
+                        <span style={{ fontWeight: 500, fontSize: '1.3em', lineHeight: avatarSize }}>{nick ? nick[0].toUpperCase() : login ? login[0].toUpperCase() : 'U'}
                         </span>
                     </Avatar >
             }
         </>
     )
 }
+const ProfileDropMenu = ({ onLogOut }) =>
+    <Menu className='dropMenu'>
+        <Menu.Item key={'0'}>
+            <Link to={'/'}><UserOutlined /> My Profile</Link>
+        </Menu.Item>
+        <Menu.Item key={'1'}>
+            <Link to={'/'}><SettingOutlined /> Settings</Link>
+        </Menu.Item>
+        <Menu.Divider />
+        <Menu.Item key={'2'}>
+            <button onClick={() => onLogOut()}><ImportOutlined /> Log out</button>
+        </Menu.Item>
+    </Menu>
 
-
+const CProfileDropMenu = connect(null, { onLogOut: actionAuthLogout })(ProfileDropMenu)
 
 const UserNavIcon = ({ userData: { _id, avatar, login } }) =>
     <Row justify="end" align="middle" className='Header__userNav'>
         <Col >
-            <Link to='/'>Home</Link>
+            <Link to='/'><HomeOutlined /></Link>
         </Col>
         <Col >
-            <Link to='/message'>Messsege</Link>
+            <Link to='/message'><MessageOutlined /></Link>
         </Col>
         <Col >
-            <Link to='/add'>addq</Link>
+            <Link to='/add'><PlusCircleOutlined /></Link>
         </Col>
         <Col >
-            <Link to='/rar'>Random</Link>
+            <Link to='/rar'><CompassOutlined /></Link>
         </Col>
         <Col>
-            <Link to={`/${_id}`}>
-                <UserAvatar avatar={avatar} login={login} />
-            </Link>
+            <Popover placement="bottomRight" content={<CProfileDropMenu myID={_id} />} trigger={'click'}>
+                <></>
+                <UserAvatar avatar={avatar} login={login} avatarSize={'45px'} />
+            </Popover>
         </Col>
-    </Row>
+    </Row >
 
 const CUserNav = connect(state => ({ id: state.auth?.payload.sub.id || {} }), { profileData: actionProfilData })(UserNav)
 
 const CUserNavIcon = connect(state => ({ userData: state.promise?.dataProfileAuth.payload || {} }))(UserNavIcon)
 
 const Logo = () =>
-    <Link to='/'>
+    <Link className='Logo' to='/'>
         <img src={logo} alt='logo' width='180vw' />
     </Link>
 

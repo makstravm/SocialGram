@@ -24,14 +24,12 @@ export const authReducer = (state, { type, token, remember }) => {
     }
     if (type === 'AUTH_LOGOUT') {
         localStorage.removeItem('authToken')
+        sessionStorage.removeItem('authToken')
         return {}
     }
     return state
 }
 
-export const actionAuthLogin = (token, remember) => ({ type: 'AUTH_LOGIN', token, remember })
-
-export const actionAuthLogout = () => ({ type: 'AUTH_LOGOUT' })
 
 
 

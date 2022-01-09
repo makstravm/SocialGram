@@ -7,23 +7,22 @@ import { UserAvatar } from './Header';
 
 const { Search } = Input;
 const FindUsersResult = ({ usersRes }) => {
-    console.log(usersRes);
-    return <>
-        {usersRes.length === 0 ?
-            <Empty /> :
-            usersRes.map(u => {
-                return (<Link
-                    className='Header__search-link'
-                    key={u._id}
-                    to={`/profile/${u._id}`} >
-                    <UserAvatar avatar={u.avatar} login={u.login} nick={u.nick} />
-                    <strong>{u?.nick || u?.login || 'User'}</strong>
-                </Link>)
-            })
+    return <div className='Header__search-drop' >
+        {
+            usersRes.length === 0 ?
+                <Empty /> :
+                usersRes.map(u => {
+                    return (<Link
+                        className='Header__search-link'
+                        key={u._id}
+                        to={`/profile/${u._id}`} >
+                        <UserAvatar avatar={u.avatar} login={u.login} nick={u.nick} avatarSize={'40px'} />
+                        <strong>{u?.nick || u?.login || 'User'}</strong>
+                    </Link>)
+                })
         }
-    </>
+    </div >
 }
-
 
 export const FieldSearch = ({ usersRes, findUsers }) => {
     return (

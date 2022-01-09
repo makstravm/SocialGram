@@ -15,7 +15,7 @@ const PostTitle = ({ owner }) =>
     <Link to={`/${owner?._id}`} className='owner'>
         <Row justify="start" align='middle'>
             <Col >
-                <UserAvatar avatar={owner?.avatar} login={owner?.login} nick={owner?.nick} />
+                <UserAvatar avatar={owner?.avatar} login={owner?.login} avatarSize={'45px'} nick={owner?.nick} />
             </Col>
             <Col offset={1}>
                 <span>{owner?.nick ? owner.nick : owner?.login ? owner.login : 'Null'}</span>
@@ -224,7 +224,7 @@ const Post = ({ postData: { _id, text, title, owner, images, createdAt, comments
 
 const MainPostFeed = ({ posts, postsFollowing }) => {
     const [checkScroll, setCheckScroll] = useState(true)
-    
+
     useEffect(async () => {
         if (checkScroll) {
             await postsFollowing(posts.length)
