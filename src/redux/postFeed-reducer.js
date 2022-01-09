@@ -1,5 +1,4 @@
 import React from 'react'
-import { actionAddCommentAC } from '../actions'
 import { gql } from '../helpers'
 import { actionPromise } from './redux-thunk'
 
@@ -7,9 +6,10 @@ export const postFeedReducer = (state = {}, { type, addPosts, newLike, postId, l
     const { posts } = state
     const types = {
         'ADD-POST-FEED': () => {
+            console.log(posts, addPosts);
             return {
                 ...state,
-                posts: !!state.addPosts ? [...state.addPosts, ...addPosts] : [...addPosts],
+                posts: !!posts ? [...posts, ...addPosts] : [...addPosts]
             }
         },
         'ADD-POST-LIKE': () => {
@@ -47,7 +47,7 @@ export const postFeedReducer = (state = {}, { type, addPosts, newLike, postId, l
 
 
 
-export const actionMyFolowisgPosts = (skip = 738) =>
+export const actionMyFolowisgPosts = (skip) =>
     actionPromise('followingPosts',
         gql(`query allposts($query: String!){
         PostFind(query:$query){
@@ -62,7 +62,7 @@ export const actionMyFolowisgPosts = (skip = 738) =>
             query: JSON.stringify([{},
             {
                 sort: [{ _id: -1 }],
-                skip: [+skip],
-                limit: [1]
+                skip: [skip +735],
+                limit: [10]
             }])
         }))

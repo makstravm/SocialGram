@@ -89,7 +89,7 @@ const HeartLike = ({ styleFontSize, likeStatus, changeLike }) =>
                 <HeartOutlined style={{ color: '#1890ff', fontSize: `${styleFontSize}` }} />}
     />
 
-const PostUserPanel = ({ myID, myLikes, postId, likes, addLikePost, removeLikePost }) => {
+const PostUserPanel = ({ myID, postId, likes, addLikePost, removeLikePost }) => {
     let likeStatus
     let likeId
     likes.find(l => {
@@ -223,9 +223,27 @@ const Post = ({ postData: { _id, text, title, owner, images, createdAt, comments
 }
 
 const MainPostFeed = ({ posts, postsFollowing }) => {
+    const [checkScroll, setCheckScroll] = useState(true)
+    console.log(posts.length);
+    useEffect(async () => {
+        if (checkScroll) {
+            await postsFollowing(posts.length)
+            setCheckScroll(false)
+        }
+    }, [checkScroll])
+
     useEffect(() => {
-        postsFollowing()
+        document.addEventListener('scroll', scrollHandler)
+        return () => {
+            document.removeEventListener('scroll', scrollHandler)
+        }
     }, [])
+
+    const scrollHandler = (e) => {
+        if (e.target.documentElement.scrollHeight - (e.target.documentElement.scrollTop + window.innerHeight) < 500) {
+            setCheckScroll(true)
+        }
+    }
     return (
         <>
             {posts.map(p => <Post key={p._id} postData={p} />)}
