@@ -10,9 +10,10 @@ import Paragraph from 'antd/lib/typography/Paragraph'
 import Text from 'antd/lib/typography/Text'
 import TextArea from 'antd/lib/input/TextArea'
 import { actionAddPostsFeed, actionFullAddComment, actionFullAddLikePost, actionFullRemoveLikePost } from '../../redux/redux-thunk'
+import { actionRemovePostsFeedAC } from '../../actions'
 
 const PostTitle = ({ owner }) =>
-    <Link to={`/${owner?._id}`} className='owner'>
+    <Link to={`/profile/${owner?._id}`} className='owner'>
         <Row justify="start" align='middle'>
             <Col >
                 <UserAvatar avatar={owner?.avatar} login={owner?.login} avatarSize={'45px'} nick={owner?.nick} />
@@ -222,9 +223,8 @@ const Post = ({ postData: { _id, text, title, owner, images, createdAt, comments
     )
 }
 
-const MainPostFeed = ({ posts, postsFollowing }) => {
+const MainPostFeed = ({ posts, postsFollowing, postsFollowingRemove }) => {
     const [checkScroll, setCheckScroll] = useState(true)
-
     useEffect(async () => {
         if (checkScroll) {
             await postsFollowing(posts.length)
@@ -236,6 +236,7 @@ const MainPostFeed = ({ posts, postsFollowing }) => {
         document.addEventListener('scroll', scrollHandler)
         return () => {
             document.removeEventListener('scroll', scrollHandler)
+            postsFollowingRemove()
         }
     }, [])
 
@@ -255,4 +256,5 @@ export const CMainPostFeed = connect(state => ({
     posts: state?.postsFeed?.posts || []
 }), {
     postsFollowing: actionAddPostsFeed,
+    postsFollowingRemove: actionRemovePostsFeedAC,
 })(MainPostFeed)

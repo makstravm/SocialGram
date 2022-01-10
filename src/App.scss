@@ -141,7 +141,6 @@ select {
     }
 }
 
-
 .Authorization {
     height: 100%;
     background-position: right top;
@@ -276,5 +275,41 @@ select {
             border: none;
             box-shadow: none;
         }
+    }
+}
+.Modal {
+    .ant-modal-body {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    &__inner {
+        overflow: auto;
+        max-height: 400px;
+    }
+    li {
+        padding-left: 35px;
+    }
+}
+.Profile {
+    width: 100%;
+    h1 {
+        line-height: 1;
+    }
+    &__login {
+        color: #8d8d8d;
+    }
+    &__count {
+        strong {
+            font-size: 1.2em;
+            padding-right: 5px;
+        }
+        span {
+            font-size: 1.2em;
+        }
+    }
+    button {
+        color: #000;
+        padding: 0;
+        border: none;
     }
 }

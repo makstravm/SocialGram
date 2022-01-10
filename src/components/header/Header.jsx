@@ -1,5 +1,6 @@
 import React from 'react'
 import logo from '../../logo.svg';
+import noAva from '../../images/noAva.png'
 import { Link } from 'react-router-dom';
 import { CFieldSearch } from './Search';
 import { connect } from 'react-redux';
@@ -16,31 +17,22 @@ const UserNav = ({ id, profileData }) => {
     </div>
 }
 
-export const UserAvatar = ({ avatarSize, avatar, login = "user", nick }) => {
+export const UserAvatar = ({ avatarSize, avatar}) => {
     return (
         <>
-            {
-                avatar && avatar?.url ?
-                    <Avatar style={{
-                        width: avatarSize,
-                        height: avatarSize
-                    }}
-                        src={
-                            <img src={(backURL + '/' + avatar.url)} alt='avatar' />
-                        } /> :
-                    <Avatar style={{
-                        width: avatarSize,
-                        height: avatarSize,
-                        color: '#040c80',
-                        backgroundColor: '#f8cff0'
-                    }}>
-                        <span style={{ fontWeight: 500, fontSize: '1.3em', lineHeight: avatarSize }}>{nick ? nick[0].toUpperCase() : login ? login[0].toUpperCase() : 'U'}
-                        </span>
-                    </Avatar >
-            }
+            <Avatar style={{
+                width: avatarSize,
+                height: avatarSize
+            }}
+                src={avatar && avatar?.url ?
+                    <img src={(backURL + '/' + avatar.url)} alt='avatar' /> :
+                    <img src={noAva} />
+                } />
+
         </>
     )
 }
+
 const ProfileDropMenu = ({ onLogOut }) =>
     <Menu className='dropMenu'>
         <Menu.Item key={'0'}>

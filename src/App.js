@@ -8,6 +8,7 @@ import { Authorization } from './components/Authorization';
 import { Content, Main } from './pages/Content';
 import HeaderComponent from './components/header/Header';
 import { CMainPostFeed } from './components/main/MainPostFeed.js';
+import { CLoginForm, CProfilePage } from './components/main/Profile';
 
 export const history = createHistory()
 
@@ -24,16 +25,21 @@ const AppContent = ({ isToken }) =>
                 <Redirect from='/*' to='/auth/login' />
             </Switch>
             :
-            <Switch>
-                <Content>
-                    <HeaderComponent />
-                    <Main>
+
+            <Content>
+                <HeaderComponent />
+                <Main>
+                    <Switch>
                         <Route path='/' component={CMainPostFeed} exact />
+
+                        <Route path='/profile/:_id' component={CProfilePage} />
+
                         <Route path='/message' component={Aside} />
-                        <Redirect from='/*' to='/' />
-                    </Main>
-                </Content >
-            </Switch>
+                        <Redirect from='/*' to='/profile/614c8ef4f9fc3a5e42bddb28' />
+                    </Switch>
+                </Main>
+            </Content >
+
 
             // <Switch>
             //     <Route path='/' component={Content} exact />

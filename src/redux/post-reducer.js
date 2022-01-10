@@ -2,13 +2,19 @@ import React from 'react'
 import { gql } from '../helpers'
 import { actionPromise } from './redux-thunk'
 
-export const postFeedReducer = (state = {}, { type, addPosts, newLike, postId, likeId, newResult }) => {
+export const postFeedReducer = (state = {}, { type, postId, newResult }) => {
     const { posts } = state
     const types = {
         'ADD-POST-FEED': () => {
             return {
                 ...state,
-                posts: !!posts ? [...posts, ...addPosts] : [...addPosts]
+                posts: !!posts ? [...posts, ...newResult] : [...newResult]
+            }
+        },
+        'REMOVE-POST-FEED': () => {
+            return {
+                ...state,
+                posts: []
             }
         },
         'ADD-POST-LIKE': () => {
@@ -58,10 +64,10 @@ export const actionMyFolowisgPosts = (skip) =>
             createdAt
         }
     }`, {
-                query: JSON.stringify([{},
-                {
-                    sort: [{ _id: -1 }],
-                    skip: [skip +735],
-                    limit: [10]
-                }])
+            query: JSON.stringify([{},
+            {
+                sort: [{ _id: -1 }],
+                skip: [skip +743 ],
+                limit: [10]
+            }])
         }))

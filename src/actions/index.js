@@ -10,10 +10,14 @@ export const actionRejected = (name, error) => ({ type: 'PROMISE', status: 'REJE
 export const actionAuthLogin = (token, remember) => ({ type: 'AUTH_LOGIN', token, remember })
 export const actionAuthLogout = () => ({ type: 'AUTH_LOGOUT' })
 
-export const actionAddPostsFeedAC = (addPosts, myLikes) => ({ type: 'ADD-POST-FEED', addPosts, myLikes })
+export const actionAddPostsFeedAC = (newResult) => ({ type: 'ADD-POST-FEED', newResult })
+export const actionRemovePostsFeedAC = () => ({ type: 'REMOVE-POST-FEED' })
+
 export const actionAddLikePostAC = (postId, newResult) => ({ type: 'ADD-POST-LIKE', postId, newResult })
 export const actionRemoveLikePostAC = (postId, newResult) => ({ type: 'REMOVE-POST-LIKE', postId, newResult })
 export const actionAddCommentAC = (postId, newResult) => ({ type: 'ADD-COMMENT', postId, newResult })
+
+export const actionAddProfileDataAC = (userData, userPosts) => ({ type: 'ADD-PROFILE-DATA', userData, userPosts })
 
 //****************---Action Authirization ---*************************//
 
@@ -35,7 +39,6 @@ export const actionProfilData = (_id) =>
                         UserFindOne(query: $id){
                             _id  login nick
                             avatar { _id url }
-                            following {_id} 
                   }
                 }`, { id: JSON.stringify([{ ___owner: _id }]) }))
 
@@ -97,3 +100,27 @@ export const actionFindComment = (postId) =>
         }
     }`, { id: JSON.stringify([{ _id: postId }]) }))
 
+//****************---Action ProfileData ---*************************//
+
+export const actionUserData = (_id) =>
+    actionPromise('userOneData', gql(` query userOned($id:String!){
+                        UserFindOne(query: $id){
+                            _id  login nick
+                            avatar { _id url }     
+                            createdAt
+                            followers {_id nick login}
+                            following {_id nick login}
+                }
+            } `, { id: JSON.stringify([{ _id }]) }))
+
+export const actionUserPost = (_id) =>
+    actionPromise('userOneData', gql(` query userOned($id:String!){
+                PostFind(query:$id){
+                    _id   images{url _id}
+                }
+                }`, { id: JSON.stringify([{ ___owner: _id }]) }))
+
+
+//****************---Action ProfileData ---*************************//
+
+// export const actionSubscribe=()
