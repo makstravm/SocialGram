@@ -27,7 +27,9 @@ const FindUsersResult = ({ usersRes }) => {
 export const FieldSearch = ({ usersRes, findUsers }) => {
     return (
         <>
-            <Popover placement="bottom" content={<FindUsersResult usersRes={usersRes} />}
+            <Popover placement="bottom"
+                content={<FindUsersResult usersRes={usersRes} />}
+                destroyTooltipOnHide={true}
                 trigger="focus">
                 <></>
                 <Search className='Header__search'

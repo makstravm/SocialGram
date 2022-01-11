@@ -10,13 +10,13 @@ import Layout, { Header } from 'antd/lib/layout/layout';
 import { Avatar, Col, Menu, Popover, Row } from 'antd';
 import { UserOutlined, CompassOutlined, SettingOutlined, HomeOutlined, ImportOutlined, MessageOutlined, PlusCircleOutlined } from '@ant-design/icons/lib/icons';
 
-const UserNav = ({ id}) => {
+const UserNav = ({ id }) => {
     return <div className='UserNav'>
         <CUserNavIcon />
     </div>
 }
 
-export const UserAvatar = ({ avatarSize, avatar}) => {
+export const UserAvatar = ({ avatarSize, avatar }) => {
     return (
         <>
             <Avatar style={{
@@ -32,10 +32,10 @@ export const UserAvatar = ({ avatarSize, avatar}) => {
     )
 }
 
-const ProfileDropMenu = ({ onLogOut }) =>
+const ProfileDropMenu = ( {myID, onLogOut }) =>
     <Menu className='dropMenu'>
         <Menu.Item key={'0'}>
-            <Link to={'/'}><UserOutlined /> My Profile</Link>
+            <Link to={`${myID}`}><UserOutlined /> My Profile</Link>
         </Menu.Item>
         <Menu.Item key={'1'}>
             <Link to={'/'}><SettingOutlined /> Settings</Link>
@@ -70,9 +70,9 @@ const UserNavIcon = ({ userData: { _id, avatar, login } }) =>
         </Col>
     </Row >
 
-const CUserNav = connect(state => ({ id: state.auth?.payload.sub.id || {} }) )(UserNav)
+const CUserNav = connect(state => ({ id: state.auth?.payload.sub.id || {} }))(UserNav)
 
-const CUserNavIcon = connect(state => ({ userData: state.promise?.dataProfileAuth.payload || {} }))(UserNavIcon)
+const CUserNavIcon = connect(state => ({ userData: state.promise?.aboutMe?.payload || {} }))(UserNavIcon)
 
 const Logo = () =>
     <Link className='Logo' to='/'>

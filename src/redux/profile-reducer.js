@@ -1,16 +1,16 @@
 import React from 'react'
 
-export const profileReducer = (state = {}, { type, userData, userPosts }) => {
+export const profileReducer = (state = {}, { type, userData, userPosts, newResult }) => {
     const types = {
-        'ADD-PROFILE-DATA': () => {
+        'PROFILE-PAGE-DATA': () => {
             return {
                 ...state, userData, userPosts
             }
         },
-        'UPDATE-FOLLOWING':()=>{
+        'UPDATE-FOLLOWING': () => {
             return {
                 ...state,
-                
+                userData: { ...state.userData, followers: [...newResult] }
             }
         }
     }

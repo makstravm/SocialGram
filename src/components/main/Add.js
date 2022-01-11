@@ -43,4 +43,4 @@ const Add = ({ imageUrl, onUploadFile }) => {
     )
 }
 
-export const CAdd = connect(state => ({ imageUrl: state.promise?.dataProfileAuth?.payload?.avatar.url }), { onUploadFile: actionSetAvatar })(Add)
+export const CAdd = connect(state => ({ imageUrl: state.promise?.Z?.payload?.avatar.url }), { onUploadFile: actionSetAvatar })(Add)

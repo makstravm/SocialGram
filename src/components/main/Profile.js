@@ -3,7 +3,7 @@ import Modal from 'antd/lib/modal/Modal'
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { actionFullSubscribe, actionProfilePageData } from '../../redux/redux-thunk'
+import { actionFullProfilePageData, actionFullSubscribe, actionFullUnSubscribe, actionProfilePageData } from '../../redux/redux-thunk'
 import { UserAvatar } from '../header/Header'
 
 const ModalFolower = ({ statusModal, data, title }) => {
@@ -42,22 +42,21 @@ const CModalFollowers = connect(state => ({ data: state?.profileData?.userData?.
 const CModalFollowing = connect(state => ({ data: state?.profileData?.userData?.following || [] }))(ModalFolower)
 
 
-const ProfileSetting = ({ userId, onSubsuscribe }) => {
-    useEffect(() => {
-
-        return () => {
-
-        }
-    }, [])
-    console.log(userId);
+const ProfileSetting = ({ myID, userId, followers, onSubsuscribe, onUnSubsuscribe }) => {
+    const followCheck = followers.find(f => f._id === myID && true)
     return (
         <Col className='Profile__seting' offset={4}>
-            <Button onClick={() => onSubsuscribe(userId)} type="primary">Primary Button</Button>
+            {!!followCheck ?
+                <Button onClick={() => onUnSubsuscribe(userId)}>Primary Button</Button> :
+                <Button onClick={() => onSubsuscribe(userId)} type="primary">Primary Button</Button>}
         </Col>
     )
 }
 
-const CProfileSetting = connect(null, { onSubsuscribe: actionFullSubscribe })(ProfileSetting)
+const CProfileSetting = connect(state => ({
+    myID: state?.auth?.payload?.sub.id,
+    followers: state?.profileData?.userData?.followers || []
+}), { onSubsuscribe: actionFullSubscribe, onUnSubsuscribe: actionFullUnSubscribe })(ProfileSetting)
 
 const ProfilePageData = ({ data: { _id, avatar, login, nick, followers, following }, posts, setFollowing, setFollowers }) => {
 
@@ -117,4 +116,4 @@ const ProfilePage = ({ match: { params: { _id, id } }, getProfileUser }) => {
     )
 }
 
-export const CProfilePage = connect(null, { getProfileUser: actionProfilePageData })(ProfilePage)
+export const CProfilePage = connect(null, { getProfileUser: actionFullProfilePageData })(ProfilePage)

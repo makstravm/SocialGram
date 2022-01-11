@@ -17,7 +17,9 @@ export const actionAddLikePostAC = (postId, newResult) => ({ type: 'ADD-POST-LIK
 export const actionRemoveLikePostAC = (postId, newResult) => ({ type: 'REMOVE-POST-LIKE', postId, newResult })
 export const actionAddCommentAC = (postId, newResult) => ({ type: 'ADD-COMMENT', postId, newResult })
 
-export const actionAddProfileDataAC = (userData, userPosts) => ({ type: 'ADD-PROFILE-DATA', userData, userPosts })
+export const actionProfilePageDataAC = (userData, userPosts) => ({ type: 'PROFILE-PAGE-DATA', userData, userPosts })
+
+export const actionUpdateFollowingAC = (newResult) => ({ type: 'UPDATE-FOLLOWING', newResult })
 
 //****************---Action Authirization ---*************************//
 
@@ -36,7 +38,7 @@ export const actionRegister = (login, password) =>
 export const actionAboutMe = () =>
     async (dispatch, getState) => {
         const { auth: { payload: { sub: { id } } } } = getState()
-        await dispatch(actionPromise('dataProfileAuth', gql(`query userOned($myID:String!){
+        await dispatch(actionPromise('aboutMe', gql(`query userOned($myID:String!){
                         UserFindOne(query: $myID){
                             _id  login nick
                             avatar { _id url }
@@ -105,7 +107,7 @@ export const actionFindComment = (postId) =>
 
 //****************---Action ProfileData ---*************************//
 
-export const actionUserData = (_id) =>
+export const actionProfilePageData = (_id) =>
     actionPromise('userOneData', gql(` query userOned($id:String!){
                         UserFindOne(query: $id){
                             _id  login nick
@@ -116,7 +118,7 @@ export const actionUserData = (_id) =>
                 }
             } `, { id: JSON.stringify([{ _id }]) }))
 
-export const actionUserPost = (_id) =>
+export const actionProfilePagePost = (_id) =>
     actionPromise('userOneData', gql(` query userOned($id:String!){
                 PostFind(query:$id){
                     _id   images{url _id}
@@ -141,12 +143,12 @@ export const actionSubscribe = (myID, myFollowing, userId) =>
         }
       }`, { user: { _id: myID, following: [...myFollowing || [], { _id: userId }] } }))
 
-export const actionUnSubscribe = (myID, myFollowing, userId) =>
+export const actionUnSubscribe = (myID, myFollowing ) =>
     actionPromise('unSubscribe', gql(`mutation followingUn($user:UserInput){
         UserUpsert( user:$user){
             following{_id}
         }
-      }`, { user: { _id: myID, following: [...myFollowing || [], { _id: userId }] } }))
+      }`, { user: { _id: myID, following: [...myFollowing] } }))
 
 
 
