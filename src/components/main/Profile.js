@@ -3,7 +3,7 @@ import Modal from 'antd/lib/modal/Modal'
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { actionProfilePageData } from '../../redux/redux-thunk'
+import { actionFullSubscribe, actionProfilePageData } from '../../redux/redux-thunk'
 import { UserAvatar } from '../header/Header'
 
 const ModalFolower = ({ statusModal, data, title }) => {
@@ -42,22 +42,22 @@ const CModalFollowers = connect(state => ({ data: state?.profileData?.userData?.
 const CModalFollowing = connect(state => ({ data: state?.profileData?.userData?.following || [] }))(ModalFolower)
 
 
-const ProfileSetting = ({myID}) => {
-  useEffect(() => {
-      
-      return () => {
-          
-      }
-  }, [])
+const ProfileSetting = ({ userId, onSubsuscribe }) => {
+    useEffect(() => {
+
+        return () => {
+
+        }
+    }, [])
+    console.log(userId);
     return (
         <Col className='Profile__seting' offset={4}>
-            <Button type="primary">Primary Button</Button>
+            <Button onClick={() => onSubsuscribe(userId)} type="primary">Primary Button</Button>
         </Col>
     )
 }
 
-const CProfileSetting = connect(state => ({ myID: state?.auth?.payload.sub.id,
- }))(ProfileSetting)
+const CProfileSetting = connect(null, { onSubsuscribe: actionFullSubscribe })(ProfileSetting)
 
 const ProfilePageData = ({ data: { _id, avatar, login, nick, followers, following }, posts, setFollowing, setFollowers }) => {
 
@@ -72,7 +72,7 @@ const ProfilePageData = ({ data: { _id, avatar, login, nick, followers, followin
                         <h1>{nick || login || 'No Name'}</h1>
                         <span className='Profile__login'>{login || '----'}</span>
                     </Col>
-                    < CProfileSetting />
+                    < CProfileSetting userId={_id} />
                 </Row>
                 <Row className='Profile__count' align='middle' justify='space-between'>
                     <Col >

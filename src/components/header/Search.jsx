@@ -28,7 +28,7 @@ export const FieldSearch = ({ usersRes, findUsers }) => {
     return (
         <>
             <Popover placement="bottom" content={<FindUsersResult usersRes={usersRes} />}
-                trigger="click">
+                trigger="focus">
                 <></>
                 <Search className='Header__search'
                     onSearch={value => findUsers(value)}

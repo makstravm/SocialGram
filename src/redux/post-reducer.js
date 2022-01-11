@@ -67,7 +67,7 @@ export const actionMyFolowisgPosts = (skip) =>
             query: JSON.stringify([{},
             {
                 sort: [{ _id: -1 }],
-                skip: [skip +743 ],
+                skip: [skip ],
                 limit: [10]
             }])
         }))

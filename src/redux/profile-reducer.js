@@ -6,6 +6,12 @@ export const profileReducer = (state = {}, { type, userData, userPosts }) => {
             return {
                 ...state, userData, userPosts
             }
+        },
+        'UPDATE-FOLLOWING':()=>{
+            return {
+                ...state,
+                
+            }
         }
     }
     if (type in types) {

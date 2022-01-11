@@ -3,12 +3,14 @@ import './App.scss';
 import { Router, Route, Switch, Redirect } from 'react-router-dom';
 import createHistory from "history/createBrowserHistory";
 import { connect, Provider } from 'react-redux';
-import { store } from './redux/redux-store';
+import  store  from './redux/redux-store';
 import { Authorization } from './components/Authorization';
 import { Content, Main } from './pages/Content';
 import HeaderComponent from './components/header/Header';
 import { CMainPostFeed } from './components/main/MainPostFeed.js';
 import { CLoginForm, CProfilePage } from './components/main/Profile';
+import { actionAboutMe } from './actions';
+import { CAdd } from './components/main/Add';
 
 export const history = createHistory()
 
@@ -31,10 +33,9 @@ const AppContent = ({ isToken }) =>
                 <Main>
                     <Switch>
                         <Route path='/' component={CMainPostFeed} exact />
-
                         <Route path='/profile/:_id' component={CProfilePage} />
-
                         <Route path='/message' component={Aside} />
+                        <Route path='/add' component={CAdd} />
                         <Redirect from='/*' to='/profile/614c8ef4f9fc3a5e42bddb28' />
                     </Switch>
                 </Main>
@@ -49,7 +50,6 @@ const AppContent = ({ isToken }) =>
     </Router >
 
 const CAppContent = connect(state => ({ isToken: state.auth?.token }))(AppContent)
-
 store.subscribe(() => console.log(store.getState()))
 
 function App() {

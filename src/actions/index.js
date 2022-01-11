@@ -33,14 +33,17 @@ export const actionRegister = (login, password) =>
                                     }
                                 }`, { login, password }))
 
-
-export const actionProfilData = (_id) =>
-    actionPromise('dataProfileAuth', gql(`query userOned($id:String!){
-                        UserFindOne(query: $id){
+export const actionAboutMe = () =>
+    async (dispatch, getState) => {
+        const { auth: { payload: { sub: { id } } } } = getState()
+        await dispatch(actionPromise('dataProfileAuth', gql(`query userOned($myID:String!){
+                        UserFindOne(query: $myID){
                             _id  login nick
                             avatar { _id url }
+                            following{ _id}
                   }
-                }`, { id: JSON.stringify([{ ___owner: _id }]) }))
+                }`, { myID: JSON.stringify([{ ___owner: id }]) })))
+    }
 
 //****************---Action FindUsers ---*************************//
 
@@ -57,7 +60,7 @@ export const actionFindUsers = (value) =>
         {
             sort: [{ login: 1 }]
         },
-            ,])
+        ])
     }))
 
 //****************---Action Like ---*************************//
@@ -123,4 +126,52 @@ export const actionUserPost = (_id) =>
 
 //****************---Action ProfileData ---*************************//
 
-// export const actionSubscribe=()
+
+export const actionUpdateFollowers = (_id) =>
+    actionPromise('upDateFollowers', gql(` query followers($id:String!){
+        UserFindOne(query: $id){
+                            followers {_id nick login}
+        }
+    }`, { id: JSON.stringify([{ _id }]) }))
+
+export const actionSubscribe = (myID, myFollowing, userId) =>
+    actionPromise('subscribe', gql(`mutation following($user:UserInput){
+        UserUpsert( user:$user){
+            following{_id}
+        }
+      }`, { user: { _id: myID, following: [...myFollowing || [], { _id: userId }] } }))
+
+export const actionUnSubscribe = (myID, myFollowing, userId) =>
+    actionPromise('unSubscribe', gql(`mutation followingUn($user:UserInput){
+        UserUpsert( user:$user){
+            following{_id}
+        }
+      }`, { user: { _id: myID, following: [...myFollowing || [], { _id: userId }] } }))
+
+
+
+//****************---Action Upload Images ---*************************//
+
+export const actionSetAvatar = (file) =>
+    async (dispatch, getState) => {
+        // const result = await dispatch(actionUploadFile(file))
+        // if (result) {
+        const { auth: { payload: { sub: { id } } } } = getState()
+        await actionPromise('uploadPhoto', gql(`mutation avaUpsert($ava: UserInput){
+                UserUpsert(user: $ava){
+                    _id avatar {_id}
+                }
+              }`, { ava: { _id: id, avatar: { _id: file._id } } })
+        )
+        await dispatch(actionAboutMe())
+        // }
+    }
+// export const actionUploadFile = (file) => {
+//     let fd = new FormData()
+//     fd.append('photo', file)
+//     return actionPromise('upload', fetch(`${backURL}/upload`, {
+//         method: "POST",
+//         headers: localStorage.authToken ? { Authorization: 'Bearer ' + localStorage.authToken } : {},
+//         body: fd,
+//     }).then(res => res.json()))
+// }
