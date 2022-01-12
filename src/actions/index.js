@@ -10,14 +10,15 @@ export const actionRejected = (name, error) => ({ type: 'PROMISE', status: 'REJE
 export const actionAuthLogin = (token, remember) => ({ type: 'AUTH_LOGIN', token, remember })
 export const actionAuthLogout = () => ({ type: 'AUTH_LOGOUT' })
 
-export const actionAddPostsFeedAC = (newResult) => ({ type: 'ADD-POST-FEED', newResult })
-export const actionRemovePostsFeedAC = () => ({ type: 'REMOVE-POST-FEED' })
+export const actionRenderPostsFeedAC = (newResult) => ({ type: 'RENDER-POSTS-FEED', newResult })
+export const actionRemovePostsFeedAC = () => ({ type: 'REMOVE-POSTS-FEED' })
 
 export const actionAddLikePostAC = (postId, newResult) => ({ type: 'ADD-POST-LIKE', postId, newResult })
 export const actionRemoveLikePostAC = (postId, newResult) => ({ type: 'REMOVE-POST-LIKE', postId, newResult })
 export const actionAddCommentAC = (postId, newResult) => ({ type: 'ADD-COMMENT', postId, newResult })
 
 export const actionProfilePageDataAC = (userData, userPosts) => ({ type: 'PROFILE-PAGE-DATA', userData, userPosts })
+export const actionRemovePrfilePageAC = () => ({ type: 'REMOVE-POSTS-PAGE' })
 
 export const actionUpdateFollowingAC = (newResult) => ({ type: 'UPDATE-FOLLOWING', newResult })
 

@@ -9,7 +9,7 @@ import { HeartFilled, HeartOutlined, LeftCircleOutlined, RightCircleOutlined, Se
 import Paragraph from 'antd/lib/typography/Paragraph'
 import Text from 'antd/lib/typography/Text'
 import TextArea from 'antd/lib/input/TextArea'
-import { actionAddPostsFeed, actionFullAddComment, actionFullAddLikePost, actionFullRemoveLikePost } from '../../redux/redux-thunk'
+import { actionAddPostsFeed, actionFullAddComment, actionFullAddLikePost, actionFullRemoveLikePost, actionRenderPostsFeed } from '../../redux/redux-thunk'
 import { actionRemovePostsFeedAC } from '../../actions'
 
 const PostTitle = ({ owner }) =>
@@ -223,7 +223,7 @@ const Post = ({ postData: { _id, text, title, owner, images, createdAt, comments
     )
 }
 
-const MainPostFeed = ({ posts, postsFollowing, postsFollowingRemove }) => {
+const MainPostsFeed = ({ posts, postsFollowing, postsFollowingRemove }) => {
     const [checkScroll, setCheckScroll] = useState(true)
     useEffect(async () => {
         if (checkScroll) {
@@ -252,9 +252,9 @@ const MainPostFeed = ({ posts, postsFollowing, postsFollowingRemove }) => {
     )
 }
 
-export const CMainPostFeed = connect(state => ({
+export const CMainPostsFeed = connect(state => ({
     posts: state?.postsFeed?.posts || []
 }), {
-    postsFollowing: actionAddPostsFeed,
+    postsFollowing: actionRenderPostsFeed,
     postsFollowingRemove: actionRemovePostsFeedAC,
-})(MainPostFeed)
+})(MainPostsFeed)

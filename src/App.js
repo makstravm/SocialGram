@@ -7,9 +7,8 @@ import  store  from './redux/redux-store';
 import { Authorization } from './components/Authorization';
 import { Content, Main } from './pages/Content';
 import HeaderComponent from './components/header/Header';
-import { CMainPostFeed } from './components/main/MainPostFeed.js';
-import { CLoginForm, CProfilePage } from './components/main/Profile';
-import { actionAboutMe } from './actions';
+import { CMainPostsFeed } from './components/main/MainPostsFeed';
+import { CProfilePage } from './components/main/Profile';
 import { CAdd } from './components/main/Add';
 
 export const history = createHistory()
@@ -32,7 +31,7 @@ const AppContent = ({ isToken }) =>
                 <HeaderComponent />
                 <Main>
                     <Switch>
-                        <Route path='/' component={CMainPostFeed} exact />
+                        <Route path='/' component={CMainPostsFeed} exact />
                         <Route path='/profile/:_id' component={CProfilePage} />
                         <Route path='/message' component={Aside} />
                         <Route path='/add' component={CAdd} />

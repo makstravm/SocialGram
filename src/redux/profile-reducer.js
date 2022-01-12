@@ -1,10 +1,16 @@
 import React from 'react'
 
-export const profileReducer = (state = {}, { type, userData, userPosts, newResult }) => {
+export const profileReducer = (state = {}, { type, userData,userPosts, newResult }) => {
     const types = {
         'PROFILE-PAGE-DATA': () => {
             return {
                 ...state, userData, userPosts
+            }
+        },
+        'REMOVE-POSTS-PAGE': () => {
+            return {
+                ...state,
+                posts: []
             }
         },
         'UPDATE-FOLLOWING': () => {
@@ -13,6 +19,7 @@ export const profileReducer = (state = {}, { type, userData, userPosts, newResul
                 userData: { ...state.userData, followers: [...newResult] }
             }
         }
+
     }
     if (type in types) {
         return types[type]()

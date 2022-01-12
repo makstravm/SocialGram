@@ -3,6 +3,8 @@ import Modal from 'antd/lib/modal/Modal'
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { actionRemovePostsAC } from '../../actions'
+import { backURL } from '../../helpers'
 import { actionFullProfilePageData, actionFullSubscribe, actionFullUnSubscribe, actionProfilePageData } from '../../redux/redux-thunk'
 import { UserAvatar } from '../header/Header'
 
@@ -101,19 +103,43 @@ const CProfilePageData = connect(state => ({
     posts: state?.profileData?.userPosts || []
 }))(ProfilePageData)
 
-const ProfilePage = ({ match: { params: { _id, id } }, getProfileUser }) => {
+
+const ProfilePagePosts = ({ posts }) => {
+
+
+    return (
+        <Row>
+            {posts.map(p => <Col key={p._id}>
+                {console.log(p)}
+                {p.images && p.images[0] && p.images[0].url && <img src={(backURL + '/' + p?.images[0].url)} alt='post Img' />}
+            </Col>)
+
+
+            }
+        </Row >
+    )
+
+}
+
+export const CProfilePagePosts = connect(state => ({ posts: state.profileData?.userPosts || [] }))(ProfilePagePosts)
+
+const ProfilePage = ({ match: { params: { _id } }, getProfileUser }) => {
     const [followers, setFollowers] = useState(false)
     const [following, setFollowing] = useState(false)
     useEffect(() => {
         getProfileUser(_id)
+        return () => {
+            // actionRemovePrfilePageAC 
+        }
     }, [_id])
     return (
         <>
             <CProfilePageData setFollowing={setFollowing} setFollowers={setFollowers} />
             {followers && < CModalFollowers statusModal={setFollowers} title={'Followers'} />}
             {following && < CModalFollowing statusModal={setFollowing} title={'Following'} />}
+            <CProfilePagePosts />
         </>
     )
 }
 
-export const CProfilePage = connect(null, { getProfileUser: actionFullProfilePageData })(ProfilePage)
+export const CProfilePage = connect(null, { getProfileUser: actionFullProfilePageData, })(ProfilePage)

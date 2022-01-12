@@ -2,16 +2,16 @@ import React from 'react'
 import { gql } from '../helpers'
 import { actionPromise } from './redux-thunk'
 
-export const postFeedReducer = (state = {}, { type, postId, newResult }) => {
+export const postsFeedReducer = (state = {}, { type, postId, newResult }) => {
     const { posts } = state
     const types = {
-        'ADD-POST-FEED': () => {
+        'RENDER-POSTS-FEED': () => {
             return {
                 ...state,
                 posts: !!posts ? [...posts, ...newResult] : [...newResult]
             }
         },
-        'REMOVE-POST-FEED': () => {
+        'REMOVE-POSTS-FEED': () => {
             return {
                 ...state,
                 posts: []
@@ -52,7 +52,7 @@ export const postFeedReducer = (state = {}, { type, postId, newResult }) => {
 
 
 
-export const actionMyFolowisgPosts = (skip) =>
+export const actionMyFolowingPosts = (skip) =>
     actionPromise('followingPosts',
         gql(`query allposts($query: String!){
         PostFind(query:$query){
@@ -64,10 +64,10 @@ export const actionMyFolowisgPosts = (skip) =>
             createdAt
         }
     }`, {
-            query: JSON.stringify([{},
+            query: JSON.stringify([{ ___owner: { $in: ["614c8ef4f9fc3a5e42bddb28"] } },
             {
                 sort: [{ _id: -1 }],
-                skip: [skip ],
+                skip: [skip||0],
                 limit: [10]
             }])
         }))
