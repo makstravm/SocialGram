@@ -1,5 +1,4 @@
-import { actionAddComment, actionAddCommentAC, actionAddLikePost, actionAddLikePostAC, actionAuthLogin, actionFindComment, actionLogin, actionMyLikePost, actionPending, actionRegister, actionRejected, actionRemoveLikePost, actionRemoveLikePostAC, actionResolved, actionSubscribe, actionUpdateFollowers, actionAboutMe, actionProfilePagePost, actionProfilePageDataAC, actionProfilePageData, actionUnSubscribe, actionUpdateFollowingAC, actionRenderPostsAC, actionRenderPostsFeedAC } from "../actions"
-import { actionMyFolowingPosts } from "./postsFeed-reducer"
+import { actionAddComment, actionAddCommentAC, actionAddLikePost, actionAddLikePostAC, actionAuthLogin, actionFindComment, actionLogin, actionMyLikePost, actionPending, actionRegister, actionRejected, actionRemoveLikePost, actionRemoveLikePostAC, actionResolved, actionSubscribe, actionUpdateFollowers, actionAboutMe, actionProfilePagePost, actionProfilePageDataAC, actionProfilePageData, actionUnSubscribe, actionUpdateFollowingAC, actionMyFolowingPosts, actionAddPostsFeedAC, actionAboutMeAC, actionSetAvatar, actionGetAvatar, actionUpdateMyAvatart, actionUpdateFollowersAC, actionProfilePostCount, actionUpdateMyFollowing } from "../actions"
 
 export const actionPromise = (name, promise) =>
     async dispatch => {
@@ -14,27 +13,39 @@ export const actionPromise = (name, promise) =>
         }
     }
 
+export const actionFullAboutMe = () =>
+    async (dispatch, getState) => {
+        const { auth: { payload: { sub: { id } } } } = getState()
+        const data = await dispatch(actionAboutMe(id))
+        if (data) {
+            await dispatch(actionAboutMeAC(data))
+        }
+    }
+
 export const actionFullLogin = (login, password, remember) =>
     async (dispatch) => {
         const token = await dispatch(actionLogin(login, password))
-        actionAboutMe()
         if (token) {
             await dispatch(actionAuthLogin(token, remember))
+            actionFullAboutMe()
         }
     }
 
 export const actionFullRegister = (login, password, remember) =>
     async dispatch => {
-        await actionRegister(login, password)
+        await dispatch(actionRegister(login, password))
         let token = await dispatch(actionLogin(login, password))
         if (token) {
             await dispatch(actionAuthLogin(token, remember))
         }
     }
 
+
+
+
 export const actionFullRemoveLikePost = (likeId, postId) =>
     async dispatch => {
-        await actionRemoveLikePost(likeId)
+        await dispatch(actionRemoveLikePost(likeId))
         const { likes } = await dispatch(actionMyLikePost(postId))
         if (likes) {
             await dispatch(actionRemoveLikePostAC(postId, likes))
@@ -43,36 +54,39 @@ export const actionFullRemoveLikePost = (likeId, postId) =>
 
 export const actionFullAddLikePost = (postId) =>
     async dispatch => {
-        await actionAddLikePost(postId)
+        await dispatch(actionAddLikePost(postId))
         const { likes } = await dispatch(actionMyLikePost(postId))
         if (likes) {
             await dispatch(actionAddLikePostAC(postId, likes))
         }
     }
 
-export const actionRenderPostsFeed = (skip) =>
+export const actionAddPostsFeed = (skip, following) =>
     async dispatch => {
-        let posts = await dispatch(actionMyFolowingPosts(skip))
+        const newArrFollowing = following.map(f => f._id)
+        let posts = await dispatch(actionMyFolowingPosts(skip, newArrFollowing))
+        const count = await dispatch(actionProfilePostCount(newArrFollowing))
         if (posts) {
-            await dispatch(actionRenderPostsFeedAC(posts))
+            await dispatch(actionAddPostsFeedAC(count, posts))
         }
     }
 
 export const actionFullAddComment = (postId, text) =>
     async dispatch => {
-        await actionAddComment(postId, text)
+        await dispatch(actionAddComment(postId, text))
         const { comments } = await dispatch(actionFindComment(postId))
         if (comments) {
             await dispatch(actionAddCommentAC(postId, comments))
         }
     }
 
-export const actionFullProfilePageData = (id) =>
+export const actionFullProfilePageData = (id, skip) =>
     async dispatch => {
         const userData = await dispatch(actionProfilePageData(id))
-        const userPosts = await dispatch(actionProfilePagePost(id))
+        const userPosts = await dispatch(actionProfilePagePost(id, skip))
+        const count = await dispatch(actionProfilePostCount([id]))
         if (userData && userPosts) {
-            await dispatch(actionProfilePageDataAC(userData, userPosts))
+            await dispatch(actionAddPostsFeedAC(count, userPosts, userData))
         }
     }
 
@@ -80,26 +94,33 @@ export const actionFullSubscribe = (userId) =>
     async (dispatch, getState) => {
         const { auth: { payload: { sub: { id } } },
             promise: { aboutMe: { payload: { following } } } } = getState()
-        await actionSubscribe(id, following, userId)
-        await dispatch(actionAboutMe())
+        await dispatch(actionSubscribe(id, following, userId))
         const { followers } = await dispatch(actionUpdateFollowers(userId))
-
+        actionUpdateMyFollowing(id)
         if (followers) {
-            await dispatch(actionUpdateFollowingAC(followers))
+            await dispatch(actionUpdateFollowersAC(followers))
         }
     }
 
 export const actionFullUnSubscribe = (userId) =>
     async (dispatch, getState) => {
         const { auth: { payload: { sub: { id } } },
-            promise: { aboutMe: { payload: { following } } } } = getState()
+            myData: { following } } = getState()
         const newArrFollowing = [...following].filter(f => f._id !== userId)
-        await actionUnSubscribe(id, newArrFollowing)
-        await dispatch(actionAboutMe())
+        await dispatch(actionUnSubscribe(id, newArrFollowing))
         const { followers } = await dispatch(actionUpdateFollowers(userId))
-
+        actionUpdateMyFollowing(id)
         if (followers) {
-            await dispatch(actionUpdateFollowingAC(followers))
+            await dispatch(actionUpdateFollowersAC(followers))
         }
     }
 
+export const actionFullSetAvatar = (file) =>
+    async (dispatch, getState) => {
+        const { auth: { payload: { sub: { id } } } } = getState()
+        await dispatch(actionSetAvatar(file, id))
+        const { avatar } = await dispatch(actionGetAvatar(id))
+        if (avatar) {
+            await dispatch(actionUpdateMyAvatart(avatar))
+        }
+    }

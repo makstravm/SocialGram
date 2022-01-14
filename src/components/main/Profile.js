@@ -3,7 +3,7 @@ import Modal from 'antd/lib/modal/Modal'
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { actionRemovePostsAC } from '../../actions'
+import { actionRemovePostsAC, actionRemovePostsFeedAC } from '../../actions'
 import { backURL } from '../../helpers'
 import { actionFullProfilePageData, actionFullSubscribe, actionFullUnSubscribe, actionProfilePageData } from '../../redux/redux-thunk'
 import { UserAvatar } from '../header/Header'
@@ -40,8 +40,8 @@ const ModalFolower = ({ statusModal, data, title }) => {
     )
 }
 
-const CModalFollowers = connect(state => ({ data: state?.profileData?.userData?.followers || [] }))(ModalFolower)
-const CModalFollowing = connect(state => ({ data: state?.profileData?.userData?.following || [] }))(ModalFolower)
+const CModalFollowers = connect(state => ({ data: state?.postsFeed?.userData?.followers || [] }))(ModalFolower)
+const CModalFollowing = connect(state => ({ data: state?.postsFeed?.userData?.following || [] }))(ModalFolower)
 
 
 const ProfileSetting = ({ myID, userId, followers, onSubsuscribe, onUnSubsuscribe }) => {
@@ -49,18 +49,18 @@ const ProfileSetting = ({ myID, userId, followers, onSubsuscribe, onUnSubsuscrib
     return (
         <Col className='Profile__seting' offset={4}>
             {!!followCheck ?
-                <Button onClick={() => onUnSubsuscribe(userId)}>Primary Button</Button> :
-                <Button onClick={() => onSubsuscribe(userId)} type="primary">Primary Button</Button>}
+                <Button onClick={() => onUnSubsuscribe(userId)}>UnSubscribe</Button> :
+                <Button onClick={() => onSubsuscribe(userId)} type="primary">Subscribe</Button>}
         </Col>
     )
 }
 
 const CProfileSetting = connect(state => ({
     myID: state?.auth?.payload?.sub.id,
-    followers: state?.profileData?.userData?.followers || []
+    followers: state?.postsFeed?.userData?.followers || []
 }), { onSubsuscribe: actionFullSubscribe, onUnSubsuscribe: actionFullUnSubscribe })(ProfileSetting)
 
-const ProfilePageData = ({ data: { _id, avatar, login, nick, followers, following }, posts, setFollowing, setFollowers }) => {
+const ProfilePageData = ({ data: { _id, avatar, login, nick, followers, following }, count, setFollowing, setFollowers }) => {
 
     return (
         <Row className='Profile' align='middle'>
@@ -77,7 +77,7 @@ const ProfilePageData = ({ data: { _id, avatar, login, nick, followers, followin
                 </Row>
                 <Row className='Profile__count' align='middle' justify='space-between'>
                     <Col >
-                        <strong>{posts?.length || '0'}</strong>
+                        <strong>{count || '0'}</strong>
                         <span>Posts</span>
                     </Col>
                     <Col >
@@ -99,39 +99,51 @@ const ProfilePageData = ({ data: { _id, avatar, login, nick, followers, followin
 }
 
 const CProfilePageData = connect(state => ({
-    data: state?.profileData?.userData || {},
-    posts: state?.profileData?.userPosts || []
+    data: state?.postsFeed?.userData || {},
+    count: state?.postsFeed?.count || null
 }))(ProfilePageData)
 
 
 const ProfilePagePosts = ({ posts }) => {
-
-
     return (
         <Row>
             {posts.map(p => <Col key={p._id}>
-                {console.log(p)}
                 {p.images && p.images[0] && p.images[0].url && <img src={(backURL + '/' + p?.images[0].url)} alt='post Img' />}
             </Col>)
-
-
             }
         </Row >
     )
 
 }
 
-export const CProfilePagePosts = connect(state => ({ posts: state.profileData?.userPosts || [] }))(ProfilePagePosts)
+export const CProfilePagePosts = connect(state => ({ posts: state.postsFeed?.posts || [] }))(ProfilePagePosts)
 
-const ProfilePage = ({ match: { params: { _id } }, getProfileUser }) => {
+const ProfilePage = ({ match: { params: { _id } }, posts, countPost, getProfileUser, clearDataProfile }) => {
     const [followers, setFollowers] = useState(false)
     const [following, setFollowing] = useState(false)
+    const [checkScroll, setCheckScroll] = useState(true)
+
     useEffect(() => {
-        getProfileUser(_id)
+        document.addEventListener('scroll', scrollHandler)
         return () => {
-            // actionRemovePrfilePageAC 
+            document.removeEventListener('scroll', scrollHandler)
+            setCheckScroll(true)
+            clearDataProfile()
         }
     }, [_id])
+    useEffect(async () => {
+        if (checkScroll && posts.length < countPost) {
+            await getProfileUser(_id, posts.length)
+            setCheckScroll(false)
+        }
+    }, [_id, checkScroll])
+
+    const scrollHandler = (e) => {
+        if (e.target.documentElement.scrollHeight - (e.target.documentElement.scrollTop + window.innerHeight) < 500) {
+            setCheckScroll(true)
+        }
+    }
+
     return (
         <>
             <CProfilePageData setFollowing={setFollowing} setFollowers={setFollowers} />
@@ -142,4 +154,7 @@ const ProfilePage = ({ match: { params: { _id } }, getProfileUser }) => {
     )
 }
 
-export const CProfilePage = connect(null, { getProfileUser: actionFullProfilePageData, })(ProfilePage)
+export const CProfilePage = connect(state => ({
+    posts: state?.postsFeed?.posts || [],
+    countPost: state?.postsFeed?.count || 1
+}), { getProfileUser: actionFullProfilePageData, clearDataProfile: actionRemovePostsFeedAC })(ProfilePage)

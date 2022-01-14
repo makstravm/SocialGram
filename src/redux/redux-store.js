@@ -1,20 +1,21 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-import { actionAboutMe } from '../actions';
 import { authReducer } from './auth-reducer';
-import { postsFeedReducer } from './postsFeed-reducer';
-import { profileReducer } from './profile-reducer';
+import { myProfileReducer } from './myProfile-reducer';
+import { postsFeedReducer } from './postFeed-reducer';
 import { promiseReducer } from './promise-reducer';
+import { actionFullAboutMe } from './redux-thunk';
 
 
 
 const store = createStore(combineReducers({
-    promise: promiseReducer,
     auth: authReducer,
+    promise: promiseReducer,
+    myData: myProfileReducer,
     postsFeed: postsFeedReducer,
-    profileData:profileReducer
 }),
     applyMiddleware(thunk))
 
-store.dispatch(actionAboutMe())
+store.dispatch(actionFullAboutMe())
+
 export default store;

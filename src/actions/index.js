@@ -10,17 +10,16 @@ export const actionRejected = (name, error) => ({ type: 'PROMISE', status: 'REJE
 export const actionAuthLogin = (token, remember) => ({ type: 'AUTH_LOGIN', token, remember })
 export const actionAuthLogout = () => ({ type: 'AUTH_LOGOUT' })
 
-export const actionRenderPostsFeedAC = (newResult) => ({ type: 'RENDER-POSTS-FEED', newResult })
+export const actionAboutMeAC = (data) => ({ type: 'ABOUTME-DATA-ADD', data })
+export const actionUpdateMyAvatart = (data) => ({ type: 'ABOUTME-UPDATE-AVATAR', data })
+export const actionAddPostsFeedAC = (count, newResult, userData) => ({ type: 'ADD-POSTS-FEED', newResult, userData, count })
 export const actionRemovePostsFeedAC = () => ({ type: 'REMOVE-POSTS-FEED' })
 
 export const actionAddLikePostAC = (postId, newResult) => ({ type: 'ADD-POST-LIKE', postId, newResult })
 export const actionRemoveLikePostAC = (postId, newResult) => ({ type: 'REMOVE-POST-LIKE', postId, newResult })
 export const actionAddCommentAC = (postId, newResult) => ({ type: 'ADD-COMMENT', postId, newResult })
 
-export const actionProfilePageDataAC = (userData, userPosts) => ({ type: 'PROFILE-PAGE-DATA', userData, userPosts })
-export const actionRemovePrfilePageAC = () => ({ type: 'REMOVE-POSTS-PAGE' })
-
-export const actionUpdateFollowingAC = (newResult) => ({ type: 'UPDATE-FOLLOWING', newResult })
+export const actionUpdateFollowersAC = (newResult) => ({ type: 'UPDATE-FOLLOWERS', newResult })
 
 //****************---Action Authirization ---*************************//
 
@@ -36,17 +35,41 @@ export const actionRegister = (login, password) =>
                                     }
                                 }`, { login, password }))
 
-export const actionAboutMe = () =>
-    async (dispatch, getState) => {
-        const { auth: { payload: { sub: { id } } } } = getState()
-        await dispatch(actionPromise('aboutMe', gql(`query userOned($myID:String!){
+export const actionAboutMe = (id) =>
+    actionPromise('aboutMe', gql(`query userOned($myID:String!){
                         UserFindOne(query: $myID){
                             _id  login nick
                             avatar { _id url }
                             following{ _id}
-                  }
-                }`, { myID: JSON.stringify([{ ___owner: id }]) })))
-    }
+                        }
+                }`, { myID: JSON.stringify([{ ___owner: id }]) }))
+
+
+
+
+export const actionMyFolowingPosts = (skip, myFollowing) =>
+    actionPromise('followingPosts',
+        gql(`query allposts($query: String!){
+        PostFind(query:$query){
+            _id, text, title
+            owner{_id, nick, login, avatar {url}}
+            likes { _id owner {_id}}   
+            images{url _id}
+            comments{_id text owner{_id nick login} likes{_id}}
+            createdAt
+        }
+    }`, {
+            query: JSON.stringify([{ ___owner: { $in: myFollowing } },
+            {
+                sort: [{ _id: -1 }],
+                skip: [skip || 0],
+                limit: [10]
+            }])
+        }))
+
+
+// 
+
 
 //****************---Action FindUsers ---*************************//
 
@@ -119,15 +142,35 @@ export const actionProfilePageData = (_id) =>
                 }
             } `, { id: JSON.stringify([{ _id }]) }))
 
-export const actionProfilePagePost = (_id) =>
-    actionPromise('userOneData', gql(` query userOned($id:String!){
+export const actionProfilePagePost = (_id, skip) =>
+    actionPromise('userOneDataPosts', gql(` query userOned($id:String!){
                 PostFind(query:$id){
                     _id   images{url _id}
                 }
-                }`, { id: JSON.stringify([{ ___owner: _id }]) }))
+                }`, {
+        id: JSON.stringify([{
+            ___owner: _id
+        },
+        {
+            sort: [{ _id: -1 }],
+            skip: [skip || 0],
+            limit: [10]
+        }])
+    }))
 
+export const actionProfilePostCount = (_id) =>
+    actionPromise('userPostsCount', gql(` query userPostsCount($id:String!){
+                PostCount(query:$id)
+                }`, { id: JSON.stringify([{ ___owner: { $in: _id } }]) }))
 
 //****************---Action ProfileData ---*************************//
+
+export const actionUpdateMyFollowing = (_id) =>
+    actionPromise('upDateFollowing', gql(` query followers($id:String!){
+        UserFindOne(query: $id){
+                            following {_id nick login}
+        }
+    }`, { id: JSON.stringify([{ _id }]) }))
 
 
 export const actionUpdateFollowers = (_id) =>
@@ -144,7 +187,7 @@ export const actionSubscribe = (myID, myFollowing, userId) =>
         }
       }`, { user: { _id: myID, following: [...myFollowing || [], { _id: userId }] } }))
 
-export const actionUnSubscribe = (myID, myFollowing ) =>
+export const actionUnSubscribe = (myID, myFollowing) =>
     actionPromise('unSubscribe', gql(`mutation followingUn($user:UserInput){
         UserUpsert( user:$user){
             following{_id}
@@ -155,26 +198,17 @@ export const actionUnSubscribe = (myID, myFollowing ) =>
 
 //****************---Action Upload Images ---*************************//
 
-export const actionSetAvatar = (file) =>
-    async (dispatch, getState) => {
-        // const result = await dispatch(actionUploadFile(file))
-        // if (result) {
-        const { auth: { payload: { sub: { id } } } } = getState()
-        await actionPromise('uploadPhoto', gql(`mutation avaUpsert($ava: UserInput){
+
+export const actionSetAvatar = (file, id) =>
+    actionPromise('uploadPhoto', gql(`mutation avaUpsert($ava: UserInput){
                 UserUpsert(user: $ava){
                     _id avatar {_id}
                 }
               }`, { ava: { _id: id, avatar: { _id: file._id } } })
-        )
-        await dispatch(actionAboutMe())
-        // }
-    }
-// export const actionUploadFile = (file) => {
-//     let fd = new FormData()
-//     fd.append('photo', file)
-//     return actionPromise('upload', fetch(`${backURL}/upload`, {
-//         method: "POST",
-//         headers: localStorage.authToken ? { Authorization: 'Bearer ' + localStorage.authToken } : {},
-//         body: fd,
-//     }).then(res => res.json()))
-// }
+    )
+export const actionGetAvatar = (id) =>
+    actionPromise('uploadPhoto', gql(`query userOned($myID: String!){
+        UserFindOne(query: $myID) {
+                            avatar { _id url }
+        }
+    }`, { myID: JSON.stringify([{ ___owner: id }]) }))

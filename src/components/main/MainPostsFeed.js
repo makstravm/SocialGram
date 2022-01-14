@@ -9,7 +9,7 @@ import { HeartFilled, HeartOutlined, LeftCircleOutlined, RightCircleOutlined, Se
 import Paragraph from 'antd/lib/typography/Paragraph'
 import Text from 'antd/lib/typography/Text'
 import TextArea from 'antd/lib/input/TextArea'
-import { actionAddPostsFeed, actionFullAddComment, actionFullAddLikePost, actionFullRemoveLikePost, actionRenderPostsFeed } from '../../redux/redux-thunk'
+import { actionAddPostsFeed, actionFullAddComment, actionFullAddLikePost, actionFullRemoveLikePost } from '../../redux/redux-thunk'
 import { actionRemovePostsFeedAC } from '../../actions'
 
 const PostTitle = ({ owner }) =>
@@ -90,7 +90,7 @@ const HeartLike = ({ styleFontSize, likeStatus, changeLike }) =>
                 <HeartOutlined style={{ color: '#1890ff', fontSize: `${styleFontSize}` }} />}
     />
 
-const PostUserPanel = ({ myID, postId, likes, addLikePost, removeLikePost }) => {
+const PostUserPanel = ({ myID, postId, likes = [], addLikePost, removeLikePost }) => {
     let likeStatus
     let likeId
     likes.find(l => {
@@ -205,7 +205,7 @@ const FieldCommentSend = ({ postId, sentComment }) => {
 
 const CFieldCommentSend = connect(null, { sentComment: actionFullAddComment })(FieldCommentSend)
 
-const Post = ({ postData: { _id, text, title, owner, images, createdAt, comments, likes } }) => {
+const Post = ({ postData: { _id, text, title, owner, images, createdAt = '', comments, likes } }) => {
     const date = new Date(createdAt * 1)
     const resultDate = new Intl.DateTimeFormat('default').format(date)
     return (
@@ -223,14 +223,15 @@ const Post = ({ postData: { _id, text, title, owner, images, createdAt, comments
     )
 }
 
-const MainPostsFeed = ({ posts, postsFollowing, postsFollowingRemove }) => {
+const MainPostsFeed = ({ posts, countPosts, postsFollowing, postsFollowingRemove, following }) => {
     const [checkScroll, setCheckScroll] = useState(true)
+
     useEffect(async () => {
-        if (checkScroll) {
-            await postsFollowing(posts.length)
+        if (checkScroll && following.length !== 0 && posts.length < countPosts) {
+            await postsFollowing(posts.length, following)
             setCheckScroll(false)
         }
-    }, [checkScroll])
+    }, [checkScroll, following])
 
     useEffect(() => {
         document.addEventListener('scroll', scrollHandler)
@@ -253,8 +254,10 @@ const MainPostsFeed = ({ posts, postsFollowing, postsFollowingRemove }) => {
 }
 
 export const CMainPostsFeed = connect(state => ({
-    posts: state?.postsFeed?.posts || []
+    countPosts: state?.postsFeed?.count || 1,
+    posts: state?.postsFeed?.posts || [],
+    following: state?.myData.following || []
 }), {
-    postsFollowing: actionRenderPostsFeed,
+    postsFollowing: actionAddPostsFeed,
     postsFollowingRemove: actionRemovePostsFeedAC,
 })(MainPostsFeed)

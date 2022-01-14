@@ -32,7 +32,7 @@ export const UserAvatar = ({ avatarSize, avatar }) => {
     )
 }
 
-const ProfileDropMenu = ( {myID, onLogOut }) =>
+const ProfileDropMenu = ({ myID, onLogOut }) =>
     <Menu className='dropMenu'>
         <Menu.Item key={'0'}>
             <Link to={`${myID}`}><UserOutlined /> My Profile</Link>
@@ -72,7 +72,7 @@ const UserNavIcon = ({ userData: { _id, avatar, login } }) =>
 
 const CUserNav = connect(state => ({ id: state.auth?.payload.sub.id || {} }))(UserNav)
 
-const CUserNavIcon = connect(state => ({ userData: state.promise?.aboutMe?.payload || {} }))(UserNavIcon)
+const CUserNavIcon = connect(state => ({ userData: state.myData || {} }))(UserNavIcon)
 
 const Logo = () =>
     <Link className='Logo' to='/'>
