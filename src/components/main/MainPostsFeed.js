@@ -227,17 +227,20 @@ const MainPostsFeed = ({ posts, countPosts, postsFollowing, postsFollowingRemove
     const [checkScroll, setCheckScroll] = useState(true)
 
     useEffect(async () => {
-        if (checkScroll && following.length !== 0 && posts.length < countPosts) {
-            await postsFollowing(posts.length, following)
+        if (checkScroll && following.length !== 0) {
+            await postsFollowing(following)
             setCheckScroll(false)
         }
     }, [checkScroll, following])
+
+
 
     useEffect(() => {
         document.addEventListener('scroll', scrollHandler)
         return () => {
             document.removeEventListener('scroll', scrollHandler)
             postsFollowingRemove()
+            console.log(posts.length);
         }
     }, [])
 

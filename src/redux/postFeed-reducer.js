@@ -15,7 +15,8 @@ export const postsFeedReducer = (state = {}, { type, postId, newResult, userData
             return {
                 ...state,
                 posts: [],
-                userData: {}
+                userData: {},
+                count: 0
             }
         },
         'ADD-POST-LIKE': () => {

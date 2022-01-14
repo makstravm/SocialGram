@@ -164,7 +164,7 @@ export const actionProfilePostCount = (_id) =>
                 }`, { id: JSON.stringify([{ ___owner: { $in: _id } }]) }))
 
 //****************---Action ProfileData ---*************************//
-
+//  
 export const actionUpdateMyFollowing = (_id) =>
     actionPromise('upDateFollowing', gql(` query followers($id:String!){
         UserFindOne(query: $id){

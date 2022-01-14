@@ -1,4 +1,4 @@
-import { actionAddComment, actionAddCommentAC, actionAddLikePost, actionAddLikePostAC, actionAuthLogin, actionFindComment, actionLogin, actionMyLikePost, actionPending, actionRegister, actionRejected, actionRemoveLikePost, actionRemoveLikePostAC, actionResolved, actionSubscribe, actionUpdateFollowers, actionAboutMe, actionProfilePagePost, actionProfilePageDataAC, actionProfilePageData, actionUnSubscribe, actionUpdateFollowingAC, actionMyFolowingPosts, actionAddPostsFeedAC, actionAboutMeAC, actionSetAvatar, actionGetAvatar, actionUpdateMyAvatart, actionUpdateFollowersAC, actionProfilePostCount, actionUpdateMyFollowing } from "../actions"
+import { actionAddComment, actionAddCommentAC, actionAddLikePost, actionAddLikePostAC, actionAuthLogin, actionFindComment, actionLogin, actionMyLikePost, actionPending, actionRegister, actionRejected, actionRemoveLikePost, actionRemoveLikePostAC, actionResolved, actionSubscribe, actionUpdateFollowers, actionAboutMe, actionProfilePagePost, actionProfilePageData, actionUnSubscribe, actionMyFolowingPosts, actionAddPostsFeedAC, actionAboutMeAC, actionSetAvatar, actionGetAvatar, actionUpdateMyAvatart, actionUpdateFollowersAC, actionProfilePostCount, actionUpdateMyFollowing } from "../actions"
 
 export const actionPromise = (name, promise) =>
     async dispatch => {
@@ -61,13 +61,16 @@ export const actionFullAddLikePost = (postId) =>
         }
     }
 
-export const actionAddPostsFeed = (skip, following) =>
-    async dispatch => {
-        const newArrFollowing = following.map(f => f._id)
-        let posts = await dispatch(actionMyFolowingPosts(skip, newArrFollowing))
-        const count = await dispatch(actionProfilePostCount(newArrFollowing))
-        if (posts) {
-            await dispatch(actionAddPostsFeedAC(count, posts))
+export const actionAddPostsFeed = (following) =>
+    async (dispatch, getState) => {
+        const { postsFeed: { posts, count } } = getState()
+        if (posts?.length !== (count ? count : 1)) {
+            const newArrFollowing = following.map(f => f._id)
+            let postsResult = await dispatch(actionMyFolowingPosts(posts?.length, newArrFollowing))
+            const countPosts = await dispatch(actionProfilePostCount(newArrFollowing))
+            if (postsResult) {
+                await dispatch(actionAddPostsFeedAC(countPosts, postsResult))
+            }
         }
     }
 
@@ -80,14 +83,18 @@ export const actionFullAddComment = (postId, text) =>
         }
     }
 
-export const actionFullProfilePageData = (id, skip) =>
-    async dispatch => {
-        const userData = await dispatch(actionProfilePageData(id))
-        const userPosts = await dispatch(actionProfilePagePost(id, skip))
-        const count = await dispatch(actionProfilePostCount([id]))
-        if (userData && userPosts) {
-            await dispatch(actionAddPostsFeedAC(count, userPosts, userData))
+export const actionFullProfilePageData = (id) =>
+    async (dispatch, getState) => {
+        const { postsFeed: { posts, count } } = getState()
+        if (posts?.length < (count ? count : 1)) {
+            const dataProfile = await dispatch(actionProfilePageData(id))
+            const userPosts = await dispatch(actionProfilePagePost(id, posts?.length))
+            const countPosts = await dispatch(actionProfilePostCount([id]))
+            if (dataProfile && userPosts) {
+                await dispatch(actionAddPostsFeedAC(countPosts, userPosts, dataProfile))
+            }
         }
+
     }
 
 export const actionFullSubscribe = (userId) =>

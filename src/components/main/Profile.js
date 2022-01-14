@@ -3,9 +3,9 @@ import Modal from 'antd/lib/modal/Modal'
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { actionRemovePostsAC, actionRemovePostsFeedAC } from '../../actions'
+import { actionRemovePostsFeedAC } from '../../actions'
 import { backURL } from '../../helpers'
-import { actionFullProfilePageData, actionFullSubscribe, actionFullUnSubscribe, actionProfilePageData } from '../../redux/redux-thunk'
+import { actionFullProfilePageData, actionFullSubscribe, actionFullUnSubscribe } from '../../redux/redux-thunk'
 import { UserAvatar } from '../header/Header'
 
 const ModalFolower = ({ statusModal, data, title }) => {
@@ -125,15 +125,16 @@ const ProfilePage = ({ match: { params: { _id } }, posts, countPost, getProfileU
 
     useEffect(() => {
         document.addEventListener('scroll', scrollHandler)
-        return () => {
+        return async () => {
             document.removeEventListener('scroll', scrollHandler)
             setCheckScroll(true)
-            clearDataProfile()
+            await clearDataProfile()
+            console.log(posts.length);
         }
     }, [_id])
     useEffect(async () => {
-        if (checkScroll && posts.length < countPost) {
-            await getProfileUser(_id, posts.length)
+        if (checkScroll) {
+            await getProfileUser(_id)
             setCheckScroll(false)
         }
     }, [_id, checkScroll])
@@ -155,6 +156,5 @@ const ProfilePage = ({ match: { params: { _id } }, posts, countPost, getProfileU
 }
 
 export const CProfilePage = connect(state => ({
-    posts: state?.postsFeed?.posts || [],
-    countPost: state?.postsFeed?.count || 1
+    posts: state?.postsFeed?.posts || []
 }), { getProfileUser: actionFullProfilePageData, clearDataProfile: actionRemovePostsFeedAC })(ProfilePage)
