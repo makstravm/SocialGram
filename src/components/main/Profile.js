@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { actionProfilePageData, actionRemovePostsFeedAC, actionSubscribe, actionUnSubscribe } from '../../actions'
 import { backURL } from '../../helpers'
-import { UserAvatar } from '../header/Header'
+import { UserAvatar } from '../../pages/Header'
 
 const ModalFolower = ({ statusModal, data, title }) => {
 
@@ -132,8 +132,8 @@ const ProfilePage = ({ match: { params: { _id } }, posts, count, getProfileUser,
     }, [_id])
 
     useEffect(() => {
-        if (checkScroll ) {
-         
+        if (checkScroll) {
+
             getProfileUser(_id)
             setCheckScroll(false)
         }

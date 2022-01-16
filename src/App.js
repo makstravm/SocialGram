@@ -6,10 +6,10 @@ import { connect, Provider } from 'react-redux';
 import  store  from './redux/redux-store';
 import { Authorization } from './components/Authorization';
 import { Content, Main } from './pages/Content';
-import HeaderComponent from './components/header/Header';
-import { CMainPostsFeed } from './components/main/MainPostsFeed';
 import { CProfilePage } from './components/main/Profile';
 import { CAdd } from './components/main/Add';
+import HeaderComponent from './pages/Header';
+import { CMainPostsFeed } from './pages/MainPostsFeed';
 
 export const history = createHistory()
 
@@ -35,7 +35,7 @@ const AppContent = ({ isToken }) =>
                         <Route path='/profile/:_id' component={CProfilePage} />
                         <Route path='/message' component={Aside} />
                         <Route path='/add' component={CAdd} />
-                        <Redirect from='/*' to='/profile/614c8ef4f9fc3a5e42bddb28' />
+                        <Redirect from='/*' to='/' />
                     </Switch>
                 </Main>
             </Content >

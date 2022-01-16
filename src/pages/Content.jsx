@@ -13,9 +13,6 @@ export const Main = ({ children }) =>
 
 
 
-// export const CMain = connect(null, { postsFollowing: myFolowingPosts })(Main)
-
-
 export const Content = ({ children }) =>
     <>{children}</>
 

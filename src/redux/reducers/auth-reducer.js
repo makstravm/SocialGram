@@ -1,4 +1,4 @@
-import { jwtDecode } from '../helpers'
+import { jwtDecode } from '../../helpers'
 
 
 export const authReducer = (state, { type, token, remember }) => {

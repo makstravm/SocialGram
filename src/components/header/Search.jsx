@@ -3,11 +3,10 @@ import React from 'react'
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { actionFindUsers, actionSearchUsers } from '../../actions';
-import { UserAvatar } from './Header';
+import { UserAvatar } from '../../pages/Header';
 
-const { Search } = Input;
-const FindUsersResult = ({ usersRes }) => {
-    return <div className='Header__search-drop' >
+const FindUsersResult = ({ usersRes }) =>
+    <div className='Header__search-drop' >
         {
             usersRes.length === 0 ?
                 <Empty /> :
@@ -22,25 +21,23 @@ const FindUsersResult = ({ usersRes }) => {
                 })
         }
     </div >
-}
 
-export const FieldSearch = ({ usersRes, findUsers }) => {
 
-    return (
-        <>
-            <Popover placement="bottom"
-                content={<FindUsersResult usersRes={usersRes} />}
-                destroyTooltipOnHide={true}
-                trigger="focus">
-                <></>
-                <Input
-                    placeholder="Search users"
-                    allowClear
-                    onChange={e => findUsers(e.currentTarget.value)}
-                />
-            </Popover>
-        </>
-    )
-}
+export const FieldSearch = ({ usersRes, findUsers }) =>
+    <>
+        <Popover placement="bottom"
+            content={<FindUsersResult usersRes={usersRes} />}
+            destroyTooltipOnHide={true}
+            trigger="focus">
+            <></>
+            <Input
+                placeholder="Search users"
+                allowClear
+                onChange={e => findUsers(e.currentTarget.value)}
+            />
+        </Popover>
+    </>
+
+
 
 export const CFieldSearch = connect(state => ({ usersRes: state.promise?.findUsersAll?.payload || [] }), { findUsers: actionSearchUsers })(FieldSearch) 

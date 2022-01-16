@@ -1,20 +1,19 @@
 import React from 'react'
-import logo from '../../logo.svg';
-import noAva from '../../images/noAva.png'
+import logo from '../logo.svg';
+import noAva from '../images/noAva.png'
 import { Link } from 'react-router-dom';
-import { CFieldSearch } from './Search';
+import { CFieldSearch } from '../components/header/Search';
 import { connect } from 'react-redux';
-import { actionAuthLogout, actionProfilData } from '../../actions';
-import { backURL } from '../../helpers';
+import { actionAuthLogout } from '../actions';
+import { backURL } from '../helpers';
 import Layout, { Header } from 'antd/lib/layout/layout';
 import { Avatar, Col, Menu, Popover, Row } from 'antd';
 import { UserOutlined, CompassOutlined, SettingOutlined, HomeOutlined, ImportOutlined, MessageOutlined, PlusCircleOutlined } from '@ant-design/icons/lib/icons';
 
-const UserNav = ({ id }) => {
-    return <div className='UserNav'>
+const UserNav = () =>
+    <div className='UserNav'>
         <CUserNavIcon />
     </div>
-}
 
 export const UserAvatar = ({ avatarSize, avatar }) => {
     return (
@@ -32,6 +31,7 @@ export const UserAvatar = ({ avatarSize, avatar }) => {
     )
 }
 
+
 const ProfileDropMenu = ({ myID, onLogOut }) =>
     <Menu className='dropMenu'>
         <Menu.Item key={'0'}>
@@ -47,6 +47,7 @@ const ProfileDropMenu = ({ myID, onLogOut }) =>
     </Menu>
 
 const CProfileDropMenu = connect(null, { onLogOut: actionAuthLogout })(ProfileDropMenu)
+
 
 const UserNavIcon = ({ userData: { _id, avatar, login } }) =>
     <Row justify="end" align="middle" className='Header__userNav'>
@@ -70,14 +71,14 @@ const UserNavIcon = ({ userData: { _id, avatar, login } }) =>
         </Col>
     </Row >
 
-const CUserNav = connect(state => ({ id: state.auth?.payload.sub.id || {} }))(UserNav)
-
 const CUserNavIcon = connect(state => ({ userData: state.myData || {} }))(UserNavIcon)
+
 
 const Logo = () =>
     <Link className='Logo' to='/'>
         <img src={logo} alt='logo' width='180vw' />
     </Link>
+
 
 const HeaderComponent = () =>
     <Layout>
@@ -90,7 +91,7 @@ const HeaderComponent = () =>
                     <CFieldSearch />
                 </Col>
                 <Col span={8}>
-                    <CUserNav />
+                    <UserNav />
                 </Col>
             </Row>
         </Header>

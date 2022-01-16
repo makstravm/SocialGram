@@ -1,8 +1,8 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
-import { authReducer } from './auth-reducer';
-import { myProfileReducer } from './myProfile-reducer';
-import { postsFeedReducer } from './postFeed-reducer';
-import { promiseReducer } from './promise-reducer';
+import { authReducer } from './reducers/auth-reducer';
+import { myProfileReducer } from './reducers/myProfile-reducer';
+import { postsFeedReducer } from './reducers/postFeed-reducer';
+import { promiseReducer } from './reducers/promise-reducer';
 import createSagaMiddleware from 'redux-saga'
 import { rootSaga } from './saga';
 import { actionFullAboutMe } from '../actions'
