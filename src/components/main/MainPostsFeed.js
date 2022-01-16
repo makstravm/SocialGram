@@ -9,8 +9,7 @@ import { HeartFilled, HeartOutlined, LeftCircleOutlined, RightCircleOutlined, Se
 import Paragraph from 'antd/lib/typography/Paragraph'
 import Text from 'antd/lib/typography/Text'
 import TextArea from 'antd/lib/input/TextArea'
-import { actionAddPostsFeed, actionFullAddComment, actionFullAddLikePost, actionFullRemoveLikePost } from '../../redux/redux-thunk'
-import { actionRemovePostsFeedAC } from '../../actions'
+import { actionDelLikePost, actionFullAddComment, actionLikePost, actionPostsFeed, actionRemovePostsFeedAC } from '../../actions'
 
 const PostTitle = ({ owner }) =>
     <Link to={`/profile/${owner?._id}`} className='owner'>
@@ -126,8 +125,8 @@ const CPostUserPanel = connect(state => ({
     myID: state.auth.payload.sub.id || '',
     myLikes: state?.promise?.myLikes?.payload || [],
 }), {
-    addLikePost: actionFullAddLikePost,
-    removeLikePost: actionFullRemoveLikePost,
+    addLikePost: actionLikePost,
+    removeLikePost: actionDelLikePost,
 })(PostUserPanel)
 
 const PostDescription = ({ title, description, date }) =>
@@ -223,17 +222,15 @@ const Post = ({ postData: { _id, text, title, owner, images, createdAt = '', com
     )
 }
 
-const MainPostsFeed = ({ posts, countPosts, postsFollowing, postsFollowingRemove, following }) => {
+const MainPostsFeed = ({ posts, count, postsFollowing, postsFollowingRemove, following }) => {
     const [checkScroll, setCheckScroll] = useState(true)
 
-    useEffect(async () => {
+    useEffect(() => {
         if (checkScroll && following.length !== 0) {
-            await postsFollowing(following)
+            postsFollowing(following)
             setCheckScroll(false)
         }
     }, [checkScroll, following])
-
-
 
     useEffect(() => {
         document.addEventListener('scroll', scrollHandler)
@@ -257,10 +254,9 @@ const MainPostsFeed = ({ posts, countPosts, postsFollowing, postsFollowingRemove
 }
 
 export const CMainPostsFeed = connect(state => ({
-    countPosts: state?.postsFeed?.count || 1,
     posts: state?.postsFeed?.posts || [],
     following: state?.myData.following || []
 }), {
-    postsFollowing: actionAddPostsFeed,
+    postsFollowing: actionPostsFeed,
     postsFollowingRemove: actionRemovePostsFeedAC,
 })(MainPostsFeed)

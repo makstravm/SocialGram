@@ -2,7 +2,7 @@ import { Empty, Input, Popover } from 'antd'
 import React from 'react'
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { actionFindUsers } from '../../actions';
+import { actionFindUsers, actionSearchUsers } from '../../actions';
 import { UserAvatar } from './Header';
 
 const { Search } = Input;
@@ -25,6 +25,7 @@ const FindUsersResult = ({ usersRes }) => {
 }
 
 export const FieldSearch = ({ usersRes, findUsers }) => {
+
     return (
         <>
             <Popover placement="bottom"
@@ -32,15 +33,14 @@ export const FieldSearch = ({ usersRes, findUsers }) => {
                 destroyTooltipOnHide={true}
                 trigger="focus">
                 <></>
-                <Search className='Header__search'
-                    onSearch={value => findUsers(value)}
+                <Input
                     placeholder="Search users"
                     allowClear
-                    enterButton="Search"
-                    enterButton />
+                    onChange={e => findUsers(e.currentTarget.value)}
+                />
             </Popover>
         </>
     )
 }
 
-export const CFieldSearch = connect(state => ({ usersRes: state.promise?.findUsersAll?.payload || [] }), { findUsers: actionFindUsers })(FieldSearch) 
+export const CFieldSearch = connect(state => ({ usersRes: state.promise?.findUsersAll?.payload || [] }), { findUsers: actionSearchUsers })(FieldSearch) 

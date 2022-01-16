@@ -4,12 +4,12 @@ import { jwtDecode } from '../helpers'
 export const authReducer = (state, { type, token, remember }) => {
     if (!state) {
         if (localStorage.authToken || sessionStorage.authToken) {
-            type = 'AUTH_LOGIN'
+            type = 'AUTH-LOGIN'
             token = localStorage.authToken || sessionStorage.authToken
         } else state = {}
     }
 
-    if (type === 'AUTH_LOGIN') {
+    if (type === 'AUTH-LOGIN') {
         remember ?
             localStorage.setItem('authToken', token) :
             sessionStorage.setItem('authToken', token)
@@ -22,7 +22,7 @@ export const authReducer = (state, { type, token, remember }) => {
             }
         } else return state
     }
-    if (type === 'AUTH_LOGOUT') {
+    if (type === 'AUTH-LOGOUT') {
         localStorage.removeItem('authToken')
         sessionStorage.removeItem('authToken')
         return {}

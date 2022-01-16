@@ -3,9 +3,8 @@ import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
 import { Upload, message } from 'antd';
 import { backURL, gql } from '../../helpers';
-import { actionSetAvatar } from '../../actions';
-import { actionFullSetAvatar } from '../../redux/redux-thunk';
 import { Loo } from './Loo';
+import { actionUpdateAvatar } from '../../actions';
 
 const Add = ({ imageUrl, onUploadFile }) => {
     const [loading, setLoading] = useState(false)
@@ -56,4 +55,4 @@ const Add = ({ imageUrl, onUploadFile }) => {
     )
 }
 
-export const CAdd = connect(state => ({ imageUrl: state?.myData?.avatar?.url }), { onUploadFile: actionFullSetAvatar })(Add)
+export const CAdd = connect(state => ({ imageUrl: state?.myData?.avatar?.url }), { onUploadFile: actionUpdateAvatar  })(Add)

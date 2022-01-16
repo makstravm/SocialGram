@@ -7,7 +7,14 @@ export const postsFeedReducer = (state = {}, { type, postId, newResult, userData
             return {
                 ...state,
                 posts: !!posts ? [...posts, ...newResult] : [...newResult],
-                userData: { ...userData },
+                count
+            }
+        },
+        'ADD-PROFILE-DATA': () => {
+            return {
+                ...state,
+                posts: !!posts ? [...posts, ...newResult] : [...newResult],
+                userData,
                 count
             }
         },
