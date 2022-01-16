@@ -3,9 +3,8 @@ import Modal from 'antd/lib/modal/Modal'
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { actionRemovePostsFeedAC } from '../../actions'
+import { actionProfilePageData, actionRemovePostsFeedAC, actionSubscribe, actionUnSubscribe } from '../../actions'
 import { backURL } from '../../helpers'
-import { actionFullProfilePageData, actionFullSubscribe, actionFullUnSubscribe } from '../../redux/redux-thunk'
 import { UserAvatar } from '../header/Header'
 
 const ModalFolower = ({ statusModal, data, title }) => {
@@ -58,7 +57,7 @@ const ProfileSetting = ({ myID, userId, followers, onSubsuscribe, onUnSubsuscrib
 const CProfileSetting = connect(state => ({
     myID: state?.auth?.payload?.sub.id,
     followers: state?.postsFeed?.userData?.followers || []
-}), { onSubsuscribe: actionFullSubscribe, onUnSubsuscribe: actionFullUnSubscribe })(ProfileSetting)
+}), { onSubsuscribe: actionSubscribe, onUnSubsuscribe: actionUnSubscribe })(ProfileSetting)
 
 const ProfilePageData = ({ data: { _id, avatar, login, nick, followers, following }, count, setFollowing, setFollowers }) => {
 
@@ -118,23 +117,24 @@ const ProfilePagePosts = ({ posts }) => {
 
 export const CProfilePagePosts = connect(state => ({ posts: state.postsFeed?.posts || [] }))(ProfilePagePosts)
 
-const ProfilePage = ({ match: { params: { _id } }, posts, countPost, getProfileUser, clearDataProfile }) => {
+const ProfilePage = ({ match: { params: { _id } }, posts, count, getProfileUser, clearDataProfile }) => {
     const [followers, setFollowers] = useState(false)
     const [following, setFollowing] = useState(false)
     const [checkScroll, setCheckScroll] = useState(true)
 
     useEffect(() => {
         document.addEventListener('scroll', scrollHandler)
-        return async () => {
+        return () => {
             document.removeEventListener('scroll', scrollHandler)
             setCheckScroll(true)
-            await clearDataProfile()
-            console.log(posts.length);
+            clearDataProfile()
         }
     }, [_id])
-    useEffect(async () => {
-        if (checkScroll) {
-            await getProfileUser(_id)
+
+    useEffect(() => {
+        if (checkScroll ) {
+         
+            getProfileUser(_id)
             setCheckScroll(false)
         }
     }, [_id, checkScroll])
@@ -157,4 +157,4 @@ const ProfilePage = ({ match: { params: { _id } }, posts, countPost, getProfileU
 
 export const CProfilePage = connect(state => ({
     posts: state?.postsFeed?.posts || []
-}), { getProfileUser: actionFullProfilePageData, clearDataProfile: actionRemovePostsFeedAC })(ProfilePage)
+}), { getProfileUser: actionProfilePageData, clearDataProfile: actionRemovePostsFeedAC })(ProfilePage)
