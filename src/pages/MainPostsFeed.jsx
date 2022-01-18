@@ -16,12 +16,12 @@ export const PostTitle = ({ owner }) =>
     <Row justify="start" align='middle'>
         <Link to={`/profile/${owner?._id}`} className='owner'>
             <UserAvatar avatar={owner?.avatar} login={owner?.login} avatarSize={'45px'} nick={owner?.nick} />
-            <span>{owner?.nick ? owner.nick : owner?.login ? owner.login : 'Null'}</span>
+            <span className='nick'>{owner?.nick ? owner.nick : owner?.login ? owner.login : 'Null'}</span>
         </Link >
     </Row>
 
 
-const PostDescription = ({ title, description, date }) =>
+export const PostDescription = ({ title, description, date }) =>
     <>
         <Row justify='space-between'>
             <Col >
@@ -33,12 +33,12 @@ const PostDescription = ({ title, description, date }) =>
                 </Text>
             </Col>
         </Row>
-        <Paragraph ellipsis={true ? { rows: 1, expandable: true, symbol: 'more' } : false}>
+        <Paragraph ellipsis={true ? { rows: 1, expandable: true, symbol: '...' } : false}>
             {description}
         </Paragraph>
     </>
 
-const Comments = ({ comments }) =>
+export const Comments = ({ comments }) =>
     <>
         {comments && comments.length > 2 &&
             <Link to={`/#`}>
@@ -63,7 +63,7 @@ const Post = ({ postData: { _id, text, title, owner, images, createdAt = '', com
             cover={<PostImage images={images} />}
             actions={[<CFieldCommentSend postId={_id} />]}
         >
-            <CPostUserPanel postId={_id} likes={likes} />
+            <CPostUserPanel postId={_id} likes={likes} styleFontSize='1.7em' />
             <PostDescription title={title} description={text} date={createdAt} />
             <Comments comments={comments} />
         </Card>
@@ -71,7 +71,7 @@ const Post = ({ postData: { _id, text, title, owner, images, createdAt = '', com
 
 
 
-const MainPostsFeed = ({ posts, count, postsFollowing, postsFollowingRemove, following }) => {
+const MainPostsFeed = ({ posts, postsFollowing, postsFollowingRemove, following }) => {
     const [checkScroll, setCheckScroll] = useState(true)
 
     useEffect(() => {
@@ -98,7 +98,7 @@ const MainPostsFeed = ({ posts, count, postsFollowing, postsFollowingRemove, fol
 
     return (
         <>
-            {posts.map(p => <Post key={p._id} postData={p} />)}
+            {Array.isArray(posts) && posts.map(p => <Post key={p._id} postData={p} />)}
         </>
     )
 }

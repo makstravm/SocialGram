@@ -7,11 +7,11 @@ import { actionFindFollowers, actionFindFollowing } from '../../../actions';
 import { UserAvatar } from '../../../pages/Header';
 
 
-const ModalFolower = ({ userId, status, statusModal, data, title, follow }) => {
+const ModalFolower = ({ id, status, statusModal, data, title, follow }) => {
     const handleCancel = () => statusModal(false);
 
     useEffect(() => {
-        follow(userId)
+        follow(id)
     }, [])
 
     return (
@@ -44,13 +44,13 @@ const ModalFolower = ({ userId, status, statusModal, data, title, follow }) => {
 }
 
 export const CModalFollowers = connect(state => ({
-    userId: state?.postsFeed?.userData?._id,
+    id: state?.postsFeed?.userData?._id,
     data: state?.promise?.findFollow?.payload?.followers || [],
     status: state?.promise?.findFollow?.status
 }), { follow: actionFindFollowers })(ModalFolower)
 
 export const CModalFollowing = connect(state => ({
-    userId: state?.postsFeed?.userData?._id,
+    id: state?.postsFeed?.userData?._id,
     data: state?.promise?.findFollow?.payload?.following || [],
     status: state?.promise?.findFollow?.status
 }), { follow: actionFindFollowing })(ModalFolower)

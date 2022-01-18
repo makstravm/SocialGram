@@ -33,13 +33,17 @@ export const postsFeedReducer = (state = {}, { type, postId, newResult, userData
         'ADD-POST-LIKE': () => {
             return {
                 ...state,
-                posts: posts.map(p => p._id === postId ? p = { ...p, likes: [...newResult] } : p),
+                posts: Array.isArray(posts)
+                    ? posts.map(p => p._id === postId ? p = { ...p, likes: [...newResult] } : p)
+                    : { ...state.posts, likes: [...newResult] },
             }
         },
         'REMOVE-POST-LIKE': () => {
             return {
                 ...state,
-                posts: posts.map(p => p._id === postId ? p = { ...p, likes: [...newResult] } : p),
+                posts: Array.isArray(posts)
+                    ? posts.map(p => p._id === postId ? p = { ...p, likes: [...newResult] } : p)
+                    : { ...state.posts, likes: [...newResult] },   
             }
         },
         'ADD-COMMENT': () => {

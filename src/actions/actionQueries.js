@@ -16,7 +16,9 @@ export const queries = {
                                     _id text createdAt
                                 }
                             }
-                        likes{ _id}
+                        likes{ _id
+                            owner{_id}
+                        }
                         owner {_id login nick
                             avatar {url}
                             }

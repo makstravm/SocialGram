@@ -89,6 +89,8 @@ function* postsFeedWorker() {
         postsFeed: { posts, count },
         myData: { following }
     } = yield select()
+    console.log(!Array.isArray(posts));
+    !Array.isArray(posts) && ( yield put(actionRemovePostsFeedAC()))
     const newArrFollowing = following.map(f => f._id)
     if (posts?.length !== (count ? count : 1)) {
         const taskPosts = yield fork(promiseWorker, actionPostsMyFollowing(posts?.length, newArrFollowing))
