@@ -51,6 +51,7 @@ export const actionAboutMe = (id) =>
 
 //*************** Action Posts Feed ******************//
 
+export const actionGetPostAC = (postData) => ({ type: 'GET-POST', newResult: postData })
 
 export const actionAddPostsFeedAC = (postsData, count) => ({ type: 'ADD-POSTS-FEED', newResult: postsData, count })
 export const actionRemovePostsFeedAC = () => ({ type: 'REMOVE-POSTS-FEED' })
@@ -98,8 +99,8 @@ export const actionProfileData = (_id) =>
                             _id  login nick
                             avatar { _id url }     
                             createdAt
-                            followers {_id nick login}
-                            following {_id nick login}
+                            followers {_id }
+                            following {_id }
                 }
             } `, { id: JSON.stringify([{ _id }]) }))
 
@@ -179,6 +180,7 @@ export const actionMyLikePost = (postId) =>
 //****************---Action Subscribe ---*************************//
 
 
+export const actionUpdateMyFollowingAC = (data) => ({type:'UPDATE-MY-FOLLOWING', data})
 export const actionUpdateFollowersAC = (newResult) => ({ type: 'UPDATE-FOLLOWERS', newResult })
 
 export const actionSubscribe = (userId) => ({ type: 'SUBSCRIBE', userId })
@@ -252,5 +254,32 @@ export const actionGetAvatar = (id) =>
     }`, { myID: JSON.stringify([{ ___owner: id }]) }))
 
 
-//****************---_____________ ---*************************//
+//****************--- Find FOllowing/Follovwrs---*************************//
 
+export const actionFindFollowing = (_id) => ({ type: 'FIND_FOLLOWING', _id })
+export const actionFindFollowers = (_id) => ({ type: 'FIND_FOLLOWERS', _id })
+
+export const actionGetFindFollowing = (_id) =>
+    actionPromise('findFollow', gql(` query findFollowing($id:String!){
+                        UserFindOne(query: $id){
+                            following {
+                                _id nick login
+                                avatar { _id url }
+                            }
+                }
+            } `, { id: JSON.stringify([{ _id }]) }))
+
+export const actionGetFindFollowers = (_id) =>
+    actionPromise('findFollow', gql(` query findFollowers($id:String!){
+                        UserFindOne(query: $id){
+                            followers {
+                                _id  nick login
+                                avatar { _id url }
+                            }
+                }
+            } `, { id: JSON.stringify([{ _id }]) }))
+
+
+
+
+//****************---_____________ ---*************************//

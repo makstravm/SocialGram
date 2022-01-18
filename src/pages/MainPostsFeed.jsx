@@ -6,21 +6,20 @@ import { UserAvatar } from './Header'
 import Paragraph from 'antd/lib/typography/Paragraph'
 import Text from 'antd/lib/typography/Text'
 import { actionPostsFeed, actionRemovePostsFeedAC } from '../actions'
+import { DateCreated } from '../components/main/DateCreated'
 import PostImage from '../components/main/postsFeed/PostImage'
 import { CPostUserPanel } from '../components/main/postsFeed/PostUserPanel'
 import { CFieldCommentSend } from '../components/main/postsFeed/FieldComment'
 
-const PostTitle = ({ owner }) =>
-    <Link to={`/profile/${owner?._id}`} className='owner'>
-        <Row justify="start" align='middle'>
-            <Col >
-                <UserAvatar avatar={owner?.avatar} login={owner?.login} avatarSize={'45px'} nick={owner?.nick} />
-            </Col>
-            <Col offset={1}>
-                <span>{owner?.nick ? owner.nick : owner?.login ? owner.login : 'Null'}</span>
-            </Col>
-        </Row>
-    </Link >
+export const PostTitle = ({ owner }) =>
+
+    <Row justify="start" align='middle'>
+        <Link to={`/profile/${owner?._id}`} className='owner'>
+            <UserAvatar avatar={owner?.avatar} login={owner?.login} avatarSize={'45px'} nick={owner?.nick} />
+            <span>{owner?.nick ? owner.nick : owner?.login ? owner.login : 'Null'}</span>
+        </Link >
+    </Row>
+
 
 const PostDescription = ({ title, description, date }) =>
     <>
@@ -29,7 +28,9 @@ const PostDescription = ({ title, description, date }) =>
                 {!!title && <Text level={3} strong>{title}</Text>}
             </Col>
             <Col >
-                <Text type='secondary'>{date}</Text>
+                <Text type='secondary'>
+                    <DateCreated date={date} />
+                </Text>
             </Col>
         </Row>
         <Paragraph ellipsis={true ? { rows: 1, expandable: true, symbol: 'more' } : false}>
@@ -55,23 +56,20 @@ const Comments = ({ comments }) =>
         </div>}
     </>
 
-const Post = ({ postData: { _id, text, title, owner, images, createdAt = '', comments, likes } }) => {
-    const date = new Date(createdAt * 1)
-    const resultDate = new Intl.DateTimeFormat('default').format(date)
-    return (
-        <div className='Post'>
-            <Card
-                title={<PostTitle owner={owner} />}
-                cover={<PostImage images={images} />}
-                actions={[<CFieldCommentSend postId={_id} />]}
-            >
-                <CPostUserPanel postId={_id} likes={likes} />
-                <PostDescription title={title} description={text} date={resultDate} />
-                <Comments comments={comments} />
-            </Card>
-        </div>
-    )
-}
+const Post = ({ postData: { _id, text, title, owner, images, createdAt = '', comments, likes } }) =>
+    <div className='Post'>
+        <Card
+            title={<PostTitle owner={owner} />}
+            cover={<PostImage images={images} />}
+            actions={[<CFieldCommentSend postId={_id} />]}
+        >
+            <CPostUserPanel postId={_id} likes={likes} />
+            <PostDescription title={title} description={text} date={createdAt} />
+            <Comments comments={comments} />
+        </Card>
+    </div>
+
+
 
 const MainPostsFeed = ({ posts, count, postsFollowing, postsFollowingRemove, following }) => {
     const [checkScroll, setCheckScroll] = useState(true)

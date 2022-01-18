@@ -1,5 +1,7 @@
 import { all, call, delay, fork, join, put, select, takeEvery, takeLatest, takeLeading } from "redux-saga/effects";
-import { actionAboutMe, actionAboutMeAC, actionAddComment, actionAddCommentAC, actionAddLikePost, actionAddLikePostAC, actionAddPostsFeedAC, actionAuthLogin, actionFindComment, actionFullAboutMe, actionFullLogIn, actionGetAvatar, actionLoadSearchUsers, actionLoadSubscribe, actionloadUnSubscribe, actionLogIn, actionMyLikePost, actionPending, actionPostsCount, actionPostsMyFollowing, actionProfileData, actionProfileDataAC, actionProfilePagePost, actionRegister, actionRejected, actionRemoveLikePost, actionRemoveLikePostAC, actionResolved, actionSetAvatar, actionUpdateFollowers, actionUpdateFollowersAC, actionUpdateMyAvatart, actionUpdateMyFollowing } from "../../actions";
+import { actionAboutMe, actionAboutMeAC, actionAddComment, actionAddCommentAC, actionAddLikePost, actionAddLikePostAC, actionAddPostsFeedAC, actionAuthLogin, actionFindComment, actionFindFollowers, actionFullAboutMe, actionFullLogIn, actionGetAvatar, actionGetFindFollowers, actionGetFindFollowing, actionGetPostAC, actionLoadSearchUsers, actionLoadSubscribe, actionloadUnSubscribe, actionLogIn, actionMyLikePost, actionPending, actionPostsCount, actionPostsMyFollowing, actionProfileData, actionProfileDataAC, actionProfilePagePost, actionPromise, actionRegister, actionRejected, actionRemoveLikePost, actionRemoveLikePostAC, actionRemovePostsFeedAC, actionResolved, actionSetAvatar, actionUpdateFollowers, actionUpdateFollowersAC, actionUpdateMyAvatart, actionUpdateMyFollowing, actionUpdateMyFollowingAC } from "../../actions";
+import { queries } from "../../actions/actionQueries";
+import { gql } from "../../helpers";
 
 
 //*************** Promise ******************//
@@ -17,10 +19,28 @@ function* promiseWorker({ name, promise }) {
     }
 }
 
+
 function* promiseWatcher() {
     yield takeEvery('PROMISE_START', promiseWorker)
 }
 
+
+//*************** ROUTE ******************//
+
+
+function* routeWorker({ match }) {
+    if (match.path in queries) {
+        const { name, query, variables } = queries[match.path](match)
+        const result = yield call(promiseWorker, actionPromise(name, gql(query, variables)))
+        if (result) {
+            yield put(actionGetPostAC(result))
+        }
+    }
+}
+
+function* routeWatcher() {
+    yield takeEvery('ROUTE', routeWorker)
+}
 
 //*************** AUTHORIZATION ******************//
 
@@ -39,8 +59,7 @@ function* fullRegisrterWorker({ login, password, remember }) {
 }
 
 function* loginWatcher() {
-    yield takeEvery('FULL_LOGIN', logInWorker)
-    yield takeEvery('FULL_REGISTER', fullRegisrterWorker)
+    yield all([takeEvery('FULL_LOGIN', logInWorker), takeEvery('FULL_REGISTER', fullRegisrterWorker)])
 }
 
 
@@ -81,7 +100,6 @@ function* postsFeedWorker() {
             yield put(actionAddPostsFeedAC(postsResult, countResult))
         }
     }
-
 }
 
 function* postsFeedWatcher() {
@@ -94,9 +112,9 @@ function* postsFeedWatcher() {
 
 function* dataProfileWorker({ id }) {
     const { postsFeed: { posts, count, userData } } = yield select()
-
     if ((posts?.length ? posts?.length : 0) < (count ? count : 1)) {
         if (!count) {
+            yield put(actionRemovePostsFeedAC())
             const taskDataProfile = yield fork(promiseWorker, actionProfileData(id))
             const taskUserPosts = yield fork(promiseWorker, actionProfilePagePost(id, (posts?.length ? posts?.length : 0)))
             const taskCountPosts = yield fork(promiseWorker, actionPostsCount([id]))
@@ -107,7 +125,6 @@ function* dataProfileWorker({ id }) {
                 yield put(actionProfileDataAC(userPosts, countPosts, dataProfile))
             }
         } else {
-            console.log(2, posts.length);
             const userPosts = yield call(promiseWorker, actionProfilePagePost(id, posts?.length))
             if (userPosts) {
                 yield put(actionProfileDataAC(userPosts, count, userData))
@@ -155,8 +172,7 @@ function* delLikePostWorker({ likeId, postId }) {
 }
 
 function* likePostWatcher() {
-    yield takeEvery('LIKE_POST', addLikePostWorker)
-    yield takeEvery('DEL_LIKE_POST', delLikePostWorker)
+    yield all([takeEvery('LIKE_POST', addLikePostWorker), takeEvery('DEL_LIKE_POST', delLikePostWorker)])
 }
 
 
@@ -165,35 +181,34 @@ function* likePostWatcher() {
 
 function* subscribeWorker({ userId }) {
     const { auth: { payload: { sub: { id } } },
-        promise: { aboutMe: { payload: { following } } } } = yield select()
+        promise: { aboutMe: { payload: { following: f } } } } = yield select()
 
-    yield call(promiseWorker, actionLoadSubscribe(id, following, userId))
+    yield call(promiseWorker, actionLoadSubscribe(id, f, userId))
     const taskFollowers = yield fork(promiseWorker, actionUpdateFollowers(userId))
-    yield fork(promiseWorker, actionUpdateMyFollowing(id))
-    const { followers } = yield join(taskFollowers)
-
+    const taskMyFollowing = yield fork(promiseWorker, actionUpdateMyFollowing(id))
+    const [{ followers }, { following }] = yield join([taskFollowers, taskMyFollowing])
     if (followers) {
         yield put(actionUpdateFollowersAC(followers))
+        yield put(actionUpdateMyFollowingAC(following))
     }
 }
 
 function* unSubscribeWorker({ userId }) {
     const { auth: { payload: { sub: { id } } },
-        promise: { aboutMe: { payload: { following } } } } = yield select()
-    const newArrFollowing = [...following].filter(f => f._id !== userId)
+        promise: { aboutMe: { payload: { following: f } } } } = yield select()
+    const newArrFollowing = [...f].filter(f => f._id !== userId)
     yield call(promiseWorker, actionloadUnSubscribe(id, newArrFollowing))
     const taskFollowers = yield fork(promiseWorker, actionUpdateFollowers(userId))
-    yield fork(promiseWorker, actionUpdateMyFollowing(id))
-    const { followers } = yield join(taskFollowers)
-
+    const taskMyFollowing = yield fork(promiseWorker, actionUpdateMyFollowing(id))
+    const [{ followers }, { following }] = yield join([taskFollowers, taskMyFollowing])
     if (followers) {
         yield put(actionUpdateFollowersAC(followers))
+        yield put(actionUpdateMyFollowingAC(following))
     }
 }
 
 function* subscribeWatcher() {
-    yield takeEvery('UN_SUBSCRIBE', unSubscribeWorker)
-    yield takeEvery('SUBSCRIBE', subscribeWorker)
+    yield all([takeLeading('UN_SUBSCRIBE', unSubscribeWorker), takeLeading('SUBSCRIBE', subscribeWorker)])
 
 }
 
@@ -231,12 +246,32 @@ function* updateAvatarWatcher() {
 }
 
 
+//*************** FIND FOLLOWING/FOLLOWERS ******************//
+
+
+function* findFollowersWorker({ _id }) {
+    yield call(promiseWorker, actionGetFindFollowers(_id))
+}
+
+function* findFollowingWorker({ _id }) {
+    yield call(promiseWorker, actionGetFindFollowing(_id))
+}
+
+function* findFollowWatcher() {
+    yield all([takeEvery('FIND_FOLLOWERS', findFollowersWorker), takeEvery('FIND_FOLLOWING', findFollowingWorker)])
+}
+
+
+//*************** ******************//
+
+
 
 
 
 export function* rootSaga() {
     yield all([
         promiseWatcher(),
+        routeWatcher(),
         loginWatcher(),
         aboutMeWatcher(),
         postsFeedWatcher(),
@@ -246,6 +281,7 @@ export function* rootSaga() {
         subscribeWatcher(),
         addCommentWatcher(),
         updateAvatarWatcher(),
+        findFollowWatcher(),
 
     ])
 }

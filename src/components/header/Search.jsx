@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { actionFindUsers, actionSearchUsers } from '../../actions';
 import { UserAvatar } from '../../pages/Header';
-
+import { SearchOutlined } from '@ant-design/icons';
 const FindUsersResult = ({ usersRes }) =>
     <div className='Header__search-drop' >
         {
@@ -33,6 +33,7 @@ export const FieldSearch = ({ usersRes, findUsers }) =>
             <Input
                 placeholder="Search users"
                 allowClear
+                prefix={<SearchOutlined style={{ color: '#c9c9c9' }} />}
                 onChange={e => findUsers(e.currentTarget.value)}
             />
         </Popover>

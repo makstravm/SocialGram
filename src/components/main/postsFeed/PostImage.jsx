@@ -44,7 +44,8 @@ class PostImage extends React.Component {
                 dots={{ className: 'Post__dots' }
                 }>
                 {!!images ?
-                    images.map((i, index) => i?.url ? <div key={i._id}
+                    images.map((i, index) => i?.url ? <div
+                        key={i._id}
                         onMouseEnter={() => this.moveOnDivArray(images.length, index)}
                         onMouseLeave={this.downOnDivArray}>
                         <button onClick={() => this.handlePrev()}

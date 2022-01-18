@@ -3,13 +3,15 @@ import './App.scss';
 import { Router, Route, Switch, Redirect } from 'react-router-dom';
 import createHistory from "history/createBrowserHistory";
 import { connect, Provider } from 'react-redux';
-import  store  from './redux/redux-store';
+import store from './redux/redux-store';
 import { Authorization } from './components/Authorization';
-import { Content, Main } from './pages/Content';
-import { CProfilePage } from './components/main/Profile';
+import { Container, ContainerLg, Content, Main } from './pages/Content';
+import { CProfilePage } from './pages/ProfilePage';
 import { CAdd } from './components/main/Add';
 import HeaderComponent from './pages/Header';
 import { CMainPostsFeed } from './pages/MainPostsFeed';
+import { CRRoute } from './helpers';
+import { CPostPage } from './pages/PostPage';
 
 export const history = createHistory()
 
@@ -29,15 +31,19 @@ const AppContent = ({ isToken }) =>
 
             <Content>
                 <HeaderComponent />
-                <Main>
-                    <Switch>
-                        <Route path='/' component={CMainPostsFeed} exact />
-                        <Route path='/profile/:_id' component={CProfilePage} />
-                        <Route path='/message' component={Aside} />
-                        <Route path='/add' component={CAdd} />
-                        <Redirect from='/*' to='/' />
-                    </Switch>
-                </Main>
+                <Switch>
+                    <Main>
+                        <Container>
+                            <Route path='/' component={CMainPostsFeed} exact />
+                            <Route path='/profile/:_id' component={CProfilePage} />
+                            <Route path='/message' component={Aside} />
+                            <Route path='/add' component={CAdd} />
+                        </Container>
+                        <CRRoute path='/post/:id' component={CPostPage} />
+                        {/* <Redirect from='/*' to='/' /> */}
+                    </Main>
+                </Switch>
+
             </Content >
 
 

@@ -10,6 +10,10 @@ export const postsFeedReducer = (state = {}, { type, postId, newResult, userData
                 count
             }
         },
+        'GET-POST': () => {
+            return { ...state, posts: { ...newResult } }
+
+        },
         'ADD-PROFILE-DATA': () => {
             return {
                 ...state,

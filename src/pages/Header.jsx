@@ -35,7 +35,7 @@ export const UserAvatar = ({ avatarSize, avatar }) => {
 const ProfileDropMenu = ({ myID, onLogOut }) =>
     <Menu className='dropMenu'>
         <Menu.Item key={'0'}>
-            <Link to={`${myID}`}><UserOutlined /> My Profile</Link>
+            <Link to={`/profile/${myID}`}><UserOutlined /> My Profile</Link>
         </Menu.Item>
         <Menu.Item key={'1'}>
             <Link to={'/'}><SettingOutlined /> Settings</Link>

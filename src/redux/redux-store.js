@@ -6,6 +6,7 @@ import { promiseReducer } from './reducers/promise-reducer';
 import createSagaMiddleware from 'redux-saga'
 import { rootSaga } from './saga';
 import { actionFullAboutMe } from '../actions'
+import { routeReducer } from './reducers/route-reducer';
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -14,6 +15,7 @@ const store = createStore(combineReducers({
     promise: promiseReducer,
     myData: myProfileReducer,
     postsFeed: postsFeedReducer,
+    route: routeReducer,
 }),
     applyMiddleware(sagaMiddleware))
 

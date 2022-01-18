@@ -8,7 +8,9 @@ export const myProfileReducer = (state = {}, { type, data }) => {
         'ABOUTME-UPDATE-AVATAR': () => {
             return { ...state, avatar: { ...data } }
         },
-      
+        'UPDATE-MY-FOLLOWING': () => {
+            return { ...state, following: [...data] }
+        }
     }
     if (type in types) {
         return types[type]()
