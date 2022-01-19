@@ -180,7 +180,7 @@ export const actionMyLikePost = (postId) =>
 //****************---Action Subscribe ---*************************//
 
 
-export const actionUpdateMyFollowingAC = (data) => ({type:'UPDATE-MY-FOLLOWING', data})
+export const actionUpdateMyFollowingAC = (data) => ({ type: 'UPDATE-MY-FOLLOWING', data })
 export const actionUpdateFollowersAC = (newResult) => ({ type: 'UPDATE-FOLLOWERS', newResult })
 
 export const actionSubscribe = (userId) => ({ type: 'SUBSCRIBE', userId })
@@ -258,6 +258,7 @@ export const actionGetAvatar = (id) =>
 
 export const actionFindFollowing = (_id) => ({ type: 'FIND_FOLLOWING', _id })
 export const actionFindFollowers = (_id) => ({ type: 'FIND_FOLLOWERS', _id })
+export const actionFindLiked = (_id) => ({ type: 'FIND_LIKED', _id })
 
 export const actionGetFindFollowing = (_id) =>
     actionPromise('findFollow', gql(` query findFollowing($id:String!){
@@ -279,7 +280,14 @@ export const actionGetFindFollowers = (_id) =>
                 }
             } `, { id: JSON.stringify([{ _id }]) }))
 
-
+export const actionGetFindLiked = (_id) =>
+    actionPromise('findLiked', gql(` query LikeFindPost($id:String!) {
+                                        LikeFind(query:$id){
+                                          owner { _id nick login
+                                                avatar{_id url}
+                                    }
+                }
+            } `, { id: JSON.stringify([{ "post._id": _id }]) }))
 
 
 //****************---_____________ ---*************************//

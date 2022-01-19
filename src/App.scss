@@ -185,7 +185,7 @@ body {
 .Main {
     padding-top: 58px;
     &__inner {
-        padding-top: 15px;
+        padding-top: 22px;
     }
 }
 .owner .nick {
@@ -281,6 +281,19 @@ body {
         button {
             border: none;
             box-shadow: none;
+        }
+    }
+    &__panel-btn {
+        button {
+            cursor: pointer;
+            border: none;
+            padding: 0;
+            margin: 0;
+            background-color: inherit;
+            transition: all 0.3s;
+            &:hover {
+                text-shadow: 1px 1px 3px #000;
+            }
         }
     }
 }

@@ -11,12 +11,26 @@ import { createElement, useState } from 'react';
 import { Comment, Tooltip, Avatar } from 'antd';
 import moment from 'moment';
 import { DislikeOutlined, LikeOutlined, DislikeFilled, LikeFilled } from '@ant-design/icons';
+import { UserAvatar } from './Header';
+import { Link } from 'react-router-dom';
 
-const Demo = () => {
-    const [likes, setLikes] = useState(0);
+
+
+
+
+
+
+
+const PostPageTitle = ({ data: { owner } }) =>
+    <PostTitle owner={owner} />
+
+const CPostPageTitle = connect(state => ({ data: state?.postsFeed?.posts || {} }))(PostPageTitle)
+
+const PostComments = ({ comments: { _id, answerTo, answers, createdAt, likes, text, owner } }) => {
+    const [likejs, setLikes] = useState(0);
     const [dislikes, setDislikes] = useState(0);
     const [action, setAction] = useState(null);
-
+console.log(owner);
     const like = () => {
         setLikes(1);
         setDislikes(0);
@@ -36,25 +50,21 @@ const Demo = () => {
                 <span className="comment-action">{likes}</span>
             </span>
         </Tooltip>,
-        <Tooltip key="comment-basic-dislike" title="Dislike">
-            <span onClick={dislike}>
-                {createElement(action === 'disliked' ? DislikeFilled : DislikeOutlined)}
-                <span className="comment-action">{dislikes}</span>
-            </span>
-        </Tooltip>,
         <span key="comment-basic-reply-to">Reply to</span>,
     ];
-
+    const author = [
+        <Link to={`/profile/${owner?._id}`} >
+            <span className='nick'>{owner?.nick ? owner.nick : owner?.login ? owner.login : 'Null'}</span>
+        </Link>
+    ]
     return (
         <Comment
             actions={actions}
-            author={<a>Han Solo</a>}
-            avatar={<Avatar src="https://joeschmoe.io/api/v1/random" alt="Han Solo" />}
+            author={author}
+            avatar={<UserAvatar avatar={owner?.avatar} avatarSize={'35px'} />}
             content={
                 <p>
-                    We supply a series of design principles, practical patterns and high quality design
-                    resources (Sketch and Axure), to help people create their product prototypes beautifully
-                    and efficiently.
+                    {text}
                 </p>
             }
             datetime={
@@ -63,26 +73,10 @@ const Demo = () => {
                 </Tooltip>
             }
         />
-    );
-};
-
-
-
-
-
-const PostPageTitle = ({ data: { owner } }) =>
-    <PostTitle owner={owner} />
-
-const CPostPageTitle = connect(state => ({ data: state?.postsFeed?.posts || {} }))(PostPageTitle)
-
-const PostComments = ({ }) => {
-
-    return (
-        <>  </>
     )
 }
 
-const CPostComments = connect()(PostComments)
+const CPostComments = connect(state => ({ comments: state?.postsFeed?.posts?.coments || [] }))(PostComments)
 
 const PostPageDescrption = ({ data: { _id, likes, text, title, createdAt, } }) =>
     <div className='PostOne__description-inner'>
@@ -90,7 +84,6 @@ const PostPageDescrption = ({ data: { _id, likes, text, title, createdAt, } }) =
             <PostDescription title={title} description={text} date={createdAt} />
             <Divider plain><Text type='secodary'></Text>Comments</Divider>
             <CPostComments />
-            <Demo />
         </div>
         <div className='PostOne__description-bottom'>
             <Divider ></Divider>

@@ -1,5 +1,5 @@
 import { all, call, delay, fork, join, put, select, takeEvery, takeLatest, takeLeading } from "redux-saga/effects";
-import { actionAboutMe, actionAboutMeAC, actionAddComment, actionAddCommentAC, actionAddLikePost, actionAddLikePostAC, actionAddPostsFeedAC, actionAuthLogin, actionFindComment, actionFindFollowers, actionFullAboutMe, actionFullLogIn, actionGetAvatar, actionGetFindFollowers, actionGetFindFollowing, actionGetPostAC, actionLoadSearchUsers, actionLoadSubscribe, actionloadUnSubscribe, actionLogIn, actionMyLikePost, actionPending, actionPostsCount, actionPostsMyFollowing, actionProfileData, actionProfileDataAC, actionProfilePagePost, actionPromise, actionRegister, actionRejected, actionRemoveLikePost, actionRemoveLikePostAC, actionRemovePostsFeedAC, actionResolved, actionSetAvatar, actionUpdateFollowers, actionUpdateFollowersAC, actionUpdateMyAvatart, actionUpdateMyFollowing, actionUpdateMyFollowingAC } from "../../actions";
+import { actionAboutMe, actionAboutMeAC, actionAddComment, actionAddCommentAC, actionAddLikePost, actionAddLikePostAC, actionAddPostsFeedAC, actionAuthLogin, actionFindComment, actionFindFollowers, actionFullAboutMe, actionFullLogIn, actionGetAvatar, actionGetFindFollowers, actionGetFindFollowing, actionGetFindLiked, actionGetPostAC, actionLoadSearchUsers, actionLoadSubscribe, actionloadUnSubscribe, actionLogIn, actionMyLikePost, actionPending, actionPostsCount, actionPostsMyFollowing, actionProfileData, actionProfileDataAC, actionProfilePagePost, actionPromise, actionRegister, actionRejected, actionRemoveLikePost, actionRemoveLikePostAC, actionRemovePostsFeedAC, actionResolved, actionSetAvatar, actionUpdateFollowers, actionUpdateFollowersAC, actionUpdateMyAvatart, actionUpdateMyFollowing, actionUpdateMyFollowingAC } from "../../actions";
 import { queries } from "../../actions/actionQueries";
 import { gql } from "../../helpers";
 
@@ -90,7 +90,7 @@ function* postsFeedWorker() {
         myData: { following }
     } = yield select()
     console.log(!Array.isArray(posts));
-    !Array.isArray(posts) && ( yield put(actionRemovePostsFeedAC()))
+    !Array.isArray(posts) && (yield put(actionRemovePostsFeedAC()))
     const newArrFollowing = following.map(f => f._id)
     if (posts?.length !== (count ? count : 1)) {
         const taskPosts = yield fork(promiseWorker, actionPostsMyFollowing(posts?.length, newArrFollowing))
@@ -259,8 +259,16 @@ function* findFollowingWorker({ _id }) {
     yield call(promiseWorker, actionGetFindFollowing(_id))
 }
 
+function* findLikedWorker({ _id }) {
+    yield call(promiseWorker, actionGetFindLiked(_id))
+}
+
 function* findFollowWatcher() {
-    yield all([takeEvery('FIND_FOLLOWERS', findFollowersWorker), takeEvery('FIND_FOLLOWING', findFollowingWorker)])
+    yield all([
+        takeEvery('FIND_FOLLOWERS', findFollowersWorker),
+        takeEvery('FIND_FOLLOWING', findFollowingWorker),
+        takeEvery('FIND_LIKED', findLikedWorker)
+    ])
 }
 
 

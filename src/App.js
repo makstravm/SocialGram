@@ -31,7 +31,6 @@ const AppContent = ({ isToken }) =>
 
             <Content>
                 <HeaderComponent />
-                <Switch>
                     <Main>
                         <Container>
                             <Route path='/' component={CMainPostsFeed} exact />
@@ -42,8 +41,6 @@ const AppContent = ({ isToken }) =>
                         <CRRoute path='/post/:id' component={CPostPage} />
                         {/* <Redirect from='/*' to='/' /> */}
                     </Main>
-                </Switch>
-
             </Content >
 
 

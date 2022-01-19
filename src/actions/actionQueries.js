@@ -8,6 +8,9 @@ export const queries = {
                         comments {
                             _id createdAt text 
                             likes { _id owner {_id}}   
+                            owner {_id login nick
+                                    avatar {url}
+                                }
                             answers{
                                 _id createdAt text 
                                 likes{ _id} 

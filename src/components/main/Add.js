@@ -3,7 +3,7 @@ import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import { connect } from 'react-redux';
 import { Upload, message } from 'antd';
 import { backURL, gql } from '../../helpers';
-import { Loo } from './Loo';
+import { Adafghh, Loo } from './Loo';
 import { actionUpdateAvatar } from '../../actions';
 
 const Add = ({ imageUrl, onUploadFile }) => {
@@ -50,9 +50,10 @@ const Add = ({ imageUrl, onUploadFile }) => {
             <hr />
             <hr />
             <Loo />
+            <Adafghh />
         </>
 
     )
 }
 
-export const CAdd = connect(state => ({ imageUrl: state?.myData?.avatar?.url }), { onUploadFile: actionUpdateAvatar  })(Add)
+export const CAdd = connect(state => ({ imageUrl: state?.myData?.avatar?.url }), { onUploadFile: actionUpdateAvatar })(Add)

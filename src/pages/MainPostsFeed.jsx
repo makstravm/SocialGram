@@ -15,7 +15,7 @@ export const PostTitle = ({ owner }) =>
 
     <Row justify="start" align='middle'>
         <Link to={`/profile/${owner?._id}`} className='owner'>
-            <UserAvatar avatar={owner?.avatar} login={owner?.login} avatarSize={'45px'} nick={owner?.nick} />
+            <UserAvatar avatar={owner?.avatar} avatarSize={'45px'} />
             <span className='nick'>{owner?.nick ? owner.nick : owner?.login ? owner.login : 'Null'}</span>
         </Link >
     </Row>
