@@ -12,7 +12,6 @@ import { CPostUserPanel } from '../components/main/postsFeed/PostUserPanel'
 import { CFieldCommentSend } from '../components/main/postsFeed/FieldComment'
 
 export const PostTitle = ({ owner }) =>
-
     <Row justify="start" align='middle'>
         <Link to={`/profile/${owner?._id}`} className='owner'>
             <UserAvatar avatar={owner?.avatar} avatarSize={'45px'} />
@@ -70,8 +69,8 @@ const Post = ({ postData: { _id, text, title, owner, images, createdAt = '', com
     </div>
 
 
-
 const MainPostsFeed = ({ posts, postsFollowing, postsFollowingRemove, following }) => {
+
     const [checkScroll, setCheckScroll] = useState(true)
 
     useEffect(() => {

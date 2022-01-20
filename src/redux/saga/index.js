@@ -1,5 +1,5 @@
 import { all, call, delay, fork, join, put, select, takeEvery, takeLatest, takeLeading } from "redux-saga/effects";
-import { actionAboutMe, actionAboutMeAC, actionAddComment, actionAddCommentAC, actionAddLikePost, actionAddLikePostAC, actionAddPostsFeedAC, actionAuthLogin, actionFindComment, actionFindFollowers, actionFullAboutMe, actionFullLogIn, actionGetAvatar, actionGetFindFollowers, actionGetFindFollowing, actionGetFindLiked, actionGetPostAC, actionLoadSearchUsers, actionLoadSubscribe, actionloadUnSubscribe, actionLogIn, actionMyLikePost, actionPending, actionPostsCount, actionPostsMyFollowing, actionProfileData, actionProfileDataAC, actionProfilePagePost, actionPromise, actionRegister, actionRejected, actionRemoveLikePost, actionRemoveLikePostAC, actionRemovePostsFeedAC, actionResolved, actionSetAvatar, actionUpdateFollowers, actionUpdateFollowersAC, actionUpdateMyAvatart, actionUpdateMyFollowing, actionUpdateMyFollowingAC } from "../../actions";
+import { actionAboutMe, actionAboutMeAC, actionAddComment, actionAddCommentAC, actionAddLikeComment, actionAddLikeCommentAC, actionAddLikePost, actionAddLikePostAC, actionAddPostsFeedAC, actionAuthLogin, actionFindComment, actionFindFollowers, actionFindLikeComment, actionFullAboutMe, actionFullLogIn, actionGetAvatar, actionGetFindFollowers, actionGetFindFollowing, actionGetFindLiked, actionGetPostAC, actionLoadSearchUsers, actionLoadSubscribe, actionloadUnSubscribe, actionLogIn, actionMyLikePost, actionPending, actionPostsCount, actionPostsMyFollowing, actionProfileData, actionProfileDataAC, actionProfilePagePost, actionPromise, actionRegister, actionRejected, actionRemoveLikeComment, actionRemoveLikeCommentAC, actionRemoveLikePost, actionRemoveLikePostAC, actionRemovePostsFeedAC, actionResolved, actionSetAvatar, actionUpdateFollowers, actionUpdateFollowersAC, actionUpdateMyAvatart, actionUpdateMyFollowing, actionUpdateMyFollowingAC } from "../../actions";
 import { queries } from "../../actions/actionQueries";
 import { gql } from "../../helpers";
 
@@ -153,7 +153,7 @@ function* findUserWatcher() {
 }
 
 
-//*************** Like POST ******************//
+//*************** Like POST / COMMENT ******************//
 
 
 function* addLikePostWorker({ postId }) {
@@ -173,8 +173,28 @@ function* delLikePostWorker({ likeId, postId }) {
     }
 }
 
+function* addLikeCommentWorker({ commentId }) {
+    yield call(promiseWorker, actionAddLikeComment(commentId))
+    const {likes} = yield call(promiseWorker, actionFindLikeComment(commentId))
+    if (likes) {
+        yield put(actionAddLikeCommentAC(commentId, likes))
+    }
+}
+
+function* delLikeCommentWorker({likeId, commentId }) {
+    yield call(promiseWorker, actionRemoveLikeComment(likeId))
+    const { likes } = yield call(promiseWorker, actionFindLikeComment(commentId))
+    if (likes) {
+        yield put(actionRemoveLikeCommentAC(commentId, likes))
+    }
+}
 function* likePostWatcher() {
-    yield all([takeEvery('LIKE_POST', addLikePostWorker), takeEvery('DEL_LIKE_POST', delLikePostWorker)])
+    yield all([
+        takeEvery('LIKE_POST', addLikePostWorker),
+        takeEvery('DEL_LIKE_POST', delLikePostWorker),
+        takeEvery('LIKE_COMMENT', addLikeCommentWorker),
+        takeEvery('DEL_LIKE_COMMENT', delLikeCommentWorker),
+    ])
 }
 
 

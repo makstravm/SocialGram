@@ -1,82 +1,97 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Row, Col, Divider } from 'antd';
 import { connect } from 'react-redux'
 import PostImage from '../components/main/postsFeed/PostImage'
 import { PostTitle, PostDescription } from './MainPostsFeed';
-import { actionRemovePostsFeedAC } from '../actions';
 import Text from 'antd/lib/typography/Text';
 import { CFieldCommentSend } from '../components/main/postsFeed/FieldComment';
 import { CPostUserPanel } from '../components/main/postsFeed/PostUserPanel';
-import { createElement, useState } from 'react';
 import { Comment, Tooltip, Avatar } from 'antd';
 import moment from 'moment';
-import { DislikeOutlined, LikeOutlined, DislikeFilled, LikeFilled } from '@ant-design/icons';
 import { UserAvatar } from './Header';
 import { Link } from 'react-router-dom';
-
-
-
-
-
-
+import { LikeFilled, LikeOutlined } from '@ant-design/icons';
+import { actionLikeComment, actionAddLikeCommentAC, actionFindLikeComment, actionDelLikeComment } from '../actions';
 
 
 const PostPageTitle = ({ data: { owner } }) =>
     <PostTitle owner={owner} />
 
 const CPostPageTitle = connect(state => ({ data: state?.postsFeed?.posts || {} }))(PostPageTitle)
+// 
 
-const PostComments = ({ comments: { _id, answerTo, answers, createdAt, likes, text, owner } }) => {
-    const [likejs, setLikes] = useState(0);
-    const [dislikes, setDislikes] = useState(0);
-    const [action, setAction] = useState(null);
-console.log(owner);
-    const like = () => {
-        setLikes(1);
-        setDislikes(0);
-        setAction('liked');
-    };
-
-    const dislike = () => {
-        setLikes(0);
-        setDislikes(1);
-        setAction('disliked');
-    };
-
-    const actions = [
-        <Tooltip key="comment-basic-like" title="Like">
-            <span onClick={like}>
-                {createElement(action === 'liked' ? LikeFilled : LikeOutlined)}
-                <span className="comment-action">{likes}</span>
-            </span>
-        </Tooltip>,
-        <span key="comment-basic-reply-to">Reply to</span>,
-    ];
-    const author = [
-        <Link to={`/profile/${owner?._id}`} >
-            <span className='nick'>{owner?.nick ? owner.nick : owner?.login ? owner.login : 'Null'}</span>
-        </Link>
-    ]
+const PostCommentAuthor = ({ owner }) => {
     return (
-        <Comment
-            actions={actions}
-            author={author}
-            avatar={<UserAvatar avatar={owner?.avatar} avatarSize={'35px'} />}
-            content={
-                <p>
-                    {text}
-                </p>
-            }
-            datetime={
-                <Tooltip title={moment().format('YYYY-MM-DD HH:mm:ss')}>
-                    <span>{moment().fromNow()}</span>
-                </Tooltip>
-            }
-        />
+        <Link className='PostCommentAuthor' to={`/profile/${owner?._id}`} >
+            {owner?.nick ? owner.nick : owner?.login ? owner.login : 'Null'}
+        </Link>
     )
 }
 
-const CPostComments = connect(state => ({ comments: state?.postsFeed?.posts?.coments || [] }))(PostComments)
+
+const PostComment = ({ myID, data: { _id, answerTo, answers, createdAt, likes = [], text, owner }, addLikeComment, removeLikeComment, children }) => {
+    const [open, setOpen] = useState(false);
+
+    let likeStatus
+    let likeId
+    likes.find(l => {
+        if (l?.owner?._id === myID) {
+            likeStatus = true
+            likeId = l._id
+        } else {
+            likeStatus = false
+        }
+    })
+
+    const changeLike = () => likeStatus ? removeLikeComment(likeId, _id) : addLikeComment(_id)
+
+    const actions = [
+        <span onClick={changeLike}>
+            {likeStatus ? <LikeFilled /> : <LikeOutlined />}
+            <span style={{ paddingLeft: 8, cursor: 'auto' }}>{likes.length ? likes.length : ''}</span>
+        </span>,
+        <span onClick={() => setOpen(true)}>Reply to</span>,
+        open && <CFieldCommentSend onFocus />
+    ];
+    return (
+        <Comment
+            actions={actions}
+            author={<PostCommentAuthor owner={owner} />}
+            avatar={< UserAvatar avatar={owner.avatar} avatarSize={'35px'} />}
+            content={<p>{text}</p >}
+            datetime={
+                < Tooltip title={moment(new Date(+createdAt)).format('DD-MM-YYYY HH:mm:ss')} >
+                    <span>
+                        {moment(new Date(+createdAt)).startOf('seconds').fromNow()}
+                    </span>
+                </ Tooltip>
+            }
+        >
+            {children}
+        </Comment>
+    )
+}
+const CPostComment = connect(state => ({
+    myID: state.auth.payload.sub.id || ''
+}), {
+    addLikeComment: actionLikeComment,
+    removeLikeComment: actionDelLikeComment,
+}
+)(PostComment)
+
+const PostComments = ({ comments }) => {
+    return (
+        <>
+            {
+                comments.map(c => <CPostComment key={c._id} data={c}></CPostComment>)
+            }
+        </>
+    )
+}
+
+const CPostComments = connect(state => ({
+    comments: state?.postsFeed?.posts?.comments || []
+}))(PostComments)
 
 const PostPageDescrption = ({ data: { _id, likes, text, title, createdAt, } }) =>
     <div className='PostOne__description-inner'>

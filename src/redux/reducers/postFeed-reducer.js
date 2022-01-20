@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const postsFeedReducer = (state = {}, { type, postId, newResult, userData = {}, count = null }) => {
+export const postsFeedReducer = (state = {}, { type, findId, newResult, userData = {}, count = null }) => {
     const { posts } = state
     const types = {
         'ADD-POSTS-FEED': () => {
@@ -34,7 +34,7 @@ export const postsFeedReducer = (state = {}, { type, postId, newResult, userData
             return {
                 ...state,
                 posts: Array.isArray(posts)
-                    ? posts.map(p => p._id === postId ? p = { ...p, likes: [...newResult] } : p)
+                    ? posts.map(p => p._id === findId ? p = { ...p, likes: [...newResult] } : p)
                     : { ...state.posts, likes: [...newResult] },
             }
         },
@@ -42,14 +42,32 @@ export const postsFeedReducer = (state = {}, { type, postId, newResult, userData
             return {
                 ...state,
                 posts: Array.isArray(posts)
-                    ? posts.map(p => p._id === postId ? p = { ...p, likes: [...newResult] } : p)
-                    : { ...state.posts, likes: [...newResult] },   
+                    ? posts.map(p => p._id === findId ? p = { ...p, likes: [...newResult] } : p)
+                    : { ...state.posts, likes: [...newResult] },
             }
         },
         'ADD-COMMENT': () => {
             return {
                 ...state,
-                posts: posts.map(p => p._id === postId ? { ...p, comments: [...newResult] } : p)
+                posts: posts.map(p => p._id === findId ? { ...p, comments: [...newResult] } : p)
+            }
+        },
+        'ADD-LIKE-COMMENT': () => {
+            return {
+                ...state,
+                posts: {
+                    ...state.posts,
+                    comments: posts.comments.map(c => c._id === findId ? c = { ...c, likes: [...newResult] } : c)
+                }
+            }
+        },
+        'REMOVE-LIKE-COMMENT': () => {
+            return {
+                ...state,
+                posts: {
+                    ...state.posts,
+                    comments: posts.comments.map(c => c._id === findId ? c = { ...c, likes: [...newResult] } : c)
+                }
             }
         },
         'UPDATE-FOLLOWERS': () => {

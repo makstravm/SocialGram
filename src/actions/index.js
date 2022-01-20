@@ -142,11 +142,11 @@ export const actionLoadSearchUsers = (value) =>
     }))
 
 
-//****************---Action Like ---*************************//
+//****************---Action Like Post ---*************************//
 
 
-export const actionAddLikePostAC = (postId, newResult) => ({ type: 'ADD-POST-LIKE', postId, newResult })
-export const actionRemoveLikePostAC = (postId, newResult) => ({ type: 'REMOVE-POST-LIKE', postId, newResult })
+export const actionAddLikePostAC = (findId, newResult) => ({ type: 'ADD-POST-LIKE', findId, newResult })
+export const actionRemoveLikePostAC = (findId, newResult) => ({ type: 'REMOVE-POST-LIKE', findId, newResult })
 
 
 export const actionLikePost = (postId) => ({ type: 'LIKE_POST', postId })
@@ -169,13 +169,40 @@ export const actionRemoveLikePost = (_id) =>
         }`, { like: { _id } }))
 
 
-export const actionMyLikePost = (postId) =>
+export const actionMyLikePost = (findId) =>
     actionPromise('myLikes', gql(`query likeFindPost ($id:String!){
         PostFindOne(query:$id){
         likes { _id owner {_id}}
         }
-    }`, { id: JSON.stringify([{ _id: postId }]) }))
+    }`, { id: JSON.stringify([{ _id: findId }]) }))
 
+
+//****************---Action Like Comment ---*************************//
+
+export const actionAddLikeCommentAC = (findId, newResult) => ({ type: 'ADD-LIKE-COMMENT', findId, newResult })
+export const actionRemoveLikeCommentAC = (findId, newResult) => ({ type: 'REMOVE-LIKE-COMMENT', findId, newResult })
+
+export const actionLikeComment = (commentId) => ({ type: 'LIKE_COMMENT', commentId })
+export const actionDelLikeComment = (likeId, commentId) => ({ type: 'DEL_LIKE_COMMENT', likeId, commentId })
+
+export const actionAddLikeComment = (_id) =>
+    actionPromise('likePost', gql(`mutation LikePost($like:LikeInput){
+        LikeUpsert(like:$like){
+            _id
+        }
+    }`, { like: { comment: { _id } } }))
+
+export const actionRemoveLikeComment = (_id) =>
+    actionPromise('removelikePost', gql(`mutation LikeRemove($like:LikeInput){
+            LikeDelete(like:$like){_id}
+        }`, { like: { _id } }))
+
+export const actionFindLikeComment = (findId) =>
+    actionPromise('findLikeComment', gql(`query findLikeComment ($id:String!){
+        CommentFindOne(query:$id){
+        likes { _id owner {_id}}
+        }
+    }`, { id: JSON.stringify([{ _id: findId }]) }))
 
 //****************---Action Subscribe ---*************************//
 
@@ -216,21 +243,21 @@ export const actionUpdateFollowers = (_id) =>
 //****************---Action Comments ---*************************//
 
 
-export const actionAddCommentAC = (postId, newResult) => ({ type: 'ADD-COMMENT', postId, newResult })
-export const actionFullAddComment = (postId, text) => ({ type: 'COMMENT_POST', postId, text })
+export const actionAddCommentAC = (findId, newResult) => ({ type: 'ADD-COMMENT', findId, newResult })
+export const actionFullAddComment = (findId, text) => ({ type: 'COMMENT_POST', findId, text })
 
-export const actionAddComment = (postId, text) =>
+export const actionAddComment = (findId, text) =>
     actionPromise('addcomment', gql(`mutation addcomment($comment: CommentInput ){
         CommentUpsert(comment:$comment){
             _id text
         }
-    }`, { comment: { post: { _id: postId }, text } }))
-export const actionFindComment = (postId) =>
+    }`, { comment: { post: { _id: findId }, text } }))
+export const actionFindComment = (findId) =>
     actionPromise('findCommentPost', gql(`query commentFindPost ($id:String!){
         PostFindOne(query:$id){
             comments{_id text owner{_id nick login} likes{_id}}
         }
-    }`, { id: JSON.stringify([{ _id: postId }]) }))
+    }`, { id: JSON.stringify([{ _id: findId }]) }))
 
 
 //****************---Action Udate Avatar ---*************************//
