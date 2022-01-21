@@ -1,24 +1,24 @@
-import React, { useEffect, useState } from 'react'
-import { Row, Col, Divider } from 'antd';
+import React, { useState } from 'react'
+import { Divider } from 'antd';
 import { connect } from 'react-redux'
 import PostImage from '../components/main/postsFeed/PostImage'
 import { PostTitle, PostDescription } from './MainPostsFeed';
 import Text from 'antd/lib/typography/Text';
 import { CFieldCommentSend, CFieldSubCommentSend } from '../components/main/postsFeed/FieldComment';
 import { CPostUserPanel } from '../components/main/postsFeed/PostUserPanel';
-import { Comment, Tooltip, Avatar } from 'antd';
+import { Comment, Tooltip } from 'antd';
 import moment from 'moment';
 import { UserAvatar } from './Header';
 import { Link } from 'react-router-dom';
 import { LikeFilled, LikeOutlined } from '@ant-design/icons';
-import { actionLikeComment, actionAddLikeCommentAC, actionFindLikeComment, actionDelLikeComment, actionFindSubComment, actionSubComment } from '../actions';
+import { actionLikeComment, actionDelLikeComment, actionSubComment } from '../actions';
 
 
 const PostPageTitle = ({ data: { owner } }) =>
     <PostTitle owner={owner} />
 
 const CPostPageTitle = connect(state => ({ data: state?.postsFeed?.posts || {} }))(PostPageTitle)
-// 
+
 
 const PostCommentAuthor = ({ owner }) => {
     return (
@@ -29,8 +29,9 @@ const PostCommentAuthor = ({ owner }) => {
 }
 
 
-const PostComment = ({ myID, cId, data: { _id, answerTo, answers, createdAt, likes = [], text, owner }, addLikeComment, removeLikeComment, findSubComment }) => {
+const PostComment = ({ myID, subComments, data: { _id, answers, createdAt, likes = [], text, owner }, addLikeComment, removeLikeComment, findSubComment }) => {
     const [open, setOpen] = useState(false);
+
     let likeStatus
     let likeId
     likes.find(l => {
@@ -43,16 +44,15 @@ const PostComment = ({ myID, cId, data: { _id, answerTo, answers, createdAt, lik
     })
 
     const changeLike = () => likeStatus ? removeLikeComment(likeId, _id) : addLikeComment(_id)
-    // 
-{ console.log(_id, cId); }
+
     const actions = [
         <span onClick={changeLike}>
             {likeStatus ? <LikeFilled /> : <LikeOutlined />}
             <span style={{ paddingLeft: 8, cursor: 'auto' }}>{likes.length ? likes.length : ''}</span>
         </span>,
         <span onClick={() => setOpen(true)}>Reply to</span>,
-
     ];
+
     return (
         <Comment
             actions={actions}
@@ -67,28 +67,29 @@ const PostComment = ({ myID, cId, data: { _id, answerTo, answers, createdAt, lik
                 </ Tooltip>
             }
         >
-            {answers?.length >= 0 && <Divider plain>
-                <Text type='secodary' onClick={() => findSubComment(_id)}>View answers</Text>
-            </Divider>}
-            {answers?.length >= 0 && answers.map(a => {
-                if (Object.keys(a).length > 1) {
-                    return <CPostComment key={a._id} data={a} cId={cId} />
-                }
+            {subComments && subComments['subComments#' + _id]
+                ? subComments['subComments#' + _id].map(s => < CPostSubComment key={s._id} data={s} />)
+                : answers?.length >= 0 && <Divider plain>
+                    <Text type='secodary' onClick={() => findSubComment(_id)}>View answers</Text>
+                </Divider>}
 
-            })}
-
-            {open && <CFieldSubCommentSend id={_id}/>}
+            {open && <CFieldSubCommentSend id={_id} autoFocus={true} value={`@${owner?.nick || owner?.login || ''}, `} setOpen={setOpen} />}
         </Comment>
     )
 }
 const CPostComment = connect(state => ({
-    myID: state.auth.payload.sub.id || ''
+    myID: state.auth.payload.sub.id || '',
+    subComments: state?.postsFeed?.subComments
 }), {
     addLikeComment: actionLikeComment,
     removeLikeComment: actionDelLikeComment,
     findSubComment: actionSubComment,
 }
 )(PostComment)
+
+const CPostSubComment = connect(state => ({ comments: state?.postsFeed?.SubComments }, {
+    findSubComment: actionSubComment,
+}))(PostComment)
 
 const PostComments = ({ comments }) => {
     return (
@@ -115,7 +116,7 @@ const PostPageDescrption = ({ data: { _id, likes, text, title, createdAt, } }) =
             <Divider ></Divider>
             <CPostUserPanel likes={likes} postId={_id}
                 styleFontSize='1.3em' />
-            <CFieldCommentSend postId={_id} />
+            <CFieldCommentSend postId={_id} setOpen={() => { }} />
         </div>
     </div>
 
@@ -138,6 +139,4 @@ const PostPage = ({ data: { images } }) =>
         </div>
     </div>
 
-
 export const CPostPage = connect(state => ({ data: state?.postsFeed?.posts || {} }))(PostPage)
-// xs={{ span: 24 }} sm={{ span: 20 }} md={{ span: 16 }} lg={{ span: 16 }}A

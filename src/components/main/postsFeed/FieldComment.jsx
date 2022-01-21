@@ -7,8 +7,8 @@ import { Button, Col, Row } from 'antd'
 import { actionAddSubComment, actionFullAddComment } from '../../../actions'
 
 
-const FieldCommentSend = ({ id, sentComment }) => {
-    const [commentValue, setCommentValue] = useState('')
+const FieldCommentSend = ({ id, sentComment, autoFocus, value = '', setOpen }) => {
+    const [commentValue, setCommentValue] = useState(value)
     const [error, setError] = useState(false)
 
     const changeComentTextarea = (e) => {
@@ -24,21 +24,35 @@ const FieldCommentSend = ({ id, sentComment }) => {
         }
     }
 
+    const handlerClickBtn = () => {
+        sendCommentValid(commentValue)
+        setOpen(false)
+    }
+    
+    const onKeyPressHandler = e => {
+        if (e.charCode === 13) {
+            sendCommentValid(commentValue)
+            setOpen(false)
+        }
+    }
+
     return (
         <>
             {error && <Text type='danger'>Field is required</Text>}
             <Row align='middle' className='Post__send-comment'>
                 <Col flex='auto' offset={1}>
                     <TextArea value={commentValue}
+                        autoFocus={autoFocus || false}
                         placeholder="Add a comment ..."
                         autoSize={{ minRows: 1, maxRows: 2 }}
                         onChange={changeComentTextarea}
                         bordered={false}
+                        onKeyPress={onKeyPressHandler}
                     />
                 </Col>
                 <Col span={2}>
                     <Button
-                        onClick={() => sendCommentValid(commentValue)}
+                        onClick={handlerClickBtn}
                         icon={< SendOutlined
                             style={{ fontSize: '1.2em', opacity: .6 }} />}
                     />

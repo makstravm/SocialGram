@@ -27,7 +27,8 @@ export const postsFeedReducer = (state = {}, { type, findId, newResult, userData
                 ...state,
                 posts: [],
                 userData: {},
-                count: 0
+                count: 0,
+                subComments: {}
             }
         },
         'ADD-POST-LIKE': () => {
@@ -49,36 +50,16 @@ export const postsFeedReducer = (state = {}, { type, findId, newResult, userData
         'ADD-COMMENT': () => {
             return {
                 ...state,
-                posts: Array.isArray(posts)
-                    ? posts.map(p => p._id === findId ? { ...p, comments: [...newResult] } : p)
-                    : { ...state.posts, comments: [...newResult] },
+                posts: { ...state.posts, comments: [...newResult] }
             }
         },
         'UPDATE-SUBCOMMENT': () => {
             return {
                 ...state,
-                posts: {
-                    ...state.posts,
-                    comments: posts.comments.map(c => c._id === findId ? c = { ...c, answers: [...newResult] } : c)
-                }
+                subComments: { ...state?.subComments, ...{ ['subComments#' + findId]: [...newResult] } }
             }
-
         },
         'ADD-LIKE-COMMENT': () => {
-            console.log(state);
-            for (const answers of state.posts.comments) {
-                console.log(answers);
-            }
-            // const newState = [...state].posts.comments.map(c)
-            // function findNode(id, currentNode) {
-            //     if (id == currentNode.id) {
-            //         return currentNode;
-            //     } else {
-            //         currentNode.children.forEach(function (currentChild) {
-            //             findNode(id, currentChild);
-            //         });
-            //     }
-            // }
             return {
                 ...state,
                 posts: {
@@ -88,7 +69,6 @@ export const postsFeedReducer = (state = {}, { type, findId, newResult, userData
             }
         },
         'REMOVE-LIKE-COMMENT': () => {
-            // console.log(state);
             return {
                 ...state,
                 posts: {

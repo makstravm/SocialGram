@@ -245,7 +245,7 @@ export const actionUpdateFollowers = (_id) =>
 //****************---Action Comments ---*************************//
 
 
-export const actionAddCommentAC = (findId, newResult) => ({ type: 'ADD-COMMENT', findId, newResult })
+export const actionAddCommentAC = (newResult) => ({ type: 'ADD-COMMENT', newResult })
 export const actionUpdateSubCommentAC = (findId, newResult) => ({ type: 'UPDATE-SUBCOMMENT', findId, newResult })
 
 export const actionFullAddComment = (postId, text) => ({ type: 'COMMENT_POST', postId, text })
@@ -267,15 +267,13 @@ export const actionFindComment = (findId) =>
     }`, { id: JSON.stringify([{ _id: findId }]) }))
 
 export const actionFindSubComment = (findId) =>
-    actionPromise('findSubCommentPost#' + findId, gql(`query commentFindOne ($id:String!){
+    actionPromise('subComments#' + findId, gql(`query commentFindOne ($id:String!){
         CommentFindOne(query:$id){
              answers{
                 _id text createdAt
-                owner{ _id nick login } 
-                likes{_id}
-                answerTo{_id text 
-                    owner{_id nick login avatar{_id url}} 
-                    likes{_id}
+                owner{ _id nick login avatar { _id url }} 
+                likes { _id }
+                answerTo {_id text 
                 }
                 answers{ _id }
             }

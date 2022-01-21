@@ -239,27 +239,24 @@ function* subscribeWatcher() {
 //*************** COMMENTS ******************//
 
 
-function* addCommentWorker({ postId, text }) {
-    yield call(promiseWorker, actionAddComment(postId, text))
-    const { comments } = yield call(promiseWorker, actionFindComment(postId))
+function* addCommentWorker({ text }) {
+    const { postsFeed: { posts: { _id } } } = yield select()
+    yield call(promiseWorker, actionAddComment(_id, text))
+    const { comments } = yield call(promiseWorker, actionFindComment(_id))
+    console.log(comments, _id);
     if (comments) {
-        yield put(actionAddCommentAC(postId, comments))
+        yield put(actionAddCommentAC(comments))
     }
 }
 
 function* addSubCommentWorker({ commentId, text }) {
-    const { postsFeed: { posts: { _id } } } = yield select()
-    console.log(_id, text);
-    // yield call(promiseWorker, actionSubAddComment(commentId, text))
-    // const { answers } = yield call(promiseWorker, actionFindSubComment(commentId))
-    // if (answers) {
-    //     yield put(actionAddCommentAC(commentId, answers))
-    // }
+    yield call(promiseWorker, actionSubAddComment(commentId, text))
+    yield call (findSubCommentWorker, {commentId})
 }
 
-function* addFindSubCommentWorker({ commentId }) {
+function* findSubCommentWorker({ commentId }) {
+    console.log(commentId);
     const { answers } = yield call(promiseWorker, actionFindSubComment(commentId))
-    console.log(answers);
     if (answers) {
         yield put(actionUpdateSubCommentAC(commentId, answers))
     }
@@ -268,7 +265,7 @@ function* addFindSubCommentWorker({ commentId }) {
 function* addCommentWatcher() {
     yield all([
         takeEvery('COMMENT_POST', addCommentWorker),
-        takeEvery('FIND_SUBCOMMENT', addFindSubCommentWorker),
+        takeEvery('FIND_SUBCOMMENT', findSubCommentWorker),
         takeEvery('ADD_SUB_COMMENT', addSubCommentWorker)
     ])
 }
