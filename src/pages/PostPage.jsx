@@ -4,14 +4,14 @@ import { connect } from 'react-redux'
 import PostImage from '../components/main/postsFeed/PostImage'
 import { PostTitle, PostDescription } from './MainPostsFeed';
 import Text from 'antd/lib/typography/Text';
-import { CFieldCommentSend } from '../components/main/postsFeed/FieldComment';
+import { CFieldCommentSend, CFieldSubCommentSend } from '../components/main/postsFeed/FieldComment';
 import { CPostUserPanel } from '../components/main/postsFeed/PostUserPanel';
 import { Comment, Tooltip, Avatar } from 'antd';
 import moment from 'moment';
 import { UserAvatar } from './Header';
 import { Link } from 'react-router-dom';
 import { LikeFilled, LikeOutlined } from '@ant-design/icons';
-import { actionLikeComment, actionAddLikeCommentAC, actionFindLikeComment, actionDelLikeComment } from '../actions';
+import { actionLikeComment, actionAddLikeCommentAC, actionFindLikeComment, actionDelLikeComment, actionFindSubComment, actionSubComment } from '../actions';
 
 
 const PostPageTitle = ({ data: { owner } }) =>
@@ -29,9 +29,8 @@ const PostCommentAuthor = ({ owner }) => {
 }
 
 
-const PostComment = ({ myID, data: { _id, answerTo, answers, createdAt, likes = [], text, owner }, addLikeComment, removeLikeComment, children }) => {
+const PostComment = ({ myID, cId, data: { _id, answerTo, answers, createdAt, likes = [], text, owner }, addLikeComment, removeLikeComment, findSubComment }) => {
     const [open, setOpen] = useState(false);
-
     let likeStatus
     let likeId
     likes.find(l => {
@@ -44,20 +43,21 @@ const PostComment = ({ myID, data: { _id, answerTo, answers, createdAt, likes = 
     })
 
     const changeLike = () => likeStatus ? removeLikeComment(likeId, _id) : addLikeComment(_id)
-
+    // 
+{ console.log(_id, cId); }
     const actions = [
         <span onClick={changeLike}>
             {likeStatus ? <LikeFilled /> : <LikeOutlined />}
             <span style={{ paddingLeft: 8, cursor: 'auto' }}>{likes.length ? likes.length : ''}</span>
         </span>,
         <span onClick={() => setOpen(true)}>Reply to</span>,
-        open && <CFieldCommentSend onFocus />
+
     ];
     return (
         <Comment
             actions={actions}
             author={<PostCommentAuthor owner={owner} />}
-            avatar={< UserAvatar avatar={owner.avatar} avatarSize={'35px'} />}
+            avatar={< UserAvatar avatar={owner?.avatar} avatarSize={'35px'} />}
             content={<p>{text}</p >}
             datetime={
                 < Tooltip title={moment(new Date(+createdAt)).format('DD-MM-YYYY HH:mm:ss')} >
@@ -67,7 +67,17 @@ const PostComment = ({ myID, data: { _id, answerTo, answers, createdAt, likes = 
                 </ Tooltip>
             }
         >
-            {children}
+            {answers?.length >= 0 && <Divider plain>
+                <Text type='secodary' onClick={() => findSubComment(_id)}>View answers</Text>
+            </Divider>}
+            {answers?.length >= 0 && answers.map(a => {
+                if (Object.keys(a).length > 1) {
+                    return <CPostComment key={a._id} data={a} cId={cId} />
+                }
+
+            })}
+
+            {open && <CFieldSubCommentSend id={_id}/>}
         </Comment>
     )
 }
@@ -76,6 +86,7 @@ const CPostComment = connect(state => ({
 }), {
     addLikeComment: actionLikeComment,
     removeLikeComment: actionDelLikeComment,
+    findSubComment: actionSubComment,
 }
 )(PostComment)
 
@@ -83,7 +94,7 @@ const PostComments = ({ comments }) => {
     return (
         <>
             {
-                comments.map(c => <CPostComment key={c._id} data={c}></CPostComment>)
+                comments.map(c => <CPostComment key={c._id} data={c} cId={c._id} />)
             }
         </>
     )
@@ -97,7 +108,7 @@ const PostPageDescrption = ({ data: { _id, likes, text, title, createdAt, } }) =
     <div className='PostOne__description-inner'>
         <div className='PostOne__description-top'>
             <PostDescription title={title} description={text} date={createdAt} />
-            <Divider plain><Text type='secodary'></Text>Comments</Divider>
+            <Divider plain><Text type='secodary'>Comments</Text></Divider>
             <CPostComments />
         </div>
         <div className='PostOne__description-bottom'>

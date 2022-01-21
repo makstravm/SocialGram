@@ -12,12 +12,9 @@ export const queries = {
                                     avatar {url}
                                 }
                             answers{
-                                _id createdAt text 
-                                likes{ _id} 
+                                _id 
                                 }
-                            answerTo {
-                                    _id text createdAt
-                                }
+                               answerTo{_id} 
                             }
                         likes{ _id
                             owner{_id}

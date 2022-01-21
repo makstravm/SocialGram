@@ -204,6 +204,7 @@ export const actionFindLikeComment = (findId) =>
         }
     }`, { id: JSON.stringify([{ _id: findId }]) }))
 
+
 //****************---Action Subscribe ---*************************//
 
 
@@ -232,6 +233,7 @@ export const actionUpdateMyFollowing = (_id) =>
                             following {_id nick login}
         }
     }`, { id: JSON.stringify([{ _id }]) }))
+
 export const actionUpdateFollowers = (_id) =>
     actionPromise('upDateFollowers', gql(` query followers($id:String!){
         UserFindOne(query: $id){
@@ -244,20 +246,48 @@ export const actionUpdateFollowers = (_id) =>
 
 
 export const actionAddCommentAC = (findId, newResult) => ({ type: 'ADD-COMMENT', findId, newResult })
-export const actionFullAddComment = (findId, text) => ({ type: 'COMMENT_POST', findId, text })
+export const actionUpdateSubCommentAC = (findId, newResult) => ({ type: 'UPDATE-SUBCOMMENT', findId, newResult })
 
-export const actionAddComment = (findId, text) =>
+export const actionFullAddComment = (postId, text) => ({ type: 'COMMENT_POST', postId, text })
+export const actionAddSubComment = (commentId, text) => ({ type: 'ADD_SUB_COMMENT', commentId, text })
+export const actionSubComment = (commentId) => ({ type: 'FIND_SUBCOMMENT', commentId })
+
+export const actionAddComment = (postId, text) =>
     actionPromise('addcomment', gql(`mutation addcomment($comment: CommentInput ){
         CommentUpsert(comment:$comment){
             _id text
         }
-    }`, { comment: { post: { _id: findId }, text } }))
+    }`, { comment: { post: { _id: postId }, text } }))
+
 export const actionFindComment = (findId) =>
     actionPromise('findCommentPost', gql(`query commentFindPost ($id:String!){
         PostFindOne(query:$id){
-            comments{_id text owner{_id nick login} likes{_id}}
+            comments{_id text owner{_id nick login avatar{_id url}} likes{_id}}
         }
     }`, { id: JSON.stringify([{ _id: findId }]) }))
+
+export const actionFindSubComment = (findId) =>
+    actionPromise('findSubCommentPost#' + findId, gql(`query commentFindOne ($id:String!){
+        CommentFindOne(query:$id){
+             answers{
+                _id text createdAt
+                owner{ _id nick login } 
+                likes{_id}
+                answerTo{_id text 
+                    owner{_id nick login avatar{_id url}} 
+                    likes{_id}
+                }
+                answers{ _id }
+            }
+        } 
+    }`, { id: JSON.stringify([{ _id: findId }]) }))
+
+export const actionSubAddComment = (commentId, text, _id) =>
+    actionPromise('addcomment', gql(`mutation addcomment($comment: CommentInput ){
+        CommentUpsert(comment:$comment){
+            _id text
+        }
+    }`, { comment: { answerTo: { _id: commentId }, text } }))
 
 
 //****************---Action Udate Avatar ---*************************//

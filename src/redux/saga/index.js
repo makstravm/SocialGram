@@ -1,5 +1,5 @@
 import { all, call, delay, fork, join, put, select, takeEvery, takeLatest, takeLeading } from "redux-saga/effects";
-import { actionAboutMe, actionAboutMeAC, actionAddComment, actionAddCommentAC, actionAddLikeComment, actionAddLikeCommentAC, actionAddLikePost, actionAddLikePostAC, actionAddPostsFeedAC, actionAuthLogin, actionFindComment, actionFindFollowers, actionFindLikeComment, actionFullAboutMe, actionFullLogIn, actionGetAvatar, actionGetFindFollowers, actionGetFindFollowing, actionGetFindLiked, actionGetPostAC, actionLoadSearchUsers, actionLoadSubscribe, actionloadUnSubscribe, actionLogIn, actionMyLikePost, actionPending, actionPostsCount, actionPostsMyFollowing, actionProfileData, actionProfileDataAC, actionProfilePagePost, actionPromise, actionRegister, actionRejected, actionRemoveLikeComment, actionRemoveLikeCommentAC, actionRemoveLikePost, actionRemoveLikePostAC, actionRemovePostsFeedAC, actionResolved, actionSetAvatar, actionUpdateFollowers, actionUpdateFollowersAC, actionUpdateMyAvatart, actionUpdateMyFollowing, actionUpdateMyFollowingAC } from "../../actions";
+import { actionAboutMe, actionAboutMeAC, actionAddComment, actionAddCommentAC, actionAddLikeComment, actionAddLikeCommentAC, actionAddLikePost, actionAddLikePostAC, actionAddPostsFeedAC, actionAuthLogin, actionFindComment, actionFindFollowers, actionFindLikeComment, actionFindSubComment, actionFullAboutMe, actionFullLogIn, actionGetAvatar, actionGetFindFollowers, actionGetFindFollowing, actionGetFindLiked, actionGetPostAC, actionLoadSearchUsers, actionLoadSubscribe, actionloadUnSubscribe, actionLogIn, actionMyLikePost, actionPending, actionPostsCount, actionPostsMyFollowing, actionProfileData, actionProfileDataAC, actionProfilePagePost, actionPromise, actionRegister, actionRejected, actionRemoveLikeComment, actionRemoveLikeCommentAC, actionRemoveLikePost, actionRemoveLikePostAC, actionRemovePostsFeedAC, actionResolved, actionSetAvatar, actionSubAddComment, actionUpdateFollowers, actionUpdateFollowersAC, actionUpdateMyAvatart, actionUpdateMyFollowing, actionUpdateMyFollowingAC, actionUpdateSubCommentAC } from "../../actions";
 import { queries } from "../../actions/actionQueries";
 import { gql } from "../../helpers";
 
@@ -87,14 +87,13 @@ function* aboutMeWatcher() {
 function* postsFeedWorker() {
     const {
         postsFeed: { posts, count },
-        myData: { following }
+        myData: { following, _id }
     } = yield select()
-    console.log(!Array.isArray(posts));
     !Array.isArray(posts) && (yield put(actionRemovePostsFeedAC()))
     const newArrFollowing = following.map(f => f._id)
     if (posts?.length !== (count ? count : 1)) {
-        const taskPosts = yield fork(promiseWorker, actionPostsMyFollowing(posts?.length, newArrFollowing))
-        const taskCount = yield fork(promiseWorker, actionPostsCount(newArrFollowing))
+        const taskPosts = yield fork(promiseWorker, actionPostsMyFollowing(posts?.length, [...newArrFollowing, _id]))
+        const taskCount = yield fork(promiseWorker, actionPostsCount([...newArrFollowing, _id]))
 
         const [postsResult, countResult] = yield join([taskPosts, taskCount])
 
@@ -175,19 +174,21 @@ function* delLikePostWorker({ likeId, postId }) {
 
 function* addLikeCommentWorker({ commentId }) {
     yield call(promiseWorker, actionAddLikeComment(commentId))
-    const {likes} = yield call(promiseWorker, actionFindLikeComment(commentId))
+    const { likes } = yield call(promiseWorker, actionFindLikeComment(commentId))
     if (likes) {
         yield put(actionAddLikeCommentAC(commentId, likes))
     }
 }
 
-function* delLikeCommentWorker({likeId, commentId }) {
+function* delLikeCommentWorker({ likeId, commentId }) {
     yield call(promiseWorker, actionRemoveLikeComment(likeId))
     const { likes } = yield call(promiseWorker, actionFindLikeComment(commentId))
+    console.log(likes);
     if (likes) {
         yield put(actionRemoveLikeCommentAC(commentId, likes))
     }
 }
+
 function* likePostWatcher() {
     yield all([
         takeEvery('LIKE_POST', addLikePostWorker),
@@ -246,8 +247,30 @@ function* addCommentWorker({ postId, text }) {
     }
 }
 
+function* addSubCommentWorker({ commentId, text }) {
+    const { postsFeed: { posts: { _id } } } = yield select()
+    console.log(_id, text);
+    // yield call(promiseWorker, actionSubAddComment(commentId, text))
+    // const { answers } = yield call(promiseWorker, actionFindSubComment(commentId))
+    // if (answers) {
+    //     yield put(actionAddCommentAC(commentId, answers))
+    // }
+}
+
+function* addFindSubCommentWorker({ commentId }) {
+    const { answers } = yield call(promiseWorker, actionFindSubComment(commentId))
+    console.log(answers);
+    if (answers) {
+        yield put(actionUpdateSubCommentAC(commentId, answers))
+    }
+}
+
 function* addCommentWatcher() {
-    yield takeEvery('COMMENT_POST', addCommentWorker)
+    yield all([
+        takeEvery('COMMENT_POST', addCommentWorker),
+        takeEvery('FIND_SUBCOMMENT', addFindSubCommentWorker),
+        takeEvery('ADD_SUB_COMMENT', addSubCommentWorker)
+    ])
 }
 
 

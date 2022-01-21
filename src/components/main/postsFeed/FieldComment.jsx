@@ -4,10 +4,10 @@ import TextArea from 'antd/lib/input/TextArea'
 import { SendOutlined, } from '@ant-design/icons'
 import { connect } from 'react-redux'
 import { Button, Col, Row } from 'antd'
-import { actionFullAddComment } from '../../../actions'
+import { actionAddSubComment, actionFullAddComment } from '../../../actions'
 
 
-const FieldCommentSend = ({ postId, sentComment }) => {
+const FieldCommentSend = ({ id, sentComment }) => {
     const [commentValue, setCommentValue] = useState('')
     const [error, setError] = useState(false)
 
@@ -17,7 +17,7 @@ const FieldCommentSend = ({ postId, sentComment }) => {
     }
     const sendCommentValid = (value) => {
         if (value.trim() !== '') {
-            sentComment(postId, value.trim())
+            sentComment(id, value.trim())
             setCommentValue('')
         } else {
             setError(true)
@@ -49,3 +49,5 @@ const FieldCommentSend = ({ postId, sentComment }) => {
 }
 
 export const CFieldCommentSend = connect(null, { sentComment: actionFullAddComment })(FieldCommentSend)
+
+export const CFieldSubCommentSend = connect(null, { sentComment: actionAddSubComment })(FieldCommentSend)

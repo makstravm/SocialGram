@@ -1,0 +1,45 @@
+.App {
+    font-family: sans-serif;
+    text-align: center;
+}
+
+.handle {
+    display: block;
+    width: 18px;
+    height: 18px;
+    margin-right: 20px;
+    overflow: hidden;
+
+    > svg {
+        opacity: 0.3;
+    }
+
+    cursor: grab;
+}
+.qq {
+    float: left;
+    padding-left: 8px;
+    padding-right: 8px;
+    width: calc(25% - 16px);
+    .content {
+        padding: 8px 12px;
+        background-color: #ddd;
+        height: 150px;
+        background-color: blue;
+    }
+}
+.ww {
+    background-color: #ddd;
+    margin-left: -8px;
+    margin-right: -8px;
+    white-space: nowrap;
+    &:after {
+        content: "";
+        clear: both;
+        display: table;
+    }
+}
+.rrr {
+    width: 600px;
+    margin: 0 auto;
+}
