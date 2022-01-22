@@ -5,7 +5,7 @@ import { NavLink} from 'react-router-dom'
 
 import { Form, Input, Button, Row, Col, Card, Divider, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { actionFullLogin, actionFullRegister } from '../redux/redux-thunk';
+import { actionFullLogIn, actionFullRegister } from '../actions';
 
 const FormInput = ({ buttonTitle, onSignIn }) => {
     const onFinish = ({ login, password, remember }) => {
@@ -65,7 +65,7 @@ const FormInput = ({ buttonTitle, onSignIn }) => {
         </Form>
     )
 }
-const CLoginForm = connect(null, { onSignIn: actionFullLogin})(FormInput)
+const CLoginForm = connect(null, { onSignIn: actionFullLogIn})(FormInput)
 const CRegisterForm = connect(null, { onSignIn: actionFullRegister})(FormInput)
 
 export const Authorization = ({ match: { params: { _id } } }) => {

@@ -2,12 +2,11 @@ import { Empty, Input, Popover } from 'antd'
 import React from 'react'
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { actionFindUsers } from '../../actions';
-import { UserAvatar } from './Header';
-
-const { Search } = Input;
-const FindUsersResult = ({ usersRes }) => {
-    return <div className='Header__search-drop' >
+import { actionFindUsers, actionSearchUsers } from '../../actions';
+import { UserAvatar } from '../../pages/Header';
+import { SearchOutlined } from '@ant-design/icons';
+const FindUsersResult = ({ usersRes }) =>
+    <div className='Header__search-drop' >
         {
             usersRes.length === 0 ?
                 <Empty /> :
@@ -22,25 +21,24 @@ const FindUsersResult = ({ usersRes }) => {
                 })
         }
     </div >
-}
 
-export const FieldSearch = ({ usersRes, findUsers }) => {
-    return (
-        <>
-            <Popover placement="bottom"
-                content={<FindUsersResult usersRes={usersRes} />}
-                destroyTooltipOnHide={true}
-                trigger="focus">
-                <></>
-                <Search className='Header__search'
-                    onSearch={value => findUsers(value)}
-                    placeholder="Search users"
-                    allowClear
-                    enterButton="Search"
-                    enterButton />
-            </Popover>
-        </>
-    )
-}
 
-export const CFieldSearch = connect(state => ({ usersRes: state.promise?.findUsersAll?.payload || [] }), { findUsers: actionFindUsers })(FieldSearch) 
+export const FieldSearch = ({ usersRes, findUsers }) =>
+    <>
+        <Popover placement="bottom"
+            content={<FindUsersResult usersRes={usersRes} />}
+            destroyTooltipOnHide={true}
+            trigger="focus">
+            <></>
+            <Input
+                placeholder="Search users"
+                allowClear
+                prefix={<SearchOutlined style={{ color: '#c9c9c9' }} />}
+                onChange={e => findUsers(e.currentTarget.value)}
+            />
+        </Popover>
+    </>
+
+
+
+export const CFieldSearch = connect(state => ({ usersRes: state.promise?.findUsersAll?.payload || [] }), { findUsers: actionSearchUsers })(FieldSearch) 
