@@ -1,4 +1,4 @@
-import { Card, Col, Row } from 'antd'
+import { Card, Col, Row, Divider } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
@@ -9,7 +9,6 @@ import { actionPostsFeed, actionRemovePostsFeedAC } from '../actions'
 import { DateCreated } from '../components/main/DateCreated'
 import PostImage from '../components/main/postsFeed/PostImage'
 import { CPostUserPanel } from '../components/main/postsFeed/PostUserPanel'
-import { CFieldCommentSend } from '../components/main/postsFeed/FieldComment'
 
 export const PostTitle = ({ owner }) =>
     <Row justify="start" align='middle'>
@@ -37,34 +36,22 @@ export const PostDescription = ({ title, description, date }) =>
         </Paragraph>
     </>
 
-export const Comments = ({ comments }) =>
-    <>
-        {comments && comments.length > 2 &&
-            <Link to={`/#`}>
-                <Text type={'secondary'} level={3}>{`Посмотреть все ${comments.length} комментария`}</Text>
-            </Link>}
-        {comments && <div>
-            <div className='Post__comments'>
-                <Link to={`/#`}>{comments[comments?.length - 2]?.owner?.nick || comments[comments?.length - 2]?.owner?.login}: </Link>
-                <span>{comments[comments?.length - 2]?.text}</span>
-            </div>
-            <div className='Post__comments'>
-                <Link to={`/#`}>{comments[comments?.length - 1]?.owner?.login || comments[comments?.length - 1]?.owner?.login}: </Link>
-                <span>{comments[comments?.length - 1]?.text}</span>
-            </div>
-        </div>}
-    </>
+export const Comments = ({ comments = [], _id }) =>
+        <Link to={`/post/${_id}`}>
+            <Divider orientation="left">
+                {comments?.length ? `View ${comments.length} comments` : 'No comments'}
+            </Divider>
+        </Link>
 
 const Post = ({ postData: { _id, text, title, owner, images, createdAt = '', comments, likes } }) =>
     <div className='Post'>
         <Card
             title={<PostTitle owner={owner} />}
             cover={<PostImage images={images} />}
-            actions={[<CFieldCommentSend postId={_id} />]}
         >
             <CPostUserPanel postId={_id} likes={likes} styleFontSize='1.7em' />
             <PostDescription title={title} description={text} date={createdAt} />
-            <Comments comments={comments} />
+            <Comments comments={comments} _id={_id} />
         </Card>
     </div>
 
@@ -75,7 +62,7 @@ const MainPostsFeed = ({ posts, postsFollowing, postsFollowingRemove, following 
 
     useEffect(() => {
         if (checkScroll && following.length !== 0) {
-            postsFollowing(following)
+            postsFollowing()
             setCheckScroll(false)
         }
     }, [checkScroll, following])
@@ -85,7 +72,7 @@ const MainPostsFeed = ({ posts, postsFollowing, postsFollowingRemove, following 
         return () => {
             document.removeEventListener('scroll', scrollHandler)
             postsFollowingRemove()
-            console.log(posts.length);
+
         }
     }, [])
 

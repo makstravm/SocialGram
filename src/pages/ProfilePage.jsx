@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Card, Col, Row } from 'antd'
-import postNoData from '../images/profile-post-no.jpeg'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { actionFindFollowers, actionFindFollowing, actionProfilePageData, actionRemovePostsFeedAC, actionSubscribe, actionUnSubscribe } from '../actions'
-import { backURL, CircularGalleryIcon } from '../helpers'
+import {  actionProfilePageData, actionRemovePostsFeedAC, actionSubscribe, actionUnSubscribe } from '../actions'
 import { UserAvatar } from './Header'
 import { CModalFollowers, CModalFollowing } from '../components/main/profilePage/ModalFollow'
 import { DateCreated } from '../components/main/DateCreated'
 import Text from 'antd/lib/typography/Text'
+import { CPosts, CProfilePagePosts } from '../components/Posts'
 
 
 
@@ -81,33 +80,7 @@ const CProfilePageData = connect(state => ({
 }))(ProfilePageData)
 
 
-const ProfilePagePosts = ({ posts }) =>
-    <Row gutter={[15, 15]}>
-        {Array.isArray(posts) && posts.map(p => <Col key={p._id} span={8}>
-            <Link to={`/post/${p._id}`}>
-                <Card className='Profile__post' hoverable>
-                    {p?.images && p?.images[0] && p.images[0]?.url
-                        ?
-                        p.images.length === 1
-                            ?
-                            < img src={(backURL + '/' + p?.images[0].url)} alt='post Img' />
-                            :
-                            <div className='Profile__box' >
-                                <CircularGalleryIcon className='Profile__box-icon' style={{ stroke: 'black' }} />
-                                <img src={(backURL + '/' + p?.images[0]?.url)} alt='post Img' />
-                            </div>
-                        :
-                        <img src={postNoData} />}
-                </Card>
-            </Link>
 
-        </Col>
-        )
-        }
-    </Row >
-
-
-export const CProfilePagePosts = connect(state => ({ posts: state.postsFeed?.posts || [] }))(ProfilePagePosts)
 
 const ProfilePage = ({ match: { params: { _id } }, getProfileUser, clearDataProfile }) => {
     const [followers, setFollowers] = useState(false)
@@ -142,7 +115,7 @@ const ProfilePage = ({ match: { params: { _id } }, getProfileUser, clearDataProf
             <CProfilePageData setFollowing={setFollowing} setFollowers={setFollowers} />
             {followers && < CModalFollowers statusModal={setFollowers} title={'Followers'} />}
             {following && < CModalFollowing statusModal={setFollowing} title={'Following'} />}
-            <CProfilePagePosts />
+            <CPosts />
         </>
     )
 }

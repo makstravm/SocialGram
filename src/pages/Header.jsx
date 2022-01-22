@@ -61,7 +61,7 @@ const UserNavIcon = ({ userData: { _id, avatar, login } }) =>
             <Link to='/add'><PlusCircleOutlined /></Link>
         </Col>
         <Col >
-            <Link to='/rar'><CompassOutlined /></Link>
+            <Link to='/all'><CompassOutlined /></Link>
         </Col>
         <Col>
             <Popover placement="bottomRight" content={<CProfileDropMenu myID={_id} />} trigger={'click'}>

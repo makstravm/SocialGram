@@ -66,7 +66,7 @@ export const actionPostsMyFollowing = (skip, myFollowing) =>
                 owner{_id, nick, login, avatar {url}}
                 likes { _id owner {_id}}   
                 images{url _id}
-                comments{_id text owner{_id nick login} likes{_id}}
+                comments{_id}
                 createdAt
         }
     }`, {
@@ -119,6 +119,29 @@ export const actionProfilePagePost = (_id, skip) => actionPromise('userOneDataPo
     }])
 }))
 
+
+//****************---All FIND POSTS---*************************//
+
+export const actionAllPosts = () => ({ type: 'ALL_POSTS' })
+
+export const actionGetAllPosts = (skip) =>
+    actionPromise('allPosts', gql(` query allPosts($id:String!){
+                PostFind(query:$id){
+                    _id   images{url _id}
+                }
+            }`, {
+        id: JSON.stringify([{},{
+            sort: [{ _id: -1 }],
+            skip: [skip || 0],
+            limit: [36]
+        }])
+    }))
+
+export const actionAllPostsCount = () =>
+    actionPromise('userPostsCount', gql(` query userPostsCount($id:String!){
+                PostCount(query:$id)
+                }`, { id: JSON.stringify([{}]) }))
+//    ,
 
 //****************---Action FindUsers ---*************************//
 
@@ -249,6 +272,7 @@ export const actionAddCommentAC = (newResult) => ({ type: 'ADD-COMMENT', newResu
 export const actionUpdateSubCommentAC = (findId, newResult) => ({ type: 'UPDATE-SUBCOMMENT', findId, newResult })
 
 export const actionFullAddComment = (postId, text) => ({ type: 'COMMENT_POST', postId, text })
+
 export const actionAddSubComment = (commentId, text) => ({ type: 'ADD_SUB_COMMENT', commentId, text })
 export const actionSubComment = (commentId) => ({ type: 'FIND_SUBCOMMENT', commentId })
 
@@ -257,7 +281,7 @@ export const actionAddComment = (postId, text) =>
         CommentUpsert(comment:$comment){
             _id text
         }
-    }`, { comment: { post: { _id: postId }, text } }))
+    }`, { comment: { _id: postId }, text }))
 
 export const actionFindComment = (findId) =>
     actionPromise('findCommentPost', gql(`query commentFindPost ($id:String!){

@@ -5,13 +5,14 @@ import createHistory from "history/createBrowserHistory";
 import { connect, Provider } from 'react-redux';
 import store from './redux/redux-store';
 import { Authorization } from './components/Authorization';
-import { Container, ContainerLg, Content, Main } from './pages/Content';
+import { Container, Content, Main } from './pages/Content';
 import { CProfilePage } from './pages/ProfilePage';
 import { CAdd } from './components/main/Add';
 import HeaderComponent from './pages/Header';
 import { CMainPostsFeed } from './pages/MainPostsFeed';
 import { CRRoute } from './helpers';
 import { CPostPage } from './pages/PostPage';
+import { CAllPosts } from './pages/AllPosts';
 
 export const history = createHistory()
 
@@ -31,16 +32,17 @@ const AppContent = ({ isToken }) =>
 
             <Content>
                 <HeaderComponent />
-                    <Main>
-                        <Container>
-                            <Route path='/' component={CMainPostsFeed} exact />
-                            <Route path='/profile/:_id' component={CProfilePage} />
-                            <Route path='/message' component={Aside} />
-                            <Route path='/add' component={CAdd} />
-                        </Container>
-                        <CRRoute path='/post/:id' component={CPostPage} />
-                        {/* <Redirect from='/*' to='/' /> */}
-                    </Main>
+                <Main>
+                    <Container>
+                        <Route path='/' component={CMainPostsFeed} exact />
+                        <Route path='/profile/:_id' component={CProfilePage} />
+                        <Route path='/message' component={Aside} />
+                        <Route path='/add' component={CAdd} />
+                        <CRRoute path='/all' component={CAllPosts} />
+                    </Container>
+                    <CRRoute path='/post/:id' component={CPostPage} />
+                    {/* <Redirect from='/*' to='/' /> */}
+                </Main>
             </Content >
 
 

@@ -1,5 +1,5 @@
 import { all, call, delay, fork, join, put, select, takeEvery, takeLatest, takeLeading } from "redux-saga/effects";
-import { actionAboutMe, actionAboutMeAC, actionAddComment, actionAddCommentAC, actionAddLikeComment, actionAddLikeCommentAC, actionAddLikePost, actionAddLikePostAC, actionAddPostsFeedAC, actionAuthLogin, actionFindComment, actionFindFollowers, actionFindLikeComment, actionFindSubComment, actionFullAboutMe, actionFullLogIn, actionGetAvatar, actionGetFindFollowers, actionGetFindFollowing, actionGetFindLiked, actionGetPostAC, actionLoadSearchUsers, actionLoadSubscribe, actionloadUnSubscribe, actionLogIn, actionMyLikePost, actionPending, actionPostsCount, actionPostsMyFollowing, actionProfileData, actionProfileDataAC, actionProfilePagePost, actionPromise, actionRegister, actionRejected, actionRemoveLikeComment, actionRemoveLikeCommentAC, actionRemoveLikePost, actionRemoveLikePostAC, actionRemovePostsFeedAC, actionResolved, actionSetAvatar, actionSubAddComment, actionUpdateFollowers, actionUpdateFollowersAC, actionUpdateMyAvatart, actionUpdateMyFollowing, actionUpdateMyFollowingAC, actionUpdateSubCommentAC } from "../../actions";
+import { actionAboutMe, actionAboutMeAC, actionAddComment, actionAddCommentAC, actionAddLikeComment, actionAddLikeCommentAC, actionAddLikePost, actionAddLikePostAC, actionAddPostsFeedAC, actionAllPostsCount, actionAuthLogin, actionFindComment, actionFindFollowers, actionFindLikeComment, actionFindSubComment, actionFullAboutMe, actionFullLogIn, actionGetAllPosts, actionGetAvatar, actionGetFindFollowers, actionGetFindFollowing, actionGetFindLiked, actionGetPostAC, actionLoadSearchUsers, actionLoadSubscribe, actionloadUnSubscribe, actionLogIn, actionMyLikePost, actionPending, actionPostsCount, actionPostsMyFollowing, actionProfileData, actionProfileDataAC, actionProfilePagePost, actionPromise, actionRegister, actionRejected, actionRemoveLikeComment, actionRemoveLikeCommentAC, actionRemoveLikePost, actionRemoveLikePostAC, actionRemovePostsFeedAC, actionResolved, actionSetAvatar, actionSubAddComment, actionUpdateFollowers, actionUpdateFollowersAC, actionUpdateMyAvatart, actionUpdateMyFollowing, actionUpdateMyFollowingAC, actionUpdateSubCommentAC } from "../../actions";
 import { queries } from "../../actions/actionQueries";
 import { gql } from "../../helpers";
 
@@ -102,9 +102,28 @@ function* postsFeedWorker() {
         }
     }
 }
+function* allPostsFeedWorker() {
+    const {
+        postsFeed: { posts, count }
+    } = yield select()
+    !Array.isArray(posts) && (yield put(actionRemovePostsFeedAC()))
+    if (posts?.length !== (count ? count : 1)) {
+        const taskPosts = yield fork(promiseWorker, actionGetAllPosts(posts?.length))
+        const taskCount = yield fork(promiseWorker, actionAllPostsCount())
+
+        const [postsResult, countResult] = yield join([taskPosts, taskCount])
+
+        if (postsResult && countResult) {
+            yield put(actionAddPostsFeedAC(postsResult, countResult))
+        }
+    }
+}
 
 function* postsFeedWatcher() {
-    yield takeLeading('POSTS_FEED', postsFeedWorker)
+    yield all([
+        takeLeading('POSTS_FEED', postsFeedWorker),
+        takeLeading('ALL_POSTS', allPostsFeedWorker)
+    ])
 }
 
 
@@ -251,7 +270,7 @@ function* addCommentWorker({ text }) {
 
 function* addSubCommentWorker({ commentId, text }) {
     yield call(promiseWorker, actionSubAddComment(commentId, text))
-    yield call (findSubCommentWorker, {commentId})
+    yield call(findSubCommentWorker, { commentId })
 }
 
 function* findSubCommentWorker({ commentId }) {
