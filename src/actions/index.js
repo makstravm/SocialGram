@@ -130,7 +130,7 @@ export const actionGetAllPosts = (skip) =>
                     _id   images{url _id}
                 }
             }`, {
-        id: JSON.stringify([{},{
+        id: JSON.stringify([{}, {
             sort: [{ _id: -1 }],
             skip: [skip || 0],
             limit: [36]
@@ -281,12 +281,18 @@ export const actionAddComment = (postId, text) =>
         CommentUpsert(comment:$comment){
             _id text
         }
-    }`, { comment: { _id: postId }, text }))
+    }`, { comment: { post: { _id: postId }, text } }))
 
 export const actionFindComment = (findId) =>
     actionPromise('findCommentPost', gql(`query commentFindPost ($id:String!){
         PostFindOne(query:$id){
-            comments{_id text owner{_id nick login avatar{_id url}} likes{_id}}
+            comments {
+                _id text owner{
+                    _id nick login
+                     avatar{_id url}
+                    } 
+                    likes{_id}
+                }
         }
     }`, { id: JSON.stringify([{ _id: findId }]) }))
 
@@ -305,7 +311,7 @@ export const actionFindSubComment = (findId) =>
     }`, { id: JSON.stringify([{ _id: findId }]) }))
 
 export const actionSubAddComment = (commentId, text, _id) =>
-    actionPromise('addcomment', gql(`mutation addcomment($comment: CommentInput ){
+    actionPromise('addSubcomment', gql(`mutation addSubcomment($comment: CommentInput ){
         CommentUpsert(comment:$comment){
             _id text
         }
@@ -369,4 +375,13 @@ export const actionGetFindLiked = (_id) =>
             } `, { id: JSON.stringify([{ "post._id": _id }]) }))
 
 
-//****************---_____________ ---*************************//
+//****************---Create Post ---*************************/
+
+export const actionsentPost = (_id = '', photos, text, title) => ({ type: 'CREATE_POST', photos, text, title })
+
+export const actionSentPost = (photos, title, text, id = "undefined") =>
+    actionPromise('sentPost', gql(`mutation sentPost($post: PostInput){
+              PostUpsert(post: $post){
+                    _id images{_id url}
+                }
+            }`, { post: { text, title, images: { _id: photos._id } } }))

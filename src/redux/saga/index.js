@@ -260,6 +260,7 @@ function* subscribeWatcher() {
 
 function* addCommentWorker({ text }) {
     const { postsFeed: { posts: { _id } } } = yield select()
+    console.log(text);
     yield call(promiseWorker, actionAddComment(_id, text))
     const { comments } = yield call(promiseWorker, actionFindComment(_id))
     console.log(comments, _id);
@@ -331,8 +332,16 @@ function* findFollowWatcher() {
 }
 
 
-//*************** ******************//
+//*************** Create Post ******************//
 
+
+function* sentPostWorker({ photos, text, title }) {
+    yield call(promiseWorker, actionGetFindLiked(photos, text, title))
+}
+
+function* sentPostWatcher() {
+    yield takeEvery('CREATE_POST', sentPostWorker)
+}
 
 
 
@@ -351,6 +360,7 @@ export function* rootSaga() {
         addCommentWatcher(),
         updateAvatarWatcher(),
         findFollowWatcher(),
+        sentPostWatcher(),
 
     ])
 }

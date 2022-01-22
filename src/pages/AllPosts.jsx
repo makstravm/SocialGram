@@ -3,10 +3,6 @@ import { connect } from 'react-redux';
 import { actionAllPosts, actionRemovePostsFeedAC } from '../actions';
 import { CPosts } from '../components/Posts';
 
-
-
-
-
 const AllPosts = ({ posts, onAllPosts, postsRemove }) => {
     const [checkScroll, setCheckScroll] = useState(true)
 

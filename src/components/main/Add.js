@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Upload, message } from 'antd';
 import { backURL, gql } from '../../helpers';
 import { actionUpdateAvatar } from '../../actions';
-import { Apps } from './new';
+import { Apps } from '../uploadPhoto';
 
 const Add = ({ imageUrl, onUploadFile }) => {
     const [loading, setLoading] = useState(false)
@@ -22,7 +22,7 @@ const Add = ({ imageUrl, onUploadFile }) => {
         }
         if (file.status === 'done') {
             message.success(`${file.name} file uploaded successfully`);
-            // await onUploadFile(file.response)
+            await onUploadFile(file.response)
             console.log(file);
             setImageLoad(true)
             setLoading(false)
@@ -49,7 +49,7 @@ const Add = ({ imageUrl, onUploadFile }) => {
             <hr />
             <hr />
             <hr />
-            <Apps />
+            {/* <Apps /> */}
         </>
 
     )

@@ -13,6 +13,7 @@ import { CMainPostsFeed } from './pages/MainPostsFeed';
 import { CRRoute } from './helpers';
 import { CPostPage } from './pages/PostPage';
 import { CAllPosts } from './pages/AllPosts';
+import { CEntityEditorPost } from './pages/EntityEditorPost';
 
 export const history = createHistory()
 
@@ -37,7 +38,8 @@ const AppContent = ({ isToken }) =>
                         <Route path='/' component={CMainPostsFeed} exact />
                         <Route path='/profile/:_id' component={CProfilePage} />
                         <Route path='/message' component={Aside} />
-                        <Route path='/add' component={CAdd} />
+                        {/* <Route path='/add' component={CAdd} /> */}
+                        <Route path='/add' component={CEntityEditorPost} />
                         <CRRoute path='/all' component={CAllPosts} />
                     </Container>
                     <CRRoute path='/post/:id' component={CPostPage} />
