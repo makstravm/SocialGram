@@ -1,8 +1,8 @@
 import { connect } from "react-redux"
 import { Card, Col, Row } from 'antd'
-import postNoData from '../images/profile-post-no.jpeg'
-import { backURL, CircularGalleryIcon } from '../helpers'
+import postNoData from '../../images/profile-post-no.jpeg'
 import { Link } from "react-router-dom"
+import { backURL, CircularGalleryIcon } from "../../helpers"
 
 const Posts = ({ posts }) =>
     <Row gutter={[15, 15]}>

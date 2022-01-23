@@ -2,17 +2,19 @@ import React from 'react'
 
 export const postsFeedReducer = (state = {}, { type, findId, newResult, userData = {}, count = null }) => {
     const { posts } = state
+
     const types = {
         'ADD-POSTS-FEED': () => {
             return {
                 ...state,
-                posts: !!posts ? [...posts, ...newResult] : [...newResult],
+                posts: Array.isArray(posts) === Array.isArray(newResult)
+                    ? [...posts, ...newResult]
+                    : { ...posts, ...newResult },
                 count
             }
         },
         'GET-POST': () => {
             return { ...state, posts: { ...newResult } }
-
         },
         'ADD-PROFILE-DATA': () => {
             return {
@@ -28,7 +30,8 @@ export const postsFeedReducer = (state = {}, { type, findId, newResult, userData
                 posts: [],
                 userData: {},
                 count: 0,
-                subComments: {}
+                subComments: {},
+                editPost: {}
             }
         },
         'ADD-POST-LIKE': () => {

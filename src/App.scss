@@ -326,6 +326,12 @@ body {
     h1 {
         line-height: 1;
     }
+    a {
+        display: inline-block;
+    }
+    &__data {
+        padding-top: 10px;
+    }
     &__name {
         padding-bottom: 10px;
     }
@@ -340,6 +346,10 @@ body {
         }
         span {
             font-size: 1.2em;
+        }
+        button {
+            padding: 0;
+            border: none;
         }
     }
     button {
@@ -362,6 +372,9 @@ body {
             border-color: #40a9ff;
             background: #40a9ff;
         }
+    }
+    &__created {
+        padding: 10px 0;
     }
     &__post {
         padding: 2px;
@@ -388,7 +401,7 @@ body {
 
 .PostOne {
     max-width: 1250px;
-    padding: 0 15px;
+    padding: 40px 15px 0;
     margin: 0 auto;
 
     &__inner {
@@ -419,7 +432,8 @@ body {
         background-color: rgb(87, 87, 87);
         img {
             max-width: 100%;
-            max-height: 650px;
+            max-height: 550px;
+            min-height: 450px;
             margin: 0 auto;
             object-fit: cover;
         }
@@ -445,7 +459,7 @@ body {
         flex-direction: column;
         justify-content: space-between;
         height: 100%;
-        max-height: 565px;
+        max-height: 475px;
     }
     &__description-top {
         flex-grow: 1;
@@ -462,7 +476,7 @@ body {
     font-weight: 500;
 }
 
-.ContainErditorPost {
+.ContainEditorPost {
     width: 100%;
     background-color: $defaultColorW;
     padding: 15px 25px;
@@ -474,7 +488,7 @@ body {
         display: inline-block;
     }
     .description {
-        white-space: pre;
+        white-space: break-spaces;
     }
 }
 .EditPhotos {
@@ -489,6 +503,7 @@ body {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
     grid-gap: 10px;
+    justify-items: center;
 }
 
 .SortableItemMask {
@@ -510,15 +525,6 @@ body {
             fill: $defaultColorW;
         }
     }
-    .hiden-item,
-    .ant-image-mask {
-        position: absolute;
-        top: 0;
-        left: 0;
-        clip: rect(0 0 0);
-        pointer-events: none;
-        padding: 10px;
-    }
 }
 .SortableItem {
     .Handle {
@@ -538,6 +544,17 @@ body {
             opacity: 1;
         }
     }
+    .hiden-item,
+    .ant-image-mask,
+    .ant-image {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        clip: rect(0 0 0);
+        pointer-events: none;
+        padding: 10px;
+    }
 }
 .ant-image-preview-img-wrapper {
     display: flex;
@@ -546,4 +563,7 @@ body {
     img {
         max-height: 60vh;
     }
+}
+.ant-dropdown {
+    box-shadow: 0 0 2px 0 $defaultColorB;
 }

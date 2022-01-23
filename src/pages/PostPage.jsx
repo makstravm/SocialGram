@@ -12,12 +12,13 @@ import { UserAvatar } from './Header';
 import { Link } from 'react-router-dom';
 import { LikeFilled, LikeOutlined } from '@ant-design/icons';
 import { actionLikeComment, actionDelLikeComment, actionSubComment } from '../actions';
+import { CPostTitle } from '../components/main/post/PostTitle';
 
 
-const PostPageTitle = ({ data: { owner } }) =>
-    <PostTitle owner={owner} />
+const PostPageTitle = ({ data: { owner }, postId }) =>
+    <CPostTitle owner={owner} postId={postId} />
 
-const CPostPageTitle = connect(state => ({ data: state?.postsFeed?.posts || {} }))(PostPageTitle)
+const CPostPageTitle = connect(state => ({ data: state?.postsFeed?.posts || {}, postId: state?.postsFeed?.posts?._id }))(PostPageTitle)
 
 
 const PostCommentAuthor = ({ owner }) => {

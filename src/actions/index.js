@@ -7,7 +7,7 @@ import { gql } from "../helpers";
 export const actionPending = name => ({ type: 'PROMISE', status: 'PENDING', name })
 export const actionResolved = (name, payload) => ({ type: 'PROMISE', status: 'RESOLVED', name, payload })
 export const actionRejected = (name, error) => ({ type: 'PROMISE', status: 'REJECTED', name, error })
-
+export const actionClearPromise = (name) => ({ type: 'CLEAR-PROMISE', name })
 export const actionPromise = (name, promise) => ({ type: 'PROMISE_START', name, promise })
 
 
@@ -40,13 +40,13 @@ export const actionAboutMeAC = (data) => ({ type: 'ABOUTME-DATA-ADD', data })
 export const actionFullAboutMe = () => ({ type: 'ABOUT_ME' })
 
 export const actionAboutMe = (id) =>
-    actionPromise('aboutMe', gql(`query userOned($myID:String!){
+actionPromise('aboutMe', gql(`query userOned($myID:String!){
                         UserFindOne(query: $myID){
                             _id  login nick
                             avatar { _id url }
                             following{ _id}
                         }
-                }`, { myID: JSON.stringify([{ ___owner: id }]) }))
+                }`, { myID: JSON.stringify([{ _id: id }]) }))
 
 
 //*************** Action Posts Feed ******************//
@@ -93,6 +93,8 @@ export const actionProfileDataAC = (postsData, count, userData) => ({ type: 'ADD
 
 export const actionProfilePageData = (id) => ({ type: 'DATA_PROFILE', id })
 
+export const actionFindPostOne = (_id) => ({ type: 'FIND_POST_ONE', _id })
+
 export const actionProfileData = (_id) =>
     actionPromise('userOneData', gql(` query userOned($id:String!){
                         UserFindOne(query: $id){
@@ -119,6 +121,15 @@ export const actionProfilePagePost = (_id, skip) => actionPromise('userOneDataPo
     }])
 }))
 
+
+export const actionPostOneEdit = (_id) =>
+    actionPromise('postOneEdit', gql(`query post($id:String!) {
+                    PostFindOne(query:$id) {
+                        _id title text 
+                        images { _id url}
+                  
+                        }
+                    }`, { id: JSON.stringify([{ _id }]) }))
 
 //****************---All FIND POSTS---*************************//
 
@@ -377,11 +388,11 @@ export const actionGetFindLiked = (_id) =>
 
 //****************---Create Post ---*************************/
 
-export const actionsentPost = (_id = '', photos, text, title) => ({ type: 'CREATE_POST', photos, text, title })
+export const actionFullSentPost = (images, title, text) => ({ type: 'CREATE_POST', images, text, title })
 
-export const actionSentPost = (photos, title, text, id = "undefined") =>
+export const actionSentPost = (upSertPostObj) =>
     actionPromise('sentPost', gql(`mutation sentPost($post: PostInput){
               PostUpsert(post: $post){
                     _id images{_id url}
                 }
-            }`, { post: { text, title, images: { _id: photos._id } } }))
+            }`, { post: upSertPostObj }))

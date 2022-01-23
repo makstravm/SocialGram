@@ -1,22 +1,19 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Card, Col, Row } from 'antd'
+import { Button, Col, Row } from 'antd'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import {  actionProfilePageData, actionRemovePostsFeedAC, actionSubscribe, actionUnSubscribe } from '../actions'
+import { actionProfilePageData, actionRemovePostsFeedAC, actionSubscribe, actionUnSubscribe } from '../actions'
 import { UserAvatar } from './Header'
 import { CModalFollowers, CModalFollowing } from '../components/main/profilePage/ModalFollow'
 import { DateCreated } from '../components/main/DateCreated'
 import Text from 'antd/lib/typography/Text'
-import { CPosts, CProfilePagePosts } from '../components/Posts'
+import { Container } from './Content'
+import { CPosts } from '../components/main/Posts'
 
-
-
-
-
-const ProfileFollow = ({ myID, userId, followers, onSubsuscribe, onUnSubsuscribe }) => {
+const ProfileFollowButton = ({ myID, userId, followers, onSubsuscribe, onUnSubsuscribe }) => {
     const followCheck = followers.find(f => f._id === myID && true)
     return (
-        <Col className='Profile__seting' offset={4}>
+        <Col className='Profile__setting'>
             {!!followCheck ?
                 <Button onClick={() => onUnSubsuscribe(userId)}>UnSubscribe</Button> :
                 <Button onClick={() => onSubsuscribe(userId)} type="primary">Subscribe</Button>}
@@ -24,34 +21,36 @@ const ProfileFollow = ({ myID, userId, followers, onSubsuscribe, onUnSubsuscribe
     )
 }
 
-const CProfileSetting = connect(state => ({
+const CProfileFollowButton = connect(state => ({
     myID: state?.auth?.payload?.sub.id,
     followers: state?.postsFeed?.userData?.followers || []
-}), { onSubsuscribe: actionSubscribe, onUnSubsuscribe: actionUnSubscribe })(ProfileFollow)
+}), { onSubsuscribe: actionSubscribe, onUnSubsuscribe: actionUnSubscribe })(ProfileFollowButton)
 
 
-const ProfilePageData = ({ data: { _id, avatar, login, nick, createdAt = '', followers, following }, count, setFollowing, setFollowers }) =>
+const ProfilePageData = ({ myID, data: { _id, avatar, login, nick, createdAt = '', followers, following }, count, setFollowing, setFollowers }) =>
     <Row className='Profile' >
-        <Col span={8}>
+        <Col flex={'150px'}>
             <UserAvatar avatarSize={'150px'} avatar={avatar} />
         </Col>
-        <Col span={14} offset={1}>
-            <Row align='top' className='Profile__name'>
+        <Col className='Profile__data' flex={'auto'} offset={2}>
+            <Row align='top' justify='space-between' className='Profile__name'>
                 <Col>
                     <h1>{nick || login || 'No Name'}</h1>
                     <span className='Profile__login'>{login || '----'}</span>
                 </Col>
-                <Col>
-                    <CProfileSetting userId={_id} />
+                <Col >
+                    {myID !== _id
+                        ? <CProfileFollowButton userId={_id} />
+                        : <Button type=''><Link to={`/my-settings`}>Settings</Link></Button>}
                 </Col>
             </Row>
-            <Row align='middle'>
-                <Col >
+            <Row align='middle' justify='space-between'>
+                <Col className='Profile__created'>
                     <Text type='secondary'>Account created: <DateCreated date={createdAt} /></Text>
                 </Col>
-                <Col offset={2}>
+                {myID !== _id && <Col offset={1}>
                     <Link className='Profile__link-message' to='/message'>Send message</Link>
-                </Col>
+                </Col>}
             </Row>
             <Row className='Profile__count' align='middle' justify='space-between'>
                 <Col >
@@ -74,7 +73,9 @@ const ProfilePageData = ({ data: { _id, avatar, login, nick, createdAt = '', fol
         </Col >
     </Row >
 
+
 const CProfilePageData = connect(state => ({
+    myID: state.auth.payload.sub.id || '',
     data: state?.postsFeed?.userData || {},
     count: state?.postsFeed?.count || null
 }))(ProfilePageData)
@@ -86,6 +87,7 @@ const ProfilePage = ({ match: { params: { _id } }, getProfileUser, clearDataProf
     const [followers, setFollowers] = useState(false)
     const [following, setFollowing] = useState(false)
     const [checkScroll, setCheckScroll] = useState(true)
+
 
     useEffect(() => {
         document.addEventListener('scroll', scrollHandler)
@@ -111,12 +113,12 @@ const ProfilePage = ({ match: { params: { _id } }, getProfileUser, clearDataProf
     }
 
     return (
-        <>
+        <Container>
             <CProfilePageData setFollowing={setFollowing} setFollowers={setFollowers} />
             {followers && < CModalFollowers statusModal={setFollowers} title={'Followers'} />}
             {following && < CModalFollowing statusModal={setFollowing} title={'Following'} />}
             <CPosts />
-        </>
+        </Container>
     )
 }
 

@@ -1,5 +1,5 @@
 import { DeleteOutlined, EyeOutlined, InboxOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, message, Icon, Upload, Image } from "antd";
+import { Button, message, Icon, Upload, Image, Progress } from "antd";
 import Dragger from "antd/lib/upload/Dragger";
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
@@ -45,7 +45,13 @@ const Handle = SortableHandle(({ tabIndex, value, removePhotosItem }) => {
     )
 })
 
-
+//     < Progress
+// strokeColor = {{
+//     '0%': '#108ee9',
+//         '100%': '#87d068',
+//       }}
+// percent = { 99.9}
+//     />
 const SortableItem = SortableElement(props => {
     const { value, removePhotosItem } = props
     return (
@@ -61,7 +67,7 @@ const props = {
     headers: localStorage.authToken || sessionStorage.authToken ? { Authorization: 'Bearer ' + (localStorage.authToken || sessionStorage.authToken) } : {},
 }
 
-const SortableList = SortableContainer(({ items,...restProps }) => {
+const SortableList = SortableContainer(({ items, ...restProps }) => {
     return (
         <div className='SortableList'>
             {items.map((item, index) => (
@@ -78,24 +84,28 @@ const SortableList = SortableContainer(({ items,...restProps }) => {
 
 
 export function EditPhotos({ photos, setPhotos }) {
-
+    const [progress, setProgress] = useState(0);
+    const [loading, setLoading] = useState(false);
     const handlerChange = async ({ file }) => {
-        if (file.status === 'done') {
-
-            setPhotos([...photos, file.response])
+        if (file.status === "uploading") {
+            setLoading(true)
+            setProgress(file.percent)
+        } else if (file.status === 'done') {
             message.success(`${file.name} file uploaded successfully`);
+            setPhotos([...photos, file.response])
         } else if (file.status === 'error') {
             message.error(`${file.name} file upload failed.`);
         }
     }
     const removePhotosItem = (id) => setPhotos(photos.filter(p => p._id !== id))
-
     const onSortEnd = ({ oldIndex, newIndex }) => {
         setPhotos(arrayMove(photos, oldIndex, newIndex));
     };
 
     return (
         <div className="EditPhotos" >
+
+
             {photos.length >= 8 ? null
                 : <Dragger {...props} className="EditPhotos__box"
                     multiple={true}
@@ -108,7 +118,13 @@ export function EditPhotos({ photos, setPhotos }) {
                     <p className="ant-upload-text">Click or drag file to this area to upload</p>
                 </Dragger>
             }
-            <></>
+            {loading && < Progress showInfo={false} percent={progress}
+                strokeColor={{
+                    '0%': '#10136c',
+                    '50%': '#755596',
+                    '100%': '#fdc229',
+                }}
+            />}
             <SortableList
                 shouldUseDragHandle={true}
                 useDragHandle

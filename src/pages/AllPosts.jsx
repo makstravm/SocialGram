@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { actionAllPosts, actionRemovePostsFeedAC } from '../actions';
-import { CPosts } from '../components/Posts';
+import { CPosts } from '../components/main/Posts';
+import { Container } from './Content';
 
 const AllPosts = ({ posts, onAllPosts, postsRemove }) => {
     const [checkScroll, setCheckScroll] = useState(true)
@@ -28,7 +29,9 @@ const AllPosts = ({ posts, onAllPosts, postsRemove }) => {
     }
 
     return (
-        <CPosts />
+        <Container>
+            <CPosts />
+        </Container>
     )
 }
 

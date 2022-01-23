@@ -20,15 +20,13 @@ const HeartLike = ({ styleFontSize, likeStatus, changeLike }) =>
 
 const PostUserPanel = ({ myID, postId = '', likes = [], styleFontSize, addLikePost, removeLikePost }) => {
     const [open, setOpen] = useState(false)
-    let likeStatus
+    let likeStatus =false
     let likeId
     likes.find(l => {
         if (l?.owner?._id === myID) {
             likeStatus = true
             likeId = l._id
-        } else {
-            likeStatus = false
-        }
+        } 
     })
 
     const changeLike = () => likeStatus ? removeLikePost(likeId, postId) : addLikePost(postId)

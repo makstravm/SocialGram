@@ -2,21 +2,14 @@ import { Card, Col, Row, Divider } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { UserAvatar } from './Header'
 import Paragraph from 'antd/lib/typography/Paragraph'
 import Text from 'antd/lib/typography/Text'
 import { actionPostsFeed, actionRemovePostsFeedAC } from '../actions'
 import { DateCreated } from '../components/main/DateCreated'
 import PostImage from '../components/main/postsFeed/PostImage'
 import { CPostUserPanel } from '../components/main/postsFeed/PostUserPanel'
-
-export const PostTitle = ({ owner }) =>
-    <Row justify="start" align='middle'>
-        <Link to={`/profile/${owner?._id}`} className='owner'>
-            <UserAvatar avatar={owner?.avatar} avatarSize={'45px'} />
-            <span className='nick'>{owner?.nick ? owner.nick : owner?.login ? owner.login : 'Null'}</span>
-        </Link >
-    </Row>
+import { Container } from './Content'
+import { CPostTitle } from '../components/main/post/PostTitle'
 
 
 export const PostDescription = ({ title, description, date }) =>
@@ -31,22 +24,22 @@ export const PostDescription = ({ title, description, date }) =>
                 </Text>
             </Col>
         </Row>
-        <Paragraph ellipsis={true ? { rows: 1, expandable: true, symbol: '...' } : false}>
+        <Paragraph ellipsis={true ? { rows: 1, expandable: true, symbol: '...More' } : false}>
             {description}
         </Paragraph>
     </>
 
 export const Comments = ({ comments = [], _id }) =>
-        <Link to={`/post/${_id}`}>
-            <Divider orientation="left">
-                {comments?.length ? `View ${comments.length} comments` : 'No comments'}
-            </Divider>
-        </Link>
+    <Link to={`/post/${_id}`}>
+        <Divider orientation="left">
+            {comments?.length ? `View ${comments.length} comments` : 'No comments'}
+        </Divider>
+    </Link>
 
 const Post = ({ postData: { _id, text, title, owner, images, createdAt = '', comments, likes } }) =>
     <div className='Post'>
         <Card
-            title={<PostTitle owner={owner} />}
+            title={<CPostTitle owner={owner} postId={_id}/>}
             cover={<PostImage images={images} />}
         >
             <CPostUserPanel postId={_id} likes={likes} styleFontSize='1.7em' />
@@ -56,7 +49,7 @@ const Post = ({ postData: { _id, text, title, owner, images, createdAt = '', com
     </div>
 
 
-const MainPostsFeed = ({ posts, postsFollowing, postsFollowingRemove, following }) => {
+const MainPostsFeed = ({ posts, postsFollowing, clearState, following }) => {
 
     const [checkScroll, setCheckScroll] = useState(true)
 
@@ -71,7 +64,7 @@ const MainPostsFeed = ({ posts, postsFollowing, postsFollowingRemove, following 
         document.addEventListener('scroll', scrollHandler)
         return () => {
             document.removeEventListener('scroll', scrollHandler)
-            postsFollowingRemove()
+            clearState()
 
         }
     }, [])
@@ -83,9 +76,9 @@ const MainPostsFeed = ({ posts, postsFollowing, postsFollowingRemove, following 
     }
 
     return (
-        <>
+        <Container>
             {Array.isArray(posts) && posts.map(p => <Post key={p._id} postData={p} />)}
-        </>
+        </Container>
     )
 }
 
@@ -94,5 +87,5 @@ export const CMainPostsFeed = connect(state => ({
     following: state?.myData.following || []
 }), {
     postsFollowing: actionPostsFeed,
-    postsFollowingRemove: actionRemovePostsFeedAC,
+    clearState: actionRemovePostsFeedAC,
 })(MainPostsFeed)

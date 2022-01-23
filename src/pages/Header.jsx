@@ -38,7 +38,7 @@ const ProfileDropMenu = ({ myID, onLogOut }) =>
             <Link to={`/profile/${myID}`}><UserOutlined /> My Profile</Link>
         </Menu.Item>
         <Menu.Item key={'1'}>
-            <Link to={'/'}><SettingOutlined /> Settings</Link>
+            <Link to={'/my-settigs'}><SettingOutlined /> Settings</Link>
         </Menu.Item>
         <Menu.Divider />
         <Menu.Item key={'2'}>
@@ -58,7 +58,7 @@ const UserNavIcon = ({ userData: { _id, avatar, login } }) =>
             <Link to='/message'><MessageOutlined /></Link>
         </Col>
         <Col >
-            <Link to='/add'><PlusCircleOutlined /></Link>
+            <Link to='/edit/post/new'><PlusCircleOutlined /></Link>
         </Col>
         <Col >
             <Link to='/all'><CompassOutlined /></Link>

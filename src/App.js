@@ -13,7 +13,7 @@ import { CMainPostsFeed } from './pages/MainPostsFeed';
 import { CRRoute } from './helpers';
 import { CPostPage } from './pages/PostPage';
 import { CAllPosts } from './pages/AllPosts';
-import { CEntityEditorPost } from './pages/EntityEditorPost';
+import { CEditorPostPage, CEntityEditorPost } from './pages/EntityEditorPost';
 
 export const history = createHistory()
 
@@ -30,28 +30,23 @@ const AppContent = ({ isToken }) =>
                 <Redirect from='/*' to='/auth/login' />
             </Switch>
             :
-
             <Content>
                 <HeaderComponent />
                 <Main>
-                    <Container>
+                    <Switch>
                         <Route path='/' component={CMainPostsFeed} exact />
                         <Route path='/profile/:_id' component={CProfilePage} />
                         <Route path='/message' component={Aside} />
                         {/* <Route path='/add' component={CAdd} /> */}
-                        <Route path='/add' component={CEntityEditorPost} />
-                        <CRRoute path='/all' component={CAllPosts} />
-                    </Container>
-                    <CRRoute path='/post/:id' component={CPostPage} />
-                    {/* <Redirect from='/*' to='/' /> */}
+                        <Route path='/edit/post/:_id' component={CEntityEditorPost} />
+                        <Route path='/all' component={CAllPosts} />
+                        <CRRoute path='/post/:id' component={CPostPage} />
+                        <Redirect from='/*' to='/' />
+                        {/* <Redirect from='/*' to='/post/:id' /> */}
+                    </Switch>
+                    {/*  */}
                 </Main>
             </Content >
-
-
-            // <Switch>
-            //     <Route path='/' component={Content} exact />
-            //     <Redirect from='/auth/*' to='/' />
-            // </Switch>
         }
     </Router >
 
