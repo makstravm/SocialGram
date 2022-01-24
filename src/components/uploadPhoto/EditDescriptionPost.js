@@ -16,9 +16,8 @@ export const EditDescriptionPost = ({ description, setDescription }) => {
     useEffect(() => {
         setText(description || 'Enter descriptin')
     }, [description]);
-    
 
-    const addTaskHandler = () => {
+    const addValueHandler = () => {
         if (text.trim() !== '') {
             setDescription(text)
             setEditMode(false)
@@ -27,31 +26,24 @@ export const EditDescriptionPost = ({ description, setDescription }) => {
             setDescription('')
         }
     }
-    const textInputHandler = () => {
-        setEditMode(true)
-    }
 
-    const textInputHandlerClose = () => {
-        addTaskHandler()
-    }
-
-    const onChangeTask = (e) => {
+    const onChangeInput = (e) => {
         setText(e.currentTarget.value)
         setError(false)
     }
 
-    const onKeyPressAddTask = (e) => {
+    const onKeyPressAdd = (e) => {
         if (e.shiftKey && e.charCode === 13) {
             setText(text += `'\n'`)
         } else if (e.charCode === 13) {
-            addTaskHandler()
+            addValueHandler()
         }
     }
     return (
         <>
             <Divider orientation="left" orientationMargin="0">
                 <Title level={3}>Description
-                    <Button type="link" onClick={textInputHandler}><EditOutlined /></Button></Title>
+                    <Button type="link" onClick={() => setEditMode(true)}><EditOutlined /></Button></Title>
             </Divider>
             {error && <Text type="danger">Field must not be empty</Text>}
             {editMode
@@ -59,11 +51,11 @@ export const EditDescriptionPost = ({ description, setDescription }) => {
                     placeholder="Description"
                     autoSize={{ minRows: 3, maxRows: 5 }}
                     value={text}
-                    onChange={onChangeTask}
-                    autoFocus onBlur={textInputHandlerClose}
-                    onKeyPress={onKeyPressAddTask}
+                    onChange={onChangeInput}
+                    autoFocus onBlur={() => addValueHandler()}
+                    onKeyPress={onKeyPressAdd}
                 />
-                : <Paragraph className="description" onDoubleClick={textInputHandler}>
+                : <Paragraph className="description" onDoubleClick={() => setEditMode(true)}>
                     {text}
                 </Paragraph>
             }

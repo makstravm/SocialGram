@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { actionFindFollowers, actionFindFollowing, actionFindLiked } from '../../../actions';
-import { UserAvatar } from '../../../pages/Header';
+import { UserAvatar } from '../../header/UserAvatar';
 
 
 const ModalFolower = ({ id, status, statusModal, data, title, follow }) => {

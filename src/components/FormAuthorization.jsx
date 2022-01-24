@@ -1,13 +1,10 @@
-import React  from 'react'
-import authBg from '../images/authBg.png'
+import React from 'react'
 import { connect } from 'react-redux'
-import { NavLink} from 'react-router-dom'
-
-import { Form, Input, Button, Row, Col, Card, Divider, Checkbox } from 'antd';
+import { Form, Input, Button, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { actionFullLogIn, actionFullRegister } from '../actions';
 
-const FormInput = ({ buttonTitle, onSignIn }) => {
+const FormAuthorization = ({ buttonTitle, onSignIn }) => {
     const onFinish = ({ login, password, remember }) => {
         onSignIn(login, password, remember)
     };
@@ -65,25 +62,9 @@ const FormInput = ({ buttonTitle, onSignIn }) => {
         </Form>
     )
 }
-const CLoginForm = connect(null, { onSignIn: actionFullLogIn})(FormInput)
-const CRegisterForm = connect(null, { onSignIn: actionFullRegister})(FormInput)
+export const CLoginForm = connect(null, { onSignIn: actionFullLogIn })(FormAuthorization)
+export const CRegisterForm = connect(null, { onSignIn: actionFullRegister })(FormAuthorization)
 
-export const Authorization = ({ match: { params: { _id } } }) => {
-    return (
-        <div className='Authorization' style={{ backgroundImage: `url(${authBg})` }}>
-            <Row justify="end" align="middle" className='Authorization__form'>
-                <Col >
-                    <Card style={{ width: 380 }} >
-                        <NavLink activeClassName='active' to={`/auth/login`}><span>Log In</span></NavLink>
-                        <Divider type="vertical" />
-                        <NavLink activeClassName='active' to={'/auth/registration'}>Registration</NavLink>
-                        <Divider>{_id === 'login' ? 'Log in' : 'Registration'}</Divider >
-                        {_id === 'login' ? <CLoginForm buttonTitle={'Sign In'} /> : <CRegisterForm buttonTitle={'Sign up'} />}
-                    </Card>
-                </Col>
-            </Row >
-        </div>
-    )
-}
+
 
 

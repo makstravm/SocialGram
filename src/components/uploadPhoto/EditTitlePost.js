@@ -12,11 +12,12 @@ export const EditTitlePost = ({ titleSend, setTitleSend }) => {
     const [title, setTitle] = useState(titleSend || 'Enter title')
     const [error, setError] = useState(false)
     const [editMode, setEditMode] = useState(false)
+
     useEffect(() => {
         setTitle(titleSend || 'Enter title')
     }, [titleSend]);
 
-    const addTaskHandler = () => {
+    const addValueHandler = () => {
         if (title.trim() !== '') {
             setTitleSend(title.trim())
             setEditMode(false)
@@ -25,43 +26,33 @@ export const EditTitlePost = ({ titleSend, setTitleSend }) => {
             setTitleSend('')
         }
     }
-    const titleInputHandler = () => {
-        setEditMode(true)
-    }
 
-    const titleInputHandlerClose = () => {
-        addTaskHandler()
-    }
-
-    const onChangeTask = (e) => {
+    const onChangeInput = (e) => {
         setTitle(e.currentTarget.value)
         setError(false)
     }
 
-    const onKeyPressAddTask = (e) => {
-        if (e.charCode === 13) {
-            addTaskHandler()
-        }
-    }
+    const onKeyPressAdd = (e) => e.charCode === 13 && addValueHandler()
+
+
     return (
         <>
             <Divider orientation="left" orientationMargin="0">
                 <Title level={3}>Title
-                    <Button type="link" onClick={titleInputHandler}><EditOutlined /></Button></Title>
+                    <Button type="link" onClick={() => setEditMode(true)}><EditOutlined /></Button></Title>
             </Divider>
             {error && <Text type="danger">Field must not be empty</Text>}
             {editMode
                 ? <Input
                     value={title}
                     placeholder="title"
-                    onChange={onChangeTask}
-                    autoFocus onBlur={titleInputHandlerClose}
-                    onKeyPress={onKeyPressAddTask}
+                    onChange={onChangeInput}
+                    autoFocus onBlur={() => addValueHandler()}
+                    onKeyPress={onKeyPressAdd}
                 />
-                : <Title level={5} onDoubleClick={titleInputHandler}>
+                : <Title level={5} onDoubleClick={() => setEditMode(true)}>
                     {title}
                 </Title>
             }
-   
         </>)
 }

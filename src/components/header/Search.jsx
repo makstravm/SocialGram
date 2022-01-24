@@ -2,9 +2,9 @@ import { Empty, Input, Popover } from 'antd'
 import React from 'react'
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { actionFindUsers, actionSearchUsers } from '../../actions';
-import { UserAvatar } from '../../pages/Header';
+import {  actionSearchUsers } from '../../actions';
 import { SearchOutlined } from '@ant-design/icons';
+import { UserAvatar } from './UserAvatar';
 const FindUsersResult = ({ usersRes }) =>
     <div className='Header__search-drop' >
         {

@@ -39,8 +39,10 @@ export const actionAboutMeAC = (data) => ({ type: 'ABOUTME-DATA-ADD', data })
 
 export const actionFullAboutMe = () => ({ type: 'ABOUT_ME' })
 
+export const actionFullAboutMeUpsert = (nick, login) => ({ type: 'ABOUT_ME_UPSERT', nick, login })
+
 export const actionAboutMe = (id) =>
-actionPromise('aboutMe', gql(`query userOned($myID:String!){
+    actionPromise('aboutMe', gql(`query userOned($myID:String!){
                         UserFindOne(query: $myID){
                             _id  login nick
                             avatar { _id url }
@@ -48,6 +50,14 @@ actionPromise('aboutMe', gql(`query userOned($myID:String!){
                         }
                 }`, { myID: JSON.stringify([{ _id: id }]) }))
 
+export const actionUpsertAboutMe = (myData) =>
+    actionPromise('upsertAboutMe', gql(`mutation editAboutMe($user:UserInput){
+                        UserUpsert(user:$user){
+                            _id   _id  login nick
+                            avatar { _id url }
+                            following{ _id}
+                        }
+                }`, { user: myData }))
 
 //*************** Action Posts Feed ******************//
 
@@ -347,7 +357,7 @@ export const actionGetAvatar = (id) =>
         UserFindOne(query: $myID) {
                             avatar { _id url }
         }
-    }`, { myID: JSON.stringify([{ ___owner: id }]) }))
+    }`, { myID: JSON.stringify([{ _id: id }]) }))
 
 
 //****************--- Find FOllowing/Follovwrs---*************************//

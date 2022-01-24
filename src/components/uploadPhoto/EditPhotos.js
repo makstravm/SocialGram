@@ -1,16 +1,14 @@
-import { DeleteOutlined, EyeOutlined, InboxOutlined, LoadingOutlined, PlusOutlined } from "@ant-design/icons";
-import { Button, message, Icon, Upload, Image, Progress } from "antd";
+import { DeleteOutlined, EyeOutlined, InboxOutlined } from "@ant-design/icons";
+import { Button, message, Image, Progress } from "antd";
 import Dragger from "antd/lib/upload/Dragger";
 import React, { useState } from "react";
-import ReactDOM from "react-dom";
-import ImgCrop from 'antd-img-crop';
 import {
     arrayMove,
     SortableContainer,
     SortableElement,
     SortableHandle
 } from "react-sortable-hoc";
-import { backURL } from "../../helpers";
+import { backURL, propsUploadFile } from "../../helpers";
 
 
 const SortableItemMask = ({ removePhotosItem, setVisible, id }) =>
@@ -45,13 +43,7 @@ const Handle = SortableHandle(({ tabIndex, value, removePhotosItem }) => {
     )
 })
 
-//     < Progress
-// strokeColor = {{
-//     '0%': '#108ee9',
-//         '100%': '#87d068',
-//       }}
-// percent = { 99.9}
-//     />
+
 const SortableItem = SortableElement(props => {
     const { value, removePhotosItem } = props
     return (
@@ -61,11 +53,6 @@ const SortableItem = SortableElement(props => {
     );
 });
 
-const props = {
-    name: 'photo',
-    action: `${backURL}/upload`,
-    headers: localStorage.authToken || sessionStorage.authToken ? { Authorization: 'Bearer ' + (localStorage.authToken || sessionStorage.authToken) } : {},
-}
 
 const SortableList = SortableContainer(({ items, ...restProps }) => {
     return (
@@ -104,10 +91,9 @@ export function EditPhotos({ photos, setPhotos }) {
 
     return (
         <div className="EditPhotos" >
-
-
             {photos.length >= 8 ? null
-                : <Dragger {...props} className="EditPhotos__box"
+                : <Dragger {...propsUploadFile}
+                    className="EditPhotos__box"
                     multiple={true}
                     listType="picture-card"
                     showUploadList={false}
@@ -115,16 +101,21 @@ export function EditPhotos({ photos, setPhotos }) {
                     <p className="ant-upload-drag-icon">
                         <InboxOutlined />
                     </p>
-                    <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                    <p className="ant-upload-text">
+                        Click or drag file to this area to upload
+                    </p>
                 </Dragger>
             }
-            {loading && < Progress showInfo={false} percent={progress}
-                strokeColor={{
-                    '0%': '#10136c',
-                    '50%': '#755596',
-                    '100%': '#fdc229',
-                }}
-            />}
+            {loading &&
+                <Progress
+                    showInfo={false}
+                    percent={progress}
+                    strokeColor={{
+                        '0%': '#10136c',
+                        '50%': '#755596',
+                        '100%': '#fdc229',
+                    }}
+                />}
             <SortableList
                 shouldUseDragHandle={true}
                 useDragHandle

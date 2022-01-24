@@ -1,35 +1,19 @@
 import React from 'react'
 import logo from '../logo.svg';
-import noAva from '../images/noAva.png'
 import { Link } from 'react-router-dom';
 import { CFieldSearch } from '../components/header/Search';
 import { connect } from 'react-redux';
 import { actionAuthLogout } from '../actions';
-import { backURL } from '../helpers';
 import Layout, { Header } from 'antd/lib/layout/layout';
-import { Avatar, Col, Menu, Popover, Row } from 'antd';
+import {  Col, Menu, Popover, Row } from 'antd';
 import { UserOutlined, CompassOutlined, SettingOutlined, HomeOutlined, ImportOutlined, MessageOutlined, PlusCircleOutlined } from '@ant-design/icons/lib/icons';
+import { UserAvatar } from '../components/header/UserAvatar';
 
 const UserNav = () =>
     <div className='UserNav'>
         <CUserNavIcon />
     </div>
 
-export const UserAvatar = ({ avatarSize, avatar }) => {
-    return (
-        <>
-            <Avatar style={{
-                width: avatarSize,
-                height: avatarSize
-            }}
-                src={avatar && avatar?.url ?
-                    <img src={(backURL + '/' + avatar.url)} alt='avatar' /> :
-                    <img src={noAva} />
-                } />
-
-        </>
-    )
-}
 
 
 const ProfileDropMenu = ({ myID, onLogOut }) =>
@@ -38,7 +22,7 @@ const ProfileDropMenu = ({ myID, onLogOut }) =>
             <Link to={`/profile/${myID}`}><UserOutlined /> My Profile</Link>
         </Menu.Item>
         <Menu.Item key={'1'}>
-            <Link to={'/my-settigs'}><SettingOutlined /> Settings</Link>
+            <Link to={'/my-settings'}><SettingOutlined /> Settings</Link>
         </Menu.Item>
         <Menu.Divider />
         <Menu.Item key={'2'}>

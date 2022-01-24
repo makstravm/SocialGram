@@ -2,7 +2,7 @@ import { Col, Row, Button, Dropdown, Menu } from 'antd'
 import { MoreOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { UserAvatar } from '../../../pages/Header'
+import { UserAvatar } from '../../header/UserAvatar'
 
 const MenuOverlay = ({ postId }) =>
     <Menu>

@@ -2,17 +2,17 @@ import React, { useState } from 'react'
 import { Divider } from 'antd';
 import { connect } from 'react-redux'
 import PostImage from '../components/main/postsFeed/PostImage'
-import { PostTitle, PostDescription } from './MainPostsFeed';
+import { PostDescription } from './MainPostsFeed';
 import Text from 'antd/lib/typography/Text';
 import { CFieldCommentSend, CFieldSubCommentSend } from '../components/main/postsFeed/FieldComment';
 import { CPostUserPanel } from '../components/main/postsFeed/PostUserPanel';
 import { Comment, Tooltip } from 'antd';
 import moment from 'moment';
-import { UserAvatar } from './Header';
 import { Link } from 'react-router-dom';
 import { LikeFilled, LikeOutlined } from '@ant-design/icons';
 import { actionLikeComment, actionDelLikeComment, actionSubComment } from '../actions';
 import { CPostTitle } from '../components/main/post/PostTitle';
+import { UserAvatar } from '../components/header/UserAvatar';
 
 
 const PostPageTitle = ({ data: { owner }, postId }) =>
@@ -88,9 +88,9 @@ const CPostComment = connect(state => ({
 }
 )(PostComment)
 
-const CPostSubComment = connect(state => ({ comments: state?.postsFeed?.SubComments }, {
+const CPostSubComment = connect(state => ({ comments: state?.postsFeed?.SubComments }), {
     findSubComment: actionSubComment,
-}))(PostComment)
+})(PostComment)
 
 const PostComments = ({ comments }) => {
     return (

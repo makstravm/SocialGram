@@ -1,5 +1,5 @@
 import { all, call, delay, fork, join, put, select, takeEvery, takeLatest, takeLeading } from "redux-saga/effects";
-import { actionAboutMe, actionAboutMeAC, actionAddComment, actionAddCommentAC, actionAddLikeComment, actionAddLikeCommentAC, actionAddLikePost, actionAddLikePostAC, actionAddPostsFeedAC, actionAllPostsCount, actionAuthLogin, actionClearPromise, actionEditPostOneAC, actionFindComment, actionFindLikeComment, actionFindPostOne, actionFindSubComment, actionFullAboutMe, actionFullLogIn, actionGetAllPosts, actionGetAvatar, actionGetFindFollowers, actionGetFindFollowing, actionGetFindLiked, actionGetPostAC, actionLoadSearchUsers, actionLoadSubscribe, actionloadUnSubscribe, actionLogIn, actionMyLikePost, actionPending, actionPostOneEdit, actionPostsCount, actionPostsMyFollowing, actionProfileData, actionProfileDataAC, actionProfilePagePost, actionPromise, actionRegister, actionRejected, actionRemoveLikeComment, actionRemoveLikeCommentAC, actionRemoveLikePost, actionRemoveLikePostAC, actionRemovePostsFeedAC, actionResolved, actionSentPost, actionSetAvatar, actionSubAddComment, actionUpdateFollowers, actionUpdateFollowersAC, actionUpdateMyAvatart, actionUpdateMyFollowing, actionUpdateMyFollowingAC, actionUpdateSubCommentAC } from "../../actions";
+import { actionAboutMe, actionAboutMeAC, actionAddComment, actionAddCommentAC, actionAddLikeComment, actionAddLikeCommentAC, actionAddLikePost, actionAddLikePostAC, actionAddPostsFeedAC, actionAllPostsCount, actionAuthLogin, actionClearPromise, actionFindComment, actionFindLikeComment, actionFindSubComment, actionFullAboutMe, actionFullLogIn, actionGetAllPosts, actionGetAvatar, actionGetFindFollowers, actionGetFindFollowing, actionGetFindLiked, actionGetPostAC, actionLoadSearchUsers, actionLoadSubscribe, actionloadUnSubscribe, actionLogIn, actionMyLikePost, actionPending, actionPostOneEdit, actionPostsCount, actionPostsMyFollowing, actionProfileData, actionProfileDataAC, actionProfilePagePost, actionPromise, actionRegister, actionRejected, actionRemoveLikeComment, actionRemoveLikeCommentAC, actionRemoveLikePost, actionRemoveLikePostAC, actionRemovePostsFeedAC, actionResolved, actionSentPost, actionSetAvatar, actionSubAddComment, actionUpdateFollowers, actionUpdateFollowersAC, actionUpdateMyAvatart, actionUpdateMyFollowing, actionUpdateMyFollowingAC, actionUpdateSubCommentAC, actionUpsertAboutMe } from "../../actions";
 import { queries } from "../../actions/actionQueries";
 import { gql } from "../../helpers";
 
@@ -76,8 +76,24 @@ function* aboutMeWorker() {
     }
 }
 
+function* aboutMeUpsertWorker({ nick, login }) {
+    const { myData:{_id} } = yield select()
+    const newMyData = {_id,  nick, login }
+    console.log(newMyData);
+    const result = yield call(promiseWorker, actionUpsertAboutMe(newMyData))
+    if (result) {
+        yield put(actionAboutMeAC(result))
+        yield put(actionClearPromise('upsertAboutMe'))
+    }
+
+}
+
+
 function* aboutMeWatcher() {
-    yield takeEvery('ABOUT_ME', aboutMeWorker)
+    yield all([
+        takeEvery('ABOUT_ME', aboutMeWorker),
+        takeEvery('ABOUT_ME_UPSERT', aboutMeUpsertWorker),
+    ])
 }
 
 
@@ -127,7 +143,6 @@ function* findPostEditWorker({ _id }) {
         yield put(actionAddPostsFeedAC(dataPost))
     }
 }
-
 
 function* postsFeedWatcher() {
     yield all([
@@ -307,8 +322,10 @@ function* addCommentWatcher() {
 
 function* updateAvatarWorker({ file }) {
     const { auth: { payload: { sub: { id } } } } = yield select()
+    console.log(file, id);
     yield call(promiseWorker, actionSetAvatar(file, id))
     const { avatar } = yield call(promiseWorker, actionGetAvatar(id))
+    console.log(avatar);
     if (avatar) {
         yield put(actionUpdateMyAvatart(avatar))
     }

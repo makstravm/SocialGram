@@ -1,26 +1,20 @@
-import { Button, Divider, Input, message } from "antd"
+import { Button, Divider,  message } from "antd"
 import Title from "antd/lib/typography/Title"
 import { useEffect, useState } from "react"
 import { connect } from "react-redux"
 import { actionFindPostOne, actionFullSentPost, actionRemovePostsFeedAC } from "../actions"
-import { EditPhotos } from "../components/uploadPhoto"
+import { EditPhotos } from "../components/uploadPhoto/EditPhotos"
 import { EditDescriptionPost } from "../components/uploadPhoto/EditDescriptionPost"
 import { EditTitlePost } from "../components/uploadPhoto/EditTitlePost"
 import { Container } from "./Content"
 import { history } from '../App'
 
 
-
-
 const ContainEditorPost = ({ children }) =>
-    <div className='ContainEditorPost'>{children}</div>
-
-
-
-
-
+    <div className='ContainEditPost ContainerInner'>{children}</div>
 
 const EntityEditorPost = ({ match: { params: { _id } }, myID, entity, status, onSave, findPostOne, clearState }) => {
+
     const [photos, setPhotos] = useState(entity?.images || []);
     const [titleSend, setTitleSend] = useState(entity?.title || '')
     const [description, setDescription] = useState(entity?.text || '');
@@ -45,16 +39,13 @@ const EntityEditorPost = ({ match: { params: { _id } }, myID, entity, status, on
             history.push(`/profile/${myID}`)
         }
     }, [status])
+
     const disabledBtn = photos.length && titleSend && description ? false : true
-
-    const sentPost = () => {
-        onSave(photos, titleSend, description)
-
-    }
+    const sentPost = () => onSave(photos, titleSend, description)
 
     return (
-        <Container >
-            <ContainEditorPost>
+        <Container>
+            <ContainEditorPost >
                 <h1 className="title" level={1}>Create / edit Post</h1>
                 <Divider orientation="left" orientationMargin="0"><Title level={3}>Photos</Title></Divider>
                 <EditPhotos photos={photos} setPhotos={setPhotos} />
@@ -76,5 +67,3 @@ export const CEntityEditorPost = connect(state => ({
         findPostOne: actionFindPostOne,
         clearState: actionRemovePostsFeedAC,
     })(EntityEditorPost)
-
-

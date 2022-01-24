@@ -3,12 +3,12 @@ import { Button, Col, Row } from 'antd'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { actionProfilePageData, actionRemovePostsFeedAC, actionSubscribe, actionUnSubscribe } from '../actions'
-import { UserAvatar } from './Header'
 import { CModalFollowers, CModalFollowing } from '../components/main/profilePage/ModalFollow'
 import { DateCreated } from '../components/main/DateCreated'
 import Text from 'antd/lib/typography/Text'
 import { Container } from './Content'
 import { CPosts } from '../components/main/Posts'
+import { UserAvatar } from '../components/header/UserAvatar'
 
 const ProfileFollowButton = ({ myID, userId, followers, onSubsuscribe, onUnSubsuscribe }) => {
     const followCheck = followers.find(f => f._id === myID && true)

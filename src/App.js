@@ -4,22 +4,19 @@ import { Router, Route, Switch, Redirect } from 'react-router-dom';
 import createHistory from "history/createBrowserHistory";
 import { connect, Provider } from 'react-redux';
 import store from './redux/redux-store';
-import { Authorization } from './components/Authorization';
-import { Container, Content, Main } from './pages/Content';
+import { Content, Main } from './pages/Content';
 import { CProfilePage } from './pages/ProfilePage';
-import { CAdd } from './components/main/Add';
 import HeaderComponent from './pages/Header';
 import { CMainPostsFeed } from './pages/MainPostsFeed';
 import { CRRoute } from './helpers';
 import { CPostPage } from './pages/PostPage';
 import { CAllPosts } from './pages/AllPosts';
-import { CEditorPostPage, CEntityEditorPost } from './pages/EntityEditorPost';
+import { CEntityEditorPost } from './pages/EntityEditorPost';
+import { SettingsPage } from './pages/SettingsPage';
+import { Authorization } from './pages/Authorization';
 
 export const history = createHistory()
 
-
-const Aside = () =>
-    <div>sdfsdgsgsdg</div>
 const AppContent = ({ isToken }) =>
     <Router history={history}>
         {!isToken
@@ -36,15 +33,14 @@ const AppContent = ({ isToken }) =>
                     <Switch>
                         <Route path='/' component={CMainPostsFeed} exact />
                         <Route path='/profile/:_id' component={CProfilePage} />
-                        <Route path='/message' component={Aside} />
-                        {/* <Route path='/add' component={CAdd} /> */}
+                        {/* <Route path='/message' component={Aside} /> */}
                         <Route path='/edit/post/:_id' component={CEntityEditorPost} />
+                        <Route path='/my-settings' component={SettingsPage} />
                         <Route path='/all' component={CAllPosts} />
                         <CRRoute path='/post/:id' component={CPostPage} />
                         <Redirect from='/*' to='/' />
                         {/* <Redirect from='/*' to='/post/:id' /> */}
                     </Switch>
-                    {/*  */}
                 </Main>
             </Content >
         }

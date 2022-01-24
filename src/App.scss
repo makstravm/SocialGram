@@ -475,13 +475,14 @@ body {
     font-size: 1.2em;
     font-weight: 500;
 }
-
-.ContainEditorPost {
+.ContainerInner {
     width: 100%;
     background-color: $defaultColorW;
     padding: 15px 25px;
     box-shadow: 0 0 6px 2px rgba($defaultColorB, 0.5);
     border-radius: 5px;
+}
+.ContainEditPost {
     .title {
         width: 100%;
         text-align: center;
@@ -566,4 +567,56 @@ body {
 }
 .ant-dropdown {
     box-shadow: 0 0 2px 0 $defaultColorB;
+}
+.avatar-uploader > .ant-upload {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    position: relative;
+    .edit-icon {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+}
+
+.EditMyData {
+    label {
+        display: flex;
+        align-items: flex-end;
+        padding-bottom: 10px;
+        flex-wrap: nowrap;
+    }
+    h4 {
+        margin: 0;
+        padding-right: 10px;
+    }
+    button {
+        display: none;
+        margin: 0 auto;
+        &.--block {
+            display: block;
+        }
+    }
+    &__lable-box {
+        span {
+            display: block;
+            text-align: center;
+        }
+        input.--error {
+            border-color: #ff4d4f;
+            max-width: 100%;
+        }
+        .EditMyData__lable-text {
+            font-size: 1.3em;
+            display: inline-block;
+            padding: 0 10px;
+            span {
+                display: inline-block;
+            }
+            svg {
+                margin-left: 10px;
+            }
+        }
+    }
 }
