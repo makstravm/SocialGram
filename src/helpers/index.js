@@ -3,7 +3,10 @@ import { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Route } from 'react-router-dom';
 
+
 export const backURL = 'http://hipstagram.asmer.fs.a-level.com.ua'
+
+export const videoRegExp = (/\.(mp4|mov|avi|wmv|flv|flv|3gp|mpg)$/i)
 
 export const propsUploadFile = {
     name: 'photo',

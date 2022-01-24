@@ -34,7 +34,6 @@ export const EditTitlePost = ({ titleSend, setTitleSend }) => {
 
     const onKeyPressAdd = (e) => e.charCode === 13 && addValueHandler()
 
-
     return (
         <>
             <Divider orientation="left" orientationMargin="0">

@@ -21,7 +21,7 @@ const ProfileFollowButton = ({ myID, userId, followers, onSubsuscribe, onUnSubsu
     )
 }
 
-const CProfileFollowButton = connect(state => ({
+export const CProfileFollowButton = connect(state => ({
     myID: state?.auth?.payload?.sub.id,
     followers: state?.postsFeed?.userData?.followers || []
 }), { onSubsuscribe: actionSubscribe, onUnSubsuscribe: actionUnSubscribe })(ProfileFollowButton)

@@ -65,7 +65,6 @@ const MainPostsFeed = ({ posts, postsFollowing, clearState, following }) => {
         return () => {
             document.removeEventListener('scroll', scrollHandler)
             clearState()
-
         }
     }, [])
 

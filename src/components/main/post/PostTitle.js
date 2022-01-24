@@ -6,7 +6,7 @@ import { UserAvatar } from '../../header/UserAvatar'
 
 const MenuOverlay = ({ postId }) =>
     <Menu>
-        <Menu.Item>
+        <Menu.Item key={'1'}>
             <Link to={`/edit/post/${postId}`}> Edit post</Link>
         </Menu.Item>
     </Menu >

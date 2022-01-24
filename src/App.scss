@@ -55,7 +55,11 @@ body {
     background-color: #f9f9f9;
     color: $defaultColorB;
 }
-
+video {
+    width: 100%;
+    margin: 0 auto;
+    max-height: 500px;
+}
 .Header {
     display: flex;
     background-color: #ececec;
@@ -201,6 +205,8 @@ body {
         width: 100%;
         margin: 0 auto;
         padding: 1px;
+        max-height: 600px;
+        object-fit: contain;
     }
     &__dots.slick-dots {
         bottom: -14px;
@@ -316,6 +322,7 @@ body {
     }
     li {
         padding-left: 35px;
+        padding-right: 35px;
     }
 }
 
@@ -381,7 +388,8 @@ body {
         div {
             padding: 0;
         }
-        img {
+        img,
+        video {
             width: 100%;
             height: 100%;
             max-height: 175px;
@@ -395,6 +403,17 @@ body {
             position: absolute;
             top: 0;
             right: 0;
+        }
+        &-icon--video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2.5em;
+            svg {
+                fill: $defaultColorW;
+                stroke: $defaultColorB;
+            }
         }
     }
 }
@@ -518,6 +537,7 @@ body {
     border-radius: 4px;
     background-color: rgba($defaultColorB, 0.5);
     opacity: 0;
+    z-index: 2;
     transition: 0.3s;
     button {
         svg {
@@ -536,7 +556,8 @@ body {
         align-items: center;
         justify-content: center;
         box-shadow: 0 0 6px 2px rgba($defaultColorB, 0.3);
-        img {
+        img,
+        video {
             width: 100%;
             object-fit: cover;
             max-height: 150px;

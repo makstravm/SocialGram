@@ -24,7 +24,7 @@ const EditMyDataIput = ({ title, propValue, propHandler, check }) => {
 
     const addValueHandler = () => {
         const valid = /^[A-Z][a-z0-9_]{1,15}$/
-        if (valid.test(value)) {
+        if (!valid.test(value)) {
             propHandler(value)
             setEditMode(false)
             check(false)

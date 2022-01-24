@@ -2,8 +2,7 @@ import { LeftCircleOutlined, RightCircleOutlined } from "@ant-design/icons";
 import { Carousel, Empty } from "antd";
 import React, { createRef } from "react";
 import nodata from '../../../images/nodata.png'
-import { backURL } from '../../../helpers/index'
-
+import { backURL, videoRegExp } from '../../../helpers/index'
 
 
 class PostImage extends React.Component {
@@ -43,19 +42,23 @@ class PostImage extends React.Component {
                 infinite={false}
                 dots={{ className: 'Post__dots' }
                 }>
-                {!!images ?
-                    images.map((i, index) => i?.url ? <div
-                        key={i._id}
-                        onMouseEnter={() => this.moveOnDivArray(images.length, index)}
-                        onMouseLeave={this.downOnDivArray}>
-                        <button onClick={() => this.handlePrev()}
-                            className={`Post__prev Post__btn ${this.state.movePrev ? '--active' : ''}`}><LeftCircleOutlined /></button>
-                        <button onClick={() => this.handleNext()}
-                            className={`Post__next Post__btn ${this.state.moveNext ? '--active' : ''}`}><RightCircleOutlined /></button>
-                        <img src={backURL + '/' + i.url} />
-                    </div> :
-                        <Empty key={i._id} image={nodata} description={false} />) :
-                    <Empty image={nodata} description={false} />
+                {!!images ? images.map((i, index) => i?.url ? <div
+                    key={i._id}
+                    onMouseEnter={() => this.moveOnDivArray(images.length, index)}
+                    onMouseLeave={this.downOnDivArray}>
+                    <button onClick={() => this.handlePrev()}
+                        className={`Post__prev Post__btn ${this.state.movePrev ? '--active' : ''}`}><LeftCircleOutlined /></button>
+                    <button onClick={() => this.handleNext()}
+                        className={`Post__next Post__btn ${this.state.moveNext ? '--active' : ''}`}><RightCircleOutlined /></button>
+                    {videoRegExp.test(i.originalFileName)
+                        ? <video controls loop preload="true" height="500">
+                            <source src={backURL + '/' + i.url} />
+                        </video>
+                        : <img src={backURL + '/' + i.url} />
+                    }
+                </div>
+                    : <Empty key={i._id} image={nodata} description={false} />)
+                    : <Empty image={nodata} description={false} />
                 }
             </Carousel >
         );

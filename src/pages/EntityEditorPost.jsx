@@ -1,8 +1,8 @@
-import { Button, Divider,  message } from "antd"
+import { Button, Divider, message } from "antd"
 import Title from "antd/lib/typography/Title"
 import { useEffect, useState } from "react"
 import { connect } from "react-redux"
-import { actionFindPostOne, actionFullSentPost, actionRemovePostsFeedAC } from "../actions"
+import { actionFullSentPost, } from "../actions"
 import { EditPhotos } from "../components/uploadPhoto/EditPhotos"
 import { EditDescriptionPost } from "../components/uploadPhoto/EditDescriptionPost"
 import { EditTitlePost } from "../components/uploadPhoto/EditTitlePost"
@@ -18,20 +18,16 @@ const EntityEditorPost = ({ match: { params: { _id } }, myID, entity, status, on
     const [photos, setPhotos] = useState(entity?.images || []);
     const [titleSend, setTitleSend] = useState(entity?.title || '')
     const [description, setDescription] = useState(entity?.text || '');
-
     useEffect(() => {
-        if (_id !== 'new')
-            findPostOne(_id)
-        return () => {
-            clearState()
-        };
+        console.log();
+        if (Array.isArray(entity)) {
+            let newEntity = entity.find(e => e._id === _id)
+            setPhotos(newEntity?.images || [])
+            setTitleSend(newEntity?.title || '')
+            setDescription(newEntity?.text || '')
+        } else if (!Object.keys(entity = {}).length) history.push('/edit/post/new')
     }, []);
 
-    useEffect(() => {
-        setPhotos(entity?.images || [])
-        setTitleSend(entity?.title || '')
-        setDescription(entity?.text || '')
-    }, [entity]);
 
     useEffect(() => {
         if (status === "RESOLVED") {
@@ -59,11 +55,9 @@ const EntityEditorPost = ({ match: { params: { _id } }, myID, entity, status, on
 
 export const CEntityEditorPost = connect(state => ({
     myID: state?.auth?.payload?.sub?.id,
-    entity: state?.postsFeed?.posts,
+    entity: state?.postsFeed.posts,
     status: state?.promise?.sentPost?.status
 }),
     {
         onSave: actionFullSentPost,
-        findPostOne: actionFindPostOne,
-        clearState: actionRemovePostsFeedAC,
     })(EntityEditorPost)

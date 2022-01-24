@@ -8,7 +8,7 @@ import {
     SortableElement,
     SortableHandle
 } from "react-sortable-hoc";
-import { backURL, propsUploadFile } from "../../helpers";
+import { backURL, propsUploadFile, videoRegExp } from "../../helpers";
 
 
 const SortableItemMask = ({ removePhotosItem, setVisible, id }) =>
@@ -27,7 +27,12 @@ const Handle = SortableHandle(({ tabIndex, value, removePhotosItem }) => {
     return (
         <div className="Handle" tabIndex={tabIndex} >
             <SortableItemMask id={value._id} setVisible={setVisible} removePhotosItem={removePhotosItem} />
-            <img src={`${backURL + '/' + value.url}`} alt="avatar" style={{ width: '100%' }} />
+            {videoRegExp.test(value.originalFileName)
+                ? <video controls loop preload="true" height="500">
+                    <source src={backURL + '/' + value.url} />
+                </video>
+                : <img src={backURL + '/' + value.url} />
+            } 
             <Image className="hidden-item"
                 width={200}
                 style={{ display: 'none' }}

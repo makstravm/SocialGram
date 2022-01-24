@@ -36,7 +36,6 @@ export const actionRegister = (login, password) =>
 
 
 export const actionAboutMeAC = (data) => ({ type: 'ABOUTME-DATA-ADD', data })
-
 export const actionFullAboutMe = () => ({ type: 'ABOUT_ME' })
 
 export const actionFullAboutMeUpsert = (nick, login) => ({ type: 'ABOUT_ME_UPSERT', nick, login })
@@ -75,7 +74,7 @@ export const actionPostsMyFollowing = (skip, myFollowing) =>
                 _id, text, title
                 owner{_id, nick, login, avatar {url}}
                 likes { _id owner {_id}}   
-                images{url _id}
+                images{ url _id originalFileName }
                 comments{_id}
                 createdAt
         }
@@ -103,7 +102,7 @@ export const actionProfileDataAC = (postsData, count, userData) => ({ type: 'ADD
 
 export const actionProfilePageData = (id) => ({ type: 'DATA_PROFILE', id })
 
-export const actionFindPostOne = (_id) => ({ type: 'FIND_POST_ONE', _id })
+// export const actionFindPostOne = (_id) => ({ type: 'FIND_POST_ONE', _id })
 
 export const actionProfileData = (_id) =>
     actionPromise('userOneData', gql(` query userOned($id:String!){
@@ -118,7 +117,7 @@ export const actionProfileData = (_id) =>
 
 export const actionProfilePagePost = (_id, skip) => actionPromise('userOneDataPosts', gql(` query userOned($id:String!){
                 PostFind(query:$id){
-                    _id   images{url _id}
+                    _id   images{ url _id originalFileName }
                 }
                 }`, {
     id: JSON.stringify([{
@@ -131,16 +130,6 @@ export const actionProfilePagePost = (_id, skip) => actionPromise('userOneDataPo
     }])
 }))
 
-
-export const actionPostOneEdit = (_id) =>
-    actionPromise('postOneEdit', gql(`query post($id:String!) {
-                    PostFindOne(query:$id) {
-                        _id title text 
-                        images { _id url}
-                  
-                        }
-                    }`, { id: JSON.stringify([{ _id }]) }))
-
 //****************---All FIND POSTS---*************************//
 
 export const actionAllPosts = () => ({ type: 'ALL_POSTS' })
@@ -148,7 +137,7 @@ export const actionAllPosts = () => ({ type: 'ALL_POSTS' })
 export const actionGetAllPosts = (skip) =>
     actionPromise('allPosts', gql(` query allPosts($id:String!){
                 PostFind(query:$id){
-                    _id   images{url _id}
+                    _id   images{url _id originalFileName}
                 }
             }`, {
         id: JSON.stringify([{}, {
@@ -359,7 +348,6 @@ export const actionGetAvatar = (id) =>
         }
     }`, { myID: JSON.stringify([{ _id: id }]) }))
 
-
 //****************--- Find FOllowing/Follovwrs---*************************//
 
 export const actionFindFollowing = (_id) => ({ type: 'FIND_FOLLOWING', _id })
@@ -372,6 +360,7 @@ export const actionGetFindFollowing = (_id) =>
                             following {
                                 _id nick login
                                 avatar { _id url }
+                                followers{_id}
                             }
                 }
             } `, { id: JSON.stringify([{ _id }]) }))
@@ -382,6 +371,7 @@ export const actionGetFindFollowers = (_id) =>
                             followers {
                                 _id  nick login
                                 avatar { _id url }
+                                followers{_id}
                             }
                 }
             } `, { id: JSON.stringify([{ _id }]) }))
@@ -403,6 +393,15 @@ export const actionFullSentPost = (images, title, text) => ({ type: 'CREATE_POST
 export const actionSentPost = (upSertPostObj) =>
     actionPromise('sentPost', gql(`mutation sentPost($post: PostInput){
               PostUpsert(post: $post){
-                    _id images{_id url}
+                    _id images{_id url originalFileName}
                 }
             }`, { post: upSertPostObj }))
+
+
+
+
+        //запросить все коменты этого псота с ансвер (айди)
+        // по ансверс.файди найти дочерные коменты и засунуть в массив ансверс как елементы
+        // таким оюразом получтьь дерево
+        // отдать в рекувсивный компонкнт на отрисовку дерева.
+        // каждый лист дерева приконектить к экшонам лайк и добавление дочернего коммета.Там жк=е должен быть известен пост.айди для создания комментов

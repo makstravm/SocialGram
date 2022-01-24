@@ -4,7 +4,7 @@ export const queries = {
         query: `query post($id:String!) {
                     PostFindOne(query:$id) {
                         _id createdAt title text 
-                        images{_id url text}
+                        images{_id url originalFileName}
                         comments {
                             _id createdAt text 
                             likes { _id owner {_id}}   

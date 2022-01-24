@@ -48,7 +48,7 @@ const UserNavIcon = ({ userData: { _id, avatar, login } }) =>
             <Link to='/all'><CompassOutlined /></Link>
         </Col>
         <Col>
-            <Popover placement="bottomRight" content={<CProfileDropMenu myID={_id} />} trigger={'click'}>
+            <Popover placement="bottomRight" content={<CProfileDropMenu myID={_id} />} trigger={['focus', 'hover']}>
                 <></>
                 <UserAvatar avatar={avatar} login={login} avatarSize={'45px'} />
             </Popover>
