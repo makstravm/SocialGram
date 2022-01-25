@@ -9,6 +9,7 @@ import Text from 'antd/lib/typography/Text'
 import { Container } from './Content'
 import { CPosts } from '../components/main/Posts'
 import { UserAvatar } from '../components/header/UserAvatar'
+import { CPreloader } from './Preloader'
 
 const ProfileFollowButton = ({ myID, userId, followers, onSubsuscribe, onUnSubsuscribe }) => {
     const followCheck = followers.find(f => f._id === myID && true)
@@ -114,6 +115,7 @@ const ProfilePage = ({ match: { params: { _id } }, getProfileUser, clearDataProf
 
     return (
         <Container>
+            <CPreloader promiseName='userOneDataPosts'/>
             <CProfilePageData setFollowing={setFollowing} setFollowers={setFollowers} />
             {followers && < CModalFollowers statusModal={setFollowers} title={'Followers'} />}
             {following && < CModalFollowing statusModal={setFollowing} title={'Following'} />}

@@ -2,7 +2,7 @@ import { Button, Divider, message } from "antd"
 import Title from "antd/lib/typography/Title"
 import { useEffect, useState } from "react"
 import { connect } from "react-redux"
-import { actionFullSentPost, } from "../actions"
+import { actionAddPostsFeedAC, actionFullSentPost, actionRemovePostsFeedAC, } from "../actions"
 import { EditPhotos } from "../components/uploadPhoto/EditPhotos"
 import { EditDescriptionPost } from "../components/uploadPhoto/EditDescriptionPost"
 import { EditTitlePost } from "../components/uploadPhoto/EditTitlePost"
@@ -13,19 +13,23 @@ import { history } from '../App'
 const ContainEditorPost = ({ children }) =>
     <div className='ContainEditPost ContainerInner'>{children}</div>
 
-const EntityEditorPost = ({ match: { params: { _id } }, myID, entity, status, onSave, findPostOne, clearState }) => {
+const EntityEditorPost = ({ match: { params: { _id } }, myID, entity, status, onSave, updatePost, clearState }) => {
 
     const [photos, setPhotos] = useState(entity?.images || []);
     const [titleSend, setTitleSend] = useState(entity?.title || '')
     const [description, setDescription] = useState(entity?.text || '');
     useEffect(() => {
-        console.log();
+        let newEntity
         if (Array.isArray(entity)) {
-            let newEntity = entity.find(e => e._id === _id)
+            newEntity = entity.find(e => e._id === _id)
             setPhotos(newEntity?.images || [])
             setTitleSend(newEntity?.title || '')
             setDescription(newEntity?.text || '')
         } else if (!Object.keys(entity = {}).length) history.push('/edit/post/new')
+        updatePost(newEntity)
+        return () => {
+            clearState()
+        }
     }, []);
 
 
@@ -33,6 +37,8 @@ const EntityEditorPost = ({ match: { params: { _id } }, myID, entity, status, on
         if (status === "RESOLVED") {
             message.success(`post published, can create a new one`)
             history.push(`/profile/${myID}`)
+        }else if(status === "REJECTED"){
+            message.error('Error')
         }
     }, [status])
 
@@ -59,5 +65,7 @@ export const CEntityEditorPost = connect(state => ({
     status: state?.promise?.sentPost?.status
 }),
     {
+        updatePost: actionAddPostsFeedAC,
         onSave: actionFullSentPost,
+        clearState: actionRemovePostsFeedAC,
     })(EntityEditorPost)

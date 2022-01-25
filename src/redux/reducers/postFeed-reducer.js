@@ -3,9 +3,10 @@ import React from 'react'
 export const postsFeedReducer = (state = {}, { type, findId, newResult, userData = {}, count = null }) => {
     const { posts } = state
     const types = {
+        //=== Array.isArray(newResult)
         'ADD-POSTS-FEED': () => ({
             ...state,
-            posts: Array.isArray(posts) === Array.isArray(newResult)
+            posts: Array.isArray(newResult) 
                 ? [...posts, ...newResult]
                 : { ...posts, ...newResult },
             count

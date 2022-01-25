@@ -10,6 +10,7 @@ import PostImage from '../components/main/postsFeed/PostImage'
 import { CPostUserPanel } from '../components/main/postsFeed/PostUserPanel'
 import { Container } from './Content'
 import { CPostTitle } from '../components/main/post/PostTitle'
+import { CPreloader } from './Preloader'
 
 
 export const PostDescription = ({ title, description, date }) =>
@@ -39,7 +40,7 @@ export const Comments = ({ comments = [], _id }) =>
 const Post = ({ postData: { _id, text, title, owner, images, createdAt = '', comments, likes } }) =>
     <div className='Post'>
         <Card
-            title={<CPostTitle owner={owner} postId={_id}/>}
+            title={<CPostTitle owner={owner} postId={_id} />}
             cover={<PostImage images={images} />}
         >
             <CPostUserPanel postId={_id} likes={likes} styleFontSize='1.7em' />
@@ -65,6 +66,7 @@ const MainPostsFeed = ({ posts, postsFollowing, clearState, following }) => {
         return () => {
             document.removeEventListener('scroll', scrollHandler)
             clearState()
+
         }
     }, [])
 
@@ -76,6 +78,7 @@ const MainPostsFeed = ({ posts, postsFollowing, clearState, following }) => {
 
     return (
         <Container>
+            <CPreloader promiseName='followingPosts' />
             {Array.isArray(posts) && posts.map(p => <Post key={p._id} postData={p} />)}
         </Container>
     )
@@ -83,7 +86,7 @@ const MainPostsFeed = ({ posts, postsFollowing, clearState, following }) => {
 
 export const CMainPostsFeed = connect(state => ({
     posts: state?.postsFeed?.posts || [],
-    following: state?.myData.following || []
+    following: state?.myData?.following || []
 }), {
     postsFollowing: actionPostsFeed,
     clearState: actionRemovePostsFeedAC,

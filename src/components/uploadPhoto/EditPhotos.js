@@ -11,11 +11,11 @@ import {
 import { backURL, propsUploadFile, videoRegExp } from "../../helpers";
 
 
-const SortableItemMask = ({ removePhotosItem, setVisible, id }) =>
+const SortableItemMask = ({ removePhotosItem, chekMedia, setVisible, id }) =>
     <div className="SortableItemMask">
-        <Button type="link" onClick={() => setVisible(true)}>
+        {!chekMedia && <Button type="link" onClick={() => setVisible(true)}>
             <EyeOutlined />
-        </Button>
+        </Button>}
         <Button type="link" onClick={() => removePhotosItem(id)}>
             <DeleteOutlined />
         </Button>
@@ -24,15 +24,16 @@ const SortableItemMask = ({ removePhotosItem, setVisible, id }) =>
 
 const Handle = SortableHandle(({ tabIndex, value, removePhotosItem }) => {
     const [visible, setVisible] = useState(false);
+    const chekMedia = videoRegExp.test(value.originalFileName)
     return (
         <div className="Handle" tabIndex={tabIndex} >
-            <SortableItemMask id={value._id} setVisible={setVisible} removePhotosItem={removePhotosItem} />
-            {videoRegExp.test(value.originalFileName)
-                ? <video controls loop preload="true" height="500">
+            <SortableItemMask id={value._id} setVisible={setVisible} chekMedia={chekMedia} removePhotosItem={removePhotosItem} />
+            {chekMedia
+                ? <video >
                     <source src={backURL + '/' + value.url} />
                 </video>
                 : <img src={backURL + '/' + value.url} />
-            } 
+            }
             <Image className="hidden-item"
                 width={200}
                 style={{ display: 'none' }}

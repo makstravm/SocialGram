@@ -112,6 +112,19 @@ video {
     }
 }
 
+.PreloaderImg {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    background-color: rgba(#fff, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .ant-popover {
     padding-top: 12px;
     &-arrow {
@@ -190,6 +203,7 @@ video {
 }
 
 .Main {
+    position: relative;
     padding-top: 58px;
     &__inner {
         padding-top: 22px;

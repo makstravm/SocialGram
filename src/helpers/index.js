@@ -14,6 +14,7 @@ export const propsUploadFile = {
     headers: localStorage.authToken || sessionStorage.authToken ? { Authorization: 'Bearer ' + (localStorage.authToken || sessionStorage.authToken) } : {}
 }
 
+
 export const jwtDecode = (token) => {
     try {
         let arrToken = token.split('.')
@@ -53,7 +54,7 @@ const CircularGallerySvg = () =>
     </svg>
 
 export const CircularGalleryIcon = props =>
-    <Icon component={CircularGallerySvg} {...props}/>
+    <Icon component={CircularGallerySvg} {...props} />
 
 const RRoute = ({ action, component: Component, ...routeProps }) => {
     const WrapperComponent = (componentProps) => {

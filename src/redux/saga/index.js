@@ -355,9 +355,9 @@ function* findFollowWatcher() {
 
 function* sentPostWorker({ images, text, title }) {
     let imagesId = images.map(im => ({ _id: im._id }))
-    const { postsFeed: { posts } } = yield select()
+    const { postsFeed: { posts: {_id} } } = yield select()
     const upSertPostObj = {
-        ...posts,
+        _id,
         images: imagesId,
         text,
         title

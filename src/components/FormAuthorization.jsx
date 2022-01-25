@@ -1,13 +1,29 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Form, Input, Button, Checkbox } from 'antd';
+import { Form, Input, Button, Checkbox, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { actionFullLogIn, actionFullRegister } from '../actions';
 
-const FormAuthorization = ({ buttonTitle, onSignIn }) => {
+const FormAuthorization = ({ buttonTitle, onSignIn, loginChek }) => {
+
+    useEffect(() => {
+        if (loginChek.status === "RESOLVED" && loginChek.payload === null) {
+            console.log(loginChek?.payload);
+            message.error({
+                content: 'Wrong login or password',
+                className: 'custom-class',
+                style: {
+                    marginTop: '20vh',
+                },
+            })
+        }
+    }, [loginChek.status]);
+
+
     const onFinish = ({ login, password, remember }) => {
         onSignIn(login, password, remember)
     };
+
     return (
         <Form
             name="normal_login"
@@ -62,8 +78,8 @@ const FormAuthorization = ({ buttonTitle, onSignIn }) => {
         </Form>
     )
 }
-export const CLoginForm = connect(null, { onSignIn: actionFullLogIn })(FormAuthorization)
-export const CRegisterForm = connect(null, { onSignIn: actionFullRegister })(FormAuthorization)
+export const CLoginForm = connect(state => ({ loginChek: state?.promise?.login || {} }), { onSignIn: actionFullLogIn, })(FormAuthorization)
+export const CRegisterForm = connect(state => ({ status: state?.promise?.login }), { onSignIn: actionFullRegister, })(FormAuthorization)
 
 
 

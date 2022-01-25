@@ -5,17 +5,18 @@ import { CFieldSearch } from '../components/header/Search';
 import { connect } from 'react-redux';
 import { actionAuthLogout } from '../actions';
 import Layout, { Header } from 'antd/lib/layout/layout';
-import {  Col, Menu, Popover, Row } from 'antd';
+import { Col, Menu, Popover, Row } from 'antd';
 import { UserOutlined, CompassOutlined, SettingOutlined, HomeOutlined, ImportOutlined, MessageOutlined, PlusCircleOutlined } from '@ant-design/icons/lib/icons';
 import { UserAvatar } from '../components/header/UserAvatar';
 
+import { history } from '../App'
 const UserNav = () =>
     <div className='UserNav'>
         <CUserNavIcon />
     </div>
 
 
-
+// console.log(history);
 const ProfileDropMenu = ({ myID, onLogOut }) =>
     <Menu className='dropMenu'>
         <Menu.Item key={'0'}>
@@ -66,7 +67,7 @@ const Logo = () =>
 
 const HeaderComponent = () =>
     <Layout>
-        <Header style={{ position: 'fixed', zIndex: 1, width: '100%' }}>
+        <Header style={{ position: 'fixed', zIndex: 3, width: '100%' }}>
             <Row justify="space-between" align="middle" className='Header__inner'>
                 <Col span={8}>
                     <Logo />

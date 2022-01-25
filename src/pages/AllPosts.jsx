@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { actionAllPosts, actionRemovePostsFeedAC } from '../actions';
 import { CPosts } from '../components/main/Posts';
 import { Container } from './Content';
+import { CPreloader } from './Preloader';
 
 const AllPosts = ({ posts, onAllPosts, postsRemove }) => {
     const [checkScroll, setCheckScroll] = useState(true)
@@ -30,6 +31,7 @@ const AllPosts = ({ posts, onAllPosts, postsRemove }) => {
 
     return (
         <Container>
+            <CPreloader promiseName='allPosts' />
             <CPosts />
         </Container>
     )

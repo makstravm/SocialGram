@@ -13,6 +13,7 @@ import { LikeFilled, LikeOutlined } from '@ant-design/icons';
 import { actionLikeComment, actionDelLikeComment, actionSubComment } from '../actions';
 import { CPostTitle } from '../components/main/post/PostTitle';
 import { UserAvatar } from '../components/header/UserAvatar';
+import { CPreloader } from './Preloader';
 
 
 const PostPageTitle = ({ data: { owner }, postId }) =>
@@ -126,18 +127,19 @@ const CPostPageDescrption = connect(state => ({ data: state?.postsFeed?.posts ||
 
 
 const PostPage = ({ data: { images } }) =>
-    <div className='PostOne'>
-        <div className='PostOne__inner'>
-            <div className='PostOne__image'>
-                <PostImage images={images} />
-            </div>
-            <div className='PostOne__title'>
-                <CPostPageTitle />
-            </div>
-            <div className='PostOne__description'>
-                <CPostPageDescrption />
+        <div className='PostOne'>
+            <CPreloader promiseName='postOne' />
+            <div className='PostOne__inner'>
+                <div className='PostOne__image'>
+                    <PostImage images={images} />
+                </div>
+                <div className='PostOne__title'>
+                    <CPostPageTitle />
+                </div>
+                <div className='PostOne__description'>
+                    <CPostPageDescrption />
+                </div>
             </div>
         </div>
-    </div>
 
 export const CPostPage = connect(state => ({ data: state?.postsFeed?.posts || {} }))(PostPage)

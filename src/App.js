@@ -8,12 +8,13 @@ import { Content, Main } from './pages/Content';
 import { CProfilePage } from './pages/ProfilePage';
 import HeaderComponent from './pages/Header';
 import { CMainPostsFeed } from './pages/MainPostsFeed';
-import { CRRoute } from './helpers';
+import { CRRoute, promiseName } from './helpers';
 import { CPostPage } from './pages/PostPage';
 import { CAllPosts } from './pages/AllPosts';
 import { CEntityEditorPost } from './pages/EntityEditorPost';
 import { SettingsPage } from './pages/SettingsPage';
 import { Authorization } from './pages/Authorization';
+import { CPreloader } from './pages/Preloader';
 
 export const history = createHistory()
 
