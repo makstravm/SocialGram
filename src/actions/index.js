@@ -34,9 +34,10 @@ export const actionRegister = (login, password) =>
 
 //*************** Action ABOUT ME ******************//
 
-
 export const actionAboutMeAC = (data) => ({ type: 'ABOUTME-DATA-ADD', data })
 export const actionFullAboutMe = () => ({ type: 'ABOUT_ME' })
+export const actionRemoveMyDataAC = () => ({ type: 'REMOVE-MYDATA' })
+
 
 export const actionFullAboutMeUpsert = (nick, login) => ({ type: 'ABOUT_ME_UPSERT', nick, login })
 
@@ -111,8 +112,8 @@ export const actionProfileData = (_id) =>
                             avatar { _id url }     
                             createdAt
                             followers {_id }
-                            following {_id }
-                }
+                            following {_id }}
+                
             } `, { id: JSON.stringify([{ _id }]) }))
 
 export const actionProfilePagePost = (_id, skip) => actionPromise('userOneDataPosts', gql(` query userOned($id:String!){
@@ -212,6 +213,7 @@ export const actionMyLikePost = (findId) =>
 
 //****************---Action Like Comment ---*************************//
 
+
 export const actionAddLikeCommentAC = (findId, newResult) => ({ type: 'ADD-LIKE-COMMENT', findId, newResult })
 export const actionRemoveLikeCommentAC = (findId, newResult) => ({ type: 'REMOVE-LIKE-COMMENT', findId, newResult })
 
@@ -238,6 +240,42 @@ export const actionFindLikeComment = (findId) =>
     }`, { id: JSON.stringify([{ _id: findId }]) }))
 
 
+//****************---Collection---*************************//
+
+
+export const actionUpsertCollectionAC = (data) => ({ type: 'UPSERT-COLLECTION', data })
+export const actionHandlerUpsertCollection = (_id, flag) => ({ type: 'HANDLER_UPSERT_COLLECTION', _id, flag })
+
+export const actionAddPostInCollections = (collectionId, newCollection) =>
+    actionPromise('addInCollections', gql(`mutation addInCollections($collection:CollectionInput ){
+        CollectionUpsert(collection:$collection){
+            _id 
+        }
+    }`, { collection: { _id: collectionId, posts: newCollection } }))
+
+export const actionFindMyCollections = (_id) =>
+    actionPromise('findMyCollections', gql(`query findCollections($id:String! ){
+        CollectionFindOne(query:$id){
+        _id text posts{_id }
+        }
+    }`, { id: JSON.stringify([{ ___owner: _id }]) }))
+
+export const actionFullMyCollectionLoad = () => ({ type: 'LOAD_COLLECTION' })
+
+export const actionOnLoadMyCollection = (_id, skip) =>
+    actionPromise('onLoadMyCollections', gql(`query loadCollections($id:String! ){
+       CollectionFind(query:$id){
+         posts { _id  images{ _id url originalFileName}}
+        }
+    }`, {
+        id: JSON.stringify([{ _id }, {
+            sort: [{ _id: -1 }],
+            skip: [skip || 0],
+            limit: [36]
+        }])
+    }))
+
+//  posts{ images { url _id originalFileName } } 
 //****************---Action Subscribe ---*************************//
 
 

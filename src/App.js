@@ -15,6 +15,7 @@ import { CEntityEditorPost } from './pages/EntityEditorPost';
 import { SettingsPage } from './pages/SettingsPage';
 import { Authorization } from './pages/Authorization';
 import { CPreloader } from './pages/Preloader';
+import { CCollectionPage } from './pages/CollectionPage';
 
 export const history = createHistory()
 
@@ -38,6 +39,7 @@ const AppContent = ({ isToken }) =>
                         <Route path='/edit/post/:_id' component={CEntityEditorPost} />
                         <Route path='/my-settings' component={SettingsPage} />
                         <Route path='/all' component={CAllPosts} />
+                        <Route path='/my-collection' component={CCollectionPage} />
                         <CRRoute path='/post/:id' component={CPostPage} />
                         <Redirect from='/*' to='/' />
                         {/* <Redirect from='/*' to='/post/:id' /> */}

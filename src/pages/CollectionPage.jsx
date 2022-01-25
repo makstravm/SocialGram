@@ -1,16 +1,18 @@
+import { Divider } from 'antd';
+import Title from 'antd/lib/typography/Title';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { actionAllPosts, actionRemovePostsFeedAC } from '../actions';
+import { actionFullMyCollectionLoad, actionRemovePostsFeedAC } from '../actions';
 import { CPosts } from '../components/main/Posts';
 import { Container } from './Content';
 import { CPreloader } from './Preloader';
 
-const AllPosts = ({ onAllPosts, postsRemove }) => {
+export const CollectionPage = ({ onLoadPosts, postsRemove }) => {
     const [checkScroll, setCheckScroll] = useState(true)
 
     useEffect(() => {
         if (checkScroll) {
-            onAllPosts()
+            onLoadPosts()
             setCheckScroll(false)
         }
     }, [checkScroll])
@@ -31,10 +33,10 @@ const AllPosts = ({ onAllPosts, postsRemove }) => {
 
     return (
         <Container>
-            <CPreloader promiseName='allPosts' />
-            <CPosts />
+            <CPreloader promiseName='onLoadMyCollections' />
+            <Divider><Title level={1}>Collections</Title></Divider>
+            <CPosts /> 
         </Container>
     )
 }
-
-export const CAllPosts = connect(null, { onAllPosts: actionAllPosts, postsRemove: actionRemovePostsFeedAC, })(AllPosts)
+export const CCollectionPage = connect(state => ({ posts: state?.postsFeed?.posts || [] }), { onLoadPosts: actionFullMyCollectionLoad, postsRemove: actionRemovePostsFeedAC })(CollectionPage)

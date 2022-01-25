@@ -6,7 +6,7 @@ export const postsFeedReducer = (state = {}, { type, findId, newResult, userData
         //=== Array.isArray(newResult)
         'ADD-POSTS-FEED': () => ({
             ...state,
-            posts: Array.isArray(newResult) 
+            posts: Array.isArray(newResult)
                 ? [...posts, ...newResult]
                 : { ...posts, ...newResult },
             count
@@ -65,7 +65,8 @@ export const postsFeedReducer = (state = {}, { type, findId, newResult, userData
         'UPDATE-FOLLOWERS': () => ({
             ...state,
             userData: { ...state.userData, followers: [...newResult] }
-        })
+        }),
+      
 
     }
     if (type in types) {

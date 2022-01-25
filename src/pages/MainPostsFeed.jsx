@@ -37,13 +37,16 @@ export const Comments = ({ comments = [], _id }) =>
         </Divider>
     </Link>
 
-const Post = ({ postData: { _id, text, title, owner, images, createdAt = '', comments, likes } }) =>
+const Post = ({ postData: { _id, text, title, owner, images, createdAt = '', comments, likes, collections } }) =>
     <div className='Post'>
         <Card
             title={<CPostTitle owner={owner} postId={_id} />}
             cover={<PostImage images={images} />}
         >
-            <CPostUserPanel postId={_id} likes={likes} styleFontSize='1.7em' />
+            <CPostUserPanel postId={_id}
+                likes={likes}
+                collections={collections}
+                styleFontSize='1.7em' />
             <PostDescription title={title} description={text} date={createdAt} />
             <Comments comments={comments} _id={_id} />
         </Card>

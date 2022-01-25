@@ -14,7 +14,7 @@ export const EditDescriptionPost = ({ description, setDescription }) => {
     const [editMode, setEditMode] = useState(false)
 
     useEffect(() => {
-        setText(description || 'Enter descriptin')
+        setText(description || '')
     }, [description]);
 
     const addValueHandler = () => {

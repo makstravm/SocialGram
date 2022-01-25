@@ -3,39 +3,46 @@ import logo from '../logo.svg';
 import { Link } from 'react-router-dom';
 import { CFieldSearch } from '../components/header/Search';
 import { connect } from 'react-redux';
-import { actionAuthLogout } from '../actions';
+import { actionAuthLogout, actionRemoveMyDataAC } from '../actions';
 import Layout, { Header } from 'antd/lib/layout/layout';
 import { Col, Menu, Popover, Row } from 'antd';
 import { UserOutlined, CompassOutlined, SettingOutlined, HomeOutlined, ImportOutlined, MessageOutlined, PlusCircleOutlined } from '@ant-design/icons/lib/icons';
 import { UserAvatar } from '../components/header/UserAvatar';
+import { CollectionEmptySvg } from '../helpers';
 
-import { history } from '../App'
+
+
+
 const UserNav = () =>
     <div className='UserNav'>
         <CUserNavIcon />
     </div>
 
-
-// console.log(history);
-const ProfileDropMenu = ({ myID, onLogOut }) =>
+const ProfileDropMenu = ({ myID, onLogOut, removeMydata }) =>
     <Menu className='dropMenu'>
         <Menu.Item key={'0'}>
             <Link to={`/profile/${myID}`}><UserOutlined /> My Profile</Link>
         </Menu.Item>
         <Menu.Item key={'1'}>
+            <Link to={'/my-collection'}>< CollectionEmptySvg className='dropMenu__icon' />Collection</Link>
+        </Menu.Item>
+        <Menu.Item key={'2'}>
             <Link to={'/my-settings'}><SettingOutlined /> Settings</Link>
         </Menu.Item>
         <Menu.Divider />
-        <Menu.Item key={'2'}>
-            <button onClick={() => onLogOut()}><ImportOutlined /> Log out</button>
+        <Menu.Item key={'3'}>
+            <button onClick={() => {
+                onLogOut()
+                removeMydata()
+            }}><ImportOutlined /> Log out</button>
         </Menu.Item>
     </Menu>
 
-const CProfileDropMenu = connect(null, { onLogOut: actionAuthLogout })(ProfileDropMenu)
+const CProfileDropMenu = connect(null, { onLogOut: actionAuthLogout, removeMydata: actionRemoveMyDataAC })(ProfileDropMenu)
 
 
 const UserNavIcon = ({ userData: { _id, avatar, login } }) =>
-    <Row justify="end" align="middle" className='Header__userNav'>
+    < Row justify="end" align="middle" className='Header__userNav' >
         <Col >
             <Link to='/'><HomeOutlined /></Link>
         </Col>
@@ -49,7 +56,7 @@ const UserNavIcon = ({ userData: { _id, avatar, login } }) =>
             <Link to='/all'><CompassOutlined /></Link>
         </Col>
         <Col>
-            <Popover placement="bottomRight" content={<CProfileDropMenu myID={_id} />} trigger={['focus', 'hover']}>
+            <Popover placement="bottomRight" content={<CProfileDropMenu myID={_id} />}>
                 <></>
                 <UserAvatar avatar={avatar} login={login} avatarSize={'45px'} />
             </Popover>

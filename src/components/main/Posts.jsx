@@ -33,3 +33,29 @@ const Posts = ({ posts }) =>
         }
     </Row >
 export const CPosts = connect(state => ({ posts: state.postsFeed?.posts || [] }))(Posts)
+
+
+// const Posts = ({ posts }) =>
+//     <Row gutter={[15, 15]}>
+//         {Array.isArray(posts) && posts.map(p => <Col key={p._id} span={8}>
+//             <Link to={`/post/${p._id}`}>
+//                 <Card className='Profile__post' hoverable>
+//                     {p?.url
+//                         ? videoRegExp.test(p?.originalFileName)
+//                             ? <div className='Profile__box' >
+//                                 <video>
+//                                     <source src={backURL + '/' + p?.url} />
+//                                 </video>
+//                                 <PlayCircleOutlined className='Profile__box-icon--video' />
+//                             </div>
+
+//                             : <img src={backURL + '/' + p?.url} />
+
+//                         : <img src={postNoData} />
+//                     }
+//                 </Card>
+//             </Link>
+//         </Col>)
+//         }
+//     </Row >
+// export const CPosts = connect(state => ({ posts: state.postsFeed?.posts || [] }))(Posts)

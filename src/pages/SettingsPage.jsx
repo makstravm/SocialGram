@@ -13,10 +13,10 @@ const ContainerSettingsPage = ({ children }) =>
     <div className="SettingsPage ContainerInner">{children}</div>
 
 
-const EditMyDataIput = ({ title, propValue, propHandler, check }) => {
+const EditMyDataIput = ({ title, propValue, propHandler, error, setError, setChekEdit }) => {
     const [value, setValue] = useState(propValue);
     const [editMode, setEditMode] = useState(false);
-    const [error, setError] = useState(false);
+
 
     useEffect(() => {
         setValue(propValue)
@@ -24,10 +24,9 @@ const EditMyDataIput = ({ title, propValue, propHandler, check }) => {
 
     const addValueHandler = () => {
         const valid = /^[A-Z][a-z0-9_]{1,15}$/
-        if (!valid.test(value)) {
+        if (valid.test(value)) {
             propHandler(value)
             setEditMode(false)
-            check(false)
         } else {
             setError(true)
         }
@@ -36,6 +35,7 @@ const EditMyDataIput = ({ title, propValue, propHandler, check }) => {
     const onChangeInput = (e) => {
         setValue(e.currentTarget.value)
         setError(false)
+        setChekEdit(false)
     }
 
     return (
@@ -61,9 +61,9 @@ const EditMyDataIput = ({ title, propValue, propHandler, check }) => {
 }
 
 const EditMyData = ({ myData, status, onUpsert }) => {
-
     const [nick, setNick] = useState(myData?.nick || '');
     const [login, setLogin] = useState(myData?.login || '');
+    const [error, setError] = useState(false);
     const [checkEdit, setChekEdit] = useState(true);
     useEffect(() => {
         setNick(myData?.nick || '')
@@ -80,7 +80,7 @@ const EditMyData = ({ myData, status, onUpsert }) => {
                 },
             });
             setChekEdit(true)
-        } else if(status=== 'REJECTED'){
+        } else if (status === 'REJECTED') {
             message.error({
                 content: 'Что-то не так, нужно повторить!',
                 className: 'custom-class',
@@ -93,15 +93,12 @@ const EditMyData = ({ myData, status, onUpsert }) => {
 
     const onSendEdit = () => onUpsert(nick, login)
 
-
-
-
     return (
         <>
-            <EditMyDataIput title='Nick' propValue={nick} propHandler={setNick} check={setChekEdit} />
-            <EditMyDataIput title='Login' propValue={login} propHandler={setLogin} check={setChekEdit} />
+            <EditMyDataIput title='Nick' propValue={nick} propHandler={setNick} setChekEdit={setChekEdit} error={error} setError={setError} />
+            <EditMyDataIput title='Login' error={error} setError={setError} propValue={login} propHandler={setLogin} setChekEdit={setChekEdit} error={error} setError={setError} />
             <Button type='primary'
-                disabled={nick && login ? false : true}
+                disabled={!error ? false : true}
                 className={!checkEdit && '--block'}
                 onClick={onSendEdit}> SendEdit</Button>
         </>

@@ -7,7 +7,7 @@ const PreloaderImg = () =>
         <Spin size="large" />
     </div>
 
-const Preloader = ({ promiseName, promiseState, children }) =>
+const Preloader = ({ promiseName, promiseState}) =>
     <>
         {promiseState[promiseName]?.status === 'PENDING'
             ? <PreloaderImg />

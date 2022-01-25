@@ -9,12 +9,12 @@ import { useEffect, useState } from "react"
 
 export const EditTitlePost = ({ titleSend, setTitleSend }) => {
 
-    const [title, setTitle] = useState(titleSend || 'Enter title')
+    const [title, setTitle] = useState(titleSend || '')
     const [error, setError] = useState(false)
     const [editMode, setEditMode] = useState(false)
 
     useEffect(() => {
-        setTitle(titleSend || 'Enter title')
+        setTitle(titleSend || '')
     }, [titleSend]);
 
     const addValueHandler = () => {

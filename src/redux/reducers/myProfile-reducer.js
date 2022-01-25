@@ -10,7 +10,11 @@ export const myProfileReducer = (state = {}, { type, data }) => {
         },
         'UPDATE-MY-FOLLOWING': () => {
             return { ...state, following: [...data] }
-        }
+        },
+        'UPSERT-COLLECTION': () => ({
+            ...state, collections: data
+        }),
+        'REMOVE-MYDATA': () => ({})
     }
     if (type in types) {
         return types[type]()

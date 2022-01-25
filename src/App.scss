@@ -153,6 +153,13 @@ video {
     a {
         transition: all 0.3s;
     }
+    &__icon {
+        margin-right: 2px;
+        svg {
+            width: 15px;
+            height: 15px;
+        }
+    }
     button {
         cursor: pointer;
         text-align-last: left;
@@ -258,6 +265,7 @@ video {
         top: 1px;
         width: 50px;
         transition: 0.4s;
+        z-index: 5;
         cursor: pointer;
         svg {
             fill: $defaultColorW;
@@ -281,8 +289,10 @@ video {
             opacity: 1;
         }
     }
-    &__heart {
+    &__heart,
+    &__collection {
         button {
+            display: inline-block;
             min-width: auto;
             width: 30px;
             height: 30px;
@@ -291,7 +301,17 @@ video {
             box-shadow: none;
         }
         strong {
-            display: block;
+            display: inline-block;
+        }
+    }
+    &__collection {
+        button {
+            margin-right: auto;
+        }
+        svg {
+            stroke-width: 2px;
+            width: 24px;
+            height: 24px;
         }
     }
     &__comments {
