@@ -33,16 +33,16 @@ const AppContent = ({ isToken }) =>
                 <HeaderComponent />
                 <Main>
                     <Switch>
-                        <Route path='/' component={CMainPostsFeed} exact />
+                        <Route path='/feed' component={CMainPostsFeed} />
                         <Route path='/profile/:_id' component={CProfilePage} />
                         {/* <Route path='/message' component={Aside} /> */}
-                        <Route path='/edit/post/:_id' component={CEntityEditorPost} />
+                        <Route path='/edit/post/new' component={CEntityEditorPost} exact />
+                        <Route path='/edit/post/:_id' component={CEntityEditorPost}/>
                         <Route path='/my-settings' component={SettingsPage} />
                         <Route path='/all' component={CAllPosts} />
                         <Route path='/my-collection' component={CCollectionPage} />
                         <CRRoute path='/post/:id' component={CPostPage} />
-                        <Redirect from='/*' to='/' />
-                        {/* <Redirect from='/*' to='/post/:id' /> */}
+                        <Redirect from='/*' to='/feed' />
                     </Switch>
                 </Main>
             </Content >

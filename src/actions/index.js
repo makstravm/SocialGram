@@ -345,16 +345,19 @@ export const actionFindComment = (findId) =>
     }`, { id: JSON.stringify([{ _id: findId }]) }))
 
 export const actionFindSubComment = (findId) =>
-    actionPromise('subComments#' + findId, gql(`query commentFindOne ($id:String!){
+    actionPromise('subComments', gql(`query commentFindOne ($id:String!){
         CommentFindOne(query:$id){
-             answers{
-                _id text createdAt
-                owner{ _id nick login avatar { _id url }} 
-                likes { _id }
-                answerTo {_id text 
+        answers { 
+                _id text
+                post {_id }
+                answers { _id}
+                answerTo{_id owner{login, nick}}
+                likes{_id owner { login nick}}
+                 owner {
+                    _id login nick 
+                    avatar {url} 
+                    } 
                 }
-                answers{ _id }
-            }
         } 
     }`, { id: JSON.stringify([{ _id: findId }]) }))
 
@@ -428,7 +431,7 @@ export const actionGetFindLiked = (_id) =>
 
 export const actionFullSentPost = (images, title, text) => ({ type: 'CREATE_POST', images, text, title })
 
-export const actionSentPost = (upSertPostObj) =>
+export const actionUpsertPost = (upSertPostObj) =>
     actionPromise('sentPost', gql(`mutation sentPost($post: PostInput){
               PostUpsert(post: $post){
                     _id images{_id url originalFileName}
@@ -443,3 +446,4 @@ export const actionSentPost = (upSertPostObj) =>
         // таким оюразом получтьь дерево
         // отдать в рекувсивный компонкнт на отрисовку дерева.
         // каждый лист дерева приконектить к экшонам лайк и добавление дочернего коммета.Там жк=е должен быть известен пост.айди для создания комментов
+

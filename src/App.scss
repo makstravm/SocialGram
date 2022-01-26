@@ -104,6 +104,12 @@ video {
             display: flex;
             align-items: center;
             justify-content: center;
+
+            &.active {
+                svg {
+                    fill: $defaultColorB;
+                }
+            }
         }
         svg {
             width: 24px;

@@ -1,6 +1,6 @@
 import React from 'react'
 import logo from '../logo.svg';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { CFieldSearch } from '../components/header/Search';
 import { connect } from 'react-redux';
 import { actionAuthLogout, actionRemoveMyDataAC } from '../actions';
@@ -10,13 +10,14 @@ import { UserOutlined, CompassOutlined, SettingOutlined, HomeOutlined, ImportOut
 import { UserAvatar } from '../components/header/UserAvatar';
 import { CollectionEmptySvg } from '../helpers';
 
-
-
-
 const UserNav = () =>
     <div className='UserNav'>
         <CUserNavIcon />
     </div>
+
+
+
+
 
 const ProfileDropMenu = ({ myID, onLogOut, removeMydata }) =>
     <Menu className='dropMenu'>
@@ -44,16 +45,16 @@ const CProfileDropMenu = connect(null, { onLogOut: actionAuthLogout, removeMydat
 const UserNavIcon = ({ userData: { _id, avatar, login } }) =>
     < Row justify="end" align="middle" className='Header__userNav' >
         <Col >
-            <Link to='/'><HomeOutlined /></Link>
+            <NavLink to='/feed'><HomeOutlined /></NavLink>
         </Col>
         <Col >
-            <Link to='/message'><MessageOutlined /></Link>
+            <NavLink to='/message'><MessageOutlined /></NavLink>
         </Col>
         <Col >
-            <Link to='/edit/post/new'><PlusCircleOutlined /></Link>
+            <NavLink to='/edit/post/new'><PlusCircleOutlined /></NavLink>
         </Col>
         <Col >
-            <Link to='/all'><CompassOutlined /></Link>
+            <NavLink to='/all'><CompassOutlined /></NavLink>
         </Col>
         <Col>
             <Popover placement="bottomRight" content={<CProfileDropMenu myID={_id} />}>

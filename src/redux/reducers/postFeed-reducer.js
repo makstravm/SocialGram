@@ -24,7 +24,6 @@ export const postsFeedReducer = (state = {}, { type, findId, newResult, userData
             userData: {},
             count: 0,
             subComments: {},
-            editPost: {}
         }),
         'ADD-POST-LIKE': () => ({
             ...state,
@@ -43,10 +42,25 @@ export const postsFeedReducer = (state = {}, { type, findId, newResult, userData
             ...state, posts: { ...state.posts, comments: [...newResult] }
 
         }),
-        'UPDATE-SUBCOMMENT': () => ({
-            ...state,
-            subComments: { ...state?.subComments, ...{ ['subComments#' + findId]: [...newResult] } }
-        }),
+        'UPDATE-SUBCOMMENT': () => {
+            const recursiya = (commentList, id, nR) => {
+                return commentList.map(c => {
+                    if (c._id === id) {
+                        return { ...c, answers: [...nR] }
+                    } else if (c?.answers?.length) {
+                        return ({
+                            ...c,
+                            answers: recursiya(c.answers, id, nR)
+                        })
+                    } else {
+                        return ({ ...c })
+                    }
+                })
+            }
+            return ({
+                ...state, posts: { ...state.posts, comments: recursiya(posts.comments, findId, newResult) }
+            })
+        },
         'ADD-LIKE-COMMENT': () => ({
             ...state,
             posts: {
@@ -66,7 +80,7 @@ export const postsFeedReducer = (state = {}, { type, findId, newResult, userData
             ...state,
             userData: { ...state.userData, followers: [...newResult] }
         }),
-      
+
 
     }
     if (type in types) {

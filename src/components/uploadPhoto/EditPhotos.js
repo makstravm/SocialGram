@@ -24,7 +24,6 @@ const SortableItemMask = ({ removePhotosItem, chekMedia, setVisible, id }) =>
 
 const Handle = SortableHandle(({ tabIndex, value, removePhotosItem }) => {
     const [visible, setVisible] = useState(false);
-    console.log(value);
     const chekMedia = videoRegExp.test(value.originalFileName)
     return (
         <div className="Handle" tabIndex={tabIndex} >

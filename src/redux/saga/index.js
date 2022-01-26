@@ -1,5 +1,5 @@
 import { all, call, delay, fork, join, put, select, takeEvery, takeLatest, takeLeading } from "redux-saga/effects";
-import { actionAboutMe, actionAboutMeAC, actionAddComment, actionAddCommentAC, actionAddLikeComment, actionAddLikeCommentAC, actionAddLikePost, actionAddLikePostAC, actionAddPostInCollections, actionAddPostsFeedAC, actionAllPostsCount, actionAuthLogin, actionClearPromise, actionFindComment, actionFindLikeComment, actionFindMyCollections, actionFindSubComment, actionFullAboutMe, actionFullLogIn, actionGetAllPosts, actionGetAvatar, actionGetFindFollowers, actionGetFindFollowing, actionGetFindLiked, actionGetPostAC, actionLoadSearchUsers, actionLoadSubscribe, actionloadUnSubscribe, actionLogIn, actionMyLikePost, actionOnLoadMyCollection, actionPending, actionPostsCount, actionPostsMyFollowing, actionProfileData, actionProfileDataAC, actionProfilePagePost, actionPromise, actionRegister, actionRejected, actionRemoveLikeComment, actionRemoveLikeCommentAC, actionRemoveLikePost, actionRemoveLikePostAC, actionRemovePostsFeedAC, actionResolved, actionSentPost, actionSetAvatar, actionSubAddComment, actionUpdateFollowers, actionUpdateFollowersAC, actionUpdateMyAvatart, actionUpdateMyFollowing, actionUpdateMyFollowingAC, actionUpdateSubCommentAC, actionUpsertAboutMe, actionUpsertCollectionAC } from "../../actions";
+import { actionAboutMe, actionAboutMeAC, actionAddComment, actionAddCommentAC, actionAddLikeComment, actionAddLikeCommentAC, actionAddLikePost, actionAddLikePostAC, actionAddPostInCollections, actionAddPostsFeedAC, actionAllPostsCount, actionAuthLogin, actionClearPromise, actionFindComment, actionFindLikeComment, actionFindMyCollections, actionFindSubComment, actionFullAboutMe, actionFullLogIn, actionGetAllPosts, actionGetAvatar, actionGetFindFollowers, actionGetFindFollowing, actionGetFindLiked, actionGetPostAC, actionLoadSearchUsers, actionLoadSubscribe, actionloadUnSubscribe, actionLogIn, actionMyLikePost, actionOnLoadMyCollection, actionPending, actionPostsCount, actionPostsMyFollowing, actionProfileData, actionProfileDataAC, actionProfilePagePost, actionPromise, actionRegister, actionRejected, actionRemoveLikeComment, actionRemoveLikeCommentAC, actionRemoveLikePost, actionRemoveLikePostAC, actionRemovePostsFeedAC, actionResolved, actionSentPost, actionSetAvatar, actionSubAddComment, actionUpdateFollowers, actionUpdateFollowersAC, actionUpdateMyAvatart, actionUpdateMyFollowing, actionUpdateMyFollowingAC, actionUpdateSubCommentAC, actionUpsertAboutMe, actionUpsertCollectionAC, actionUpsertPost } from "../../actions";
 import { queries } from "../../actions/actionQueries";
 import { gql } from "../../helpers";
 
@@ -293,9 +293,9 @@ function* addSubCommentWorker({ commentId, text }) {
 }
 
 function* findSubCommentWorker({ commentId }) {
-    console.log(commentId);
-    const { answers } = yield call(promiseWorker, actionFindSubComment(commentId))
-    if (answers) {
+    const  {answers} = yield call(promiseWorker, actionFindSubComment(commentId))
+    console.log(answers, commentId);
+    if (commentId, answers) {
         yield put(actionUpdateSubCommentAC(commentId, answers))
     }
 }
@@ -364,7 +364,7 @@ function* sentPostWorker({ images, text, title }) {
         text,
         title
     }
-    const result = yield call(promiseWorker, actionSentPost(upSertPostObj))
+    const result = yield call(promiseWorker, actionUpsertPost(upSertPostObj))
     if (result) {
         yield put(actionClearPromise('sentPost'))
     }
@@ -377,7 +377,6 @@ function* sentPostWatcher() {
 
 //*************** COLLECTION ******************//
 
-
 function* handlerCollectionWorker({ _id, flag }) {
     const { myData: { _id: myID, collections } } = yield select()
     const newArr = flag ? collections?.posts.filter(c => c._id !== _id) : [...collections?.posts || [], { _id }]
@@ -387,9 +386,9 @@ function* handlerCollectionWorker({ _id, flag }) {
 }
 
 function* loadCollectionWorker() {
-    const { myData: { collections }, postsFeed: { posts  } } = yield select()
-    !Array.isArray(posts) && (yield put(actionRemovePostsFeedAC()))
-    const [{ posts: newResult }] = yield call(promiseWorker, actionOnLoadMyCollection(collections?._id, posts?.length))
+    const { myData: { collections }, postsFeed } = yield select()
+    !Array.isArray(postsFeed?.posts) && (yield put(actionRemovePostsFeedAC()))
+    const [{ posts: newResult }] = yield call(promiseWorker, actionOnLoadMyCollection(collections?._id, postsFeed?.posts?.length))
     if (newResult) {
         yield put(actionAddPostsFeedAC(newResult))
     }
