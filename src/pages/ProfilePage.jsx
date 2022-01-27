@@ -101,7 +101,6 @@ const ProfilePage = ({ match: { params: { _id } }, getProfileUser, clearDataProf
 
     useEffect(() => {
         if (checkScroll) {
-
             getProfileUser(_id)
             setCheckScroll(false)
         }

@@ -1,4 +1,3 @@
-
 export function promiseReducer(state = {}, { type, status, payload, error, name }) {
     if (type === 'PROMISE') {
         return {

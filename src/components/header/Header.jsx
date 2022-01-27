@@ -1,23 +1,21 @@
 import React from 'react'
-import logo from '../logo.svg';
+import logo from '../../logo.svg';
 import { Link, NavLink } from 'react-router-dom';
-import { CFieldSearch } from '../components/header/Search';
+import { CFieldSearch } from './Search';
 import { connect } from 'react-redux';
-import { actionAuthLogout, actionRemoveMyDataAC } from '../actions';
-import Layout, { Header } from 'antd/lib/layout/layout';
+import { actionAuthLogout, actionRemoveMyDataAC } from '../../actions';
+import { Header } from 'antd/lib/layout/layout';
 import { Col, Menu, Popover, Row } from 'antd';
 import { UserOutlined, CompassOutlined, SettingOutlined, HomeOutlined, ImportOutlined, MessageOutlined, PlusCircleOutlined } from '@ant-design/icons/lib/icons';
-import { UserAvatar } from '../components/header/UserAvatar';
-import { CollectionEmptySvg } from '../helpers';
+import { UserAvatar } from './UserAvatar';
+import { CollectionEmptySvg } from '../../helpers';
+import MediaQuery from "react-responsive";
 
-const UserNav = () =>
+
+export const UserNav = () =>
     <div className='UserNav'>
         <CUserNavIcon />
     </div>
-
-
-
-
 
 const ProfileDropMenu = ({ myID, onLogOut, removeMydata }) =>
     <Menu className='dropMenu'>
@@ -57,10 +55,16 @@ const UserNavIcon = ({ userData: { _id, avatar, login } }) =>
             <NavLink to='/all'><CompassOutlined /></NavLink>
         </Col>
         <Col>
-            <Popover placement="bottomRight" content={<CProfileDropMenu myID={_id} />}>
-                <></>
-                <UserAvatar avatar={avatar} login={login} avatarSize={'45px'} />
-            </Popover>
+            <MediaQuery minWidth={768}>
+                <Popover placement="bottomRight" content={<CProfileDropMenu myID={_id} />}>
+                    <UserAvatar avatar={avatar} login={login} avatarSize={'45px'} />
+                </Popover>
+            </MediaQuery>
+            <MediaQuery maxWidth={768}>
+                <Popover placement="topRight"  content={<CProfileDropMenu myID={_id} />}>
+                    <UserAvatar avatar={avatar} login={login} avatarSize={'45px'} />
+                </Popover>
+            </MediaQuery>
         </Col>
     </Row >
 
@@ -74,21 +78,21 @@ const Logo = () =>
 
 
 const HeaderComponent = () =>
-    <Layout>
-        <Header style={{ position: 'fixed', zIndex: 3, width: '100%' }}>
-            <Row justify="space-between" align="middle" className='Header__inner'>
-                <Col span={8}>
-                    <Logo />
-                </Col>
-                <Col span={8}>
-                    <CFieldSearch />
-                </Col>
-                <Col span={8}>
+    <Header style={{ position: 'fixed', zIndex: 3, width: '100%' }}>
+        <Row justify="space-between" align="middle" className='Header__inner'>
+            <Col >
+                <Logo />
+            </Col>
+            <Col >
+                <CFieldSearch />
+            </Col>
+            <MediaQuery minWidth={768}>
+                <Col >
                     <UserNav />
                 </Col>
-            </Row>
-        </Header>
-    </Layout>
+            </MediaQuery>
+        </Row>
+    </Header>
 
 
 export default HeaderComponent 

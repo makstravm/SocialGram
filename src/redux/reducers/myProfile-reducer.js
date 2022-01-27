@@ -1,4 +1,3 @@
-import React from 'react'
 
 export const myProfileReducer = (state = {}, { type, data }) => {
     const types = {

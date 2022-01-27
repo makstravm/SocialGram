@@ -3,7 +3,7 @@ import { Carousel, Empty } from "antd";
 import React, { createRef } from "react";
 import nodata from '../../../images/nodata.png'
 import { backURL, videoRegExp } from '../../../helpers/index'
-
+import MediaQuery from "react-responsive";
 
 class PostImage extends React.Component {
     constructor(props) {
@@ -46,10 +46,13 @@ class PostImage extends React.Component {
                     key={i._id}
                     onMouseEnter={() => this.moveOnDivArray(images.length, index)}
                     onMouseLeave={this.downOnDivArray}>
-                    <button onClick={() => this.handlePrev()}
-                        className={`Post__prev Post__btn ${this.state.movePrev ? '--active' : ''}`}><LeftCircleOutlined /></button>
-                    <button onClick={() => this.handleNext()}
-                        className={`Post__next Post__btn ${this.state.moveNext ? '--active' : ''}`}><RightCircleOutlined /></button>
+                    <MediaQuery minWidth={768}>
+                        <button onClick={() => this.handlePrev()}
+                            className={`Post__prev Post__btn ${this.state.movePrev ? '--active' : ''}`}><LeftCircleOutlined /></button>
+                        <button onClick={() => this.handleNext()}
+                            className={`Post__next Post__btn ${this.state.moveNext ? '--active' : ''}`}><RightCircleOutlined /></button>
+                    </MediaQuery>
+
                     {videoRegExp.test(i.originalFileName)
                         ? <video controls loop preload="true" height="500">
                             <source src={backURL + '/' + i.url} />

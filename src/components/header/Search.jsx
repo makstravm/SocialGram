@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import {  actionSearchUsers } from '../../actions';
 import { SearchOutlined } from '@ant-design/icons';
 import { UserAvatar } from './UserAvatar';
+
+
 const FindUsersResult = ({ usersRes }) =>
     <div className='Header__search-drop' >
         {

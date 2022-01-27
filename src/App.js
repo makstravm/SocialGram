@@ -6,21 +6,26 @@ import { connect, Provider } from 'react-redux';
 import store from './redux/redux-store';
 import { Content, Main } from './pages/Content';
 import { CProfilePage } from './pages/ProfilePage';
-import HeaderComponent from './pages/Header';
+import HeaderComponent from './components/header/Header';
 import { CMainPostsFeed } from './pages/MainPostsFeed';
-import { CRRoute, promiseName } from './helpers';
+import { CRRoute } from './helpers';
 import { CPostPage } from './pages/PostPage';
 import { CAllPosts } from './pages/AllPosts';
 import { CEntityEditorPost } from './pages/EntityEditorPost';
 import { SettingsPage } from './pages/SettingsPage';
 import { Authorization } from './pages/Authorization';
-import { CPreloader } from './pages/Preloader';
 import { CCollectionPage } from './pages/CollectionPage';
+import { useMediaQuery } from 'react-responsive';
+import { FooterComponent } from './components/Footer';
 
 export const history = createHistory()
 
-const AppContent = ({ isToken }) =>
-    <Router history={history}>
+
+const AppContent = ({ isToken }) => {
+    const isTabletDevice = useMediaQuery({
+        query: "(max-width: 786px)"
+    })
+    return <Router history={history}>
         {!isToken
             ?
             <Switch>
@@ -30,6 +35,7 @@ const AppContent = ({ isToken }) =>
             </Switch>
             :
             <Content>
+
                 <HeaderComponent />
                 <Main>
                     <Switch>
@@ -37,7 +43,7 @@ const AppContent = ({ isToken }) =>
                         <Route path='/profile/:_id' component={CProfilePage} />
                         {/* <Route path='/message' component={Aside} /> */}
                         <Route path='/edit/post/new' component={CEntityEditorPost} exact />
-                        <Route path='/edit/post/:_id' component={CEntityEditorPost}/>
+                        <Route path='/edit/post/:_id' component={CEntityEditorPost} />
                         <Route path='/my-settings' component={SettingsPage} />
                         <Route path='/all' component={CAllPosts} />
                         <Route path='/my-collection' component={CCollectionPage} />
@@ -45,10 +51,12 @@ const AppContent = ({ isToken }) =>
                         <Redirect from='/*' to='/feed' />
                     </Switch>
                 </Main>
+                {isTabletDevice && <FooterComponent />}
+
             </Content >
         }
     </Router >
-
+}
 const CAppContent = connect(state => ({ isToken: state.auth?.token }))(AppContent)
 store.subscribe(() => console.log(store.getState()))
 

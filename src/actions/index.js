@@ -32,14 +32,14 @@ export const actionRegister = (login, password) =>
                                     }
                                 }`, { login, password }))
 
+
 //*************** Action ABOUT ME ******************//
 
 export const actionAboutMeAC = (data) => ({ type: 'ABOUTME-DATA-ADD', data })
 export const actionFullAboutMe = () => ({ type: 'ABOUT_ME' })
 export const actionRemoveMyDataAC = () => ({ type: 'REMOVE-MYDATA' })
-
-
 export const actionFullAboutMeUpsert = (nick, login) => ({ type: 'ABOUT_ME_UPSERT', nick, login })
+
 
 export const actionAboutMe = (id) =>
     actionPromise('aboutMe', gql(`query userOned($myID:String!){
@@ -59,13 +59,12 @@ export const actionUpsertAboutMe = (myData) =>
                         }
                 }`, { user: myData }))
 
+
 //*************** Action Posts Feed ******************//
 
 export const actionGetPostAC = (postData) => ({ type: 'GET-POST', newResult: postData })
-
 export const actionAddPostsFeedAC = (postsData, count) => ({ type: 'ADD-POSTS-FEED', newResult: postsData, count })
 export const actionRemovePostsFeedAC = () => ({ type: 'REMOVE-POSTS-FEED' })
-
 export const actionPostsFeed = () => ({ type: 'POSTS_FEED' })
 
 export const actionPostsMyFollowing = (skip, myFollowing) =>
@@ -100,10 +99,7 @@ export const actionPostsCount = (_id) =>
 
 
 export const actionProfileDataAC = (postsData, count, userData) => ({ type: 'ADD-PROFILE-DATA', newResult: postsData, count, userData })
-
 export const actionProfilePageData = (id) => ({ type: 'DATA_PROFILE', id })
-
-// export const actionFindPostOne = (_id) => ({ type: 'FIND_POST_ONE', _id })
 
 export const actionProfileData = (_id) =>
     actionPromise('userOneData', gql(` query userOned($id:String!){
@@ -117,9 +113,9 @@ export const actionProfileData = (_id) =>
             } `, { id: JSON.stringify([{ _id }]) }))
 
 export const actionProfilePagePost = (_id, skip) => actionPromise('userOneDataPosts', gql(` query userOned($id:String!){
-                PostFind(query:$id){
-                    _id   images{ url _id originalFileName }
-                }
+                    PostFind(query:$id){
+                        _id   images{ url _id originalFileName }
+                    }
                 }`, {
     id: JSON.stringify([{
         ___owner: _id
@@ -131,7 +127,9 @@ export const actionProfilePagePost = (_id, skip) => actionPromise('userOneDataPo
     }])
 }))
 
+
 //****************---All FIND POSTS---*************************//
+
 
 export const actionAllPosts = () => ({ type: 'ALL_POSTS' })
 
@@ -152,7 +150,7 @@ export const actionAllPostsCount = () =>
     actionPromise('userPostsCount', gql(` query userPostsCount($id:String!){
                 PostCount(query:$id)
                 }`, { id: JSON.stringify([{}]) }))
-//    ,
+
 
 //****************---Action FindUsers ---*************************//
 
@@ -181,9 +179,8 @@ export const actionLoadSearchUsers = (value) =>
 
 export const actionAddLikePostAC = (findId, newResult) => ({ type: 'ADD-POST-LIKE', findId, newResult })
 export const actionRemoveLikePostAC = (findId, newResult) => ({ type: 'REMOVE-POST-LIKE', findId, newResult })
-
-
 export const actionLikePost = (postId) => ({ type: 'LIKE_POST', postId })
+export const actionDelLikePost = (likeId, postId) => ({ type: 'DEL_LIKE_POST', likeId, postId })
 
 export const actionAddLikePost = (_id) =>
     actionPromise('likePost', gql(`mutation LikePost($like:LikeInput){
@@ -192,16 +189,12 @@ export const actionAddLikePost = (_id) =>
         }
     }`, { like: { post: { _id } } }))
 
-
-export const actionDelLikePost = (likeId, postId) => ({ type: 'DEL_LIKE_POST', likeId, postId })
-
 export const actionRemoveLikePost = (_id) =>
     actionPromise('removelikePost', gql(`mutation LikeRemove($like:LikeInput){
             LikeDelete(like:$like){
                 _id
             }
         }`, { like: { _id } }))
-
 
 export const actionMyLikePost = (findId) =>
     actionPromise('myLikes', gql(`query likeFindPost ($id:String!){
@@ -215,8 +208,6 @@ export const actionMyLikePost = (findId) =>
 
 
 export const actionUpsertLikeCommentAC = (findId, newResult) => ({ type: 'UPSERT-LIKE-COMMENT', findId, newResult })
-// export const actionRemoveLikeCommentAC = (findId, newResult) => ({ type: 'REMOVE-LIKE-COMMENT', findId, newResult })
-
 export const actionLikeComment = (commentId) => ({ type: 'LIKE_COMMENT', commentId })
 export const actionDelLikeComment = (likeId, commentId) => ({ type: 'DEL_LIKE_COMMENT', likeId, commentId })
 
@@ -245,6 +236,7 @@ export const actionFindLikeComment = (findId) =>
 
 export const actionUpsertCollectionAC = (data) => ({ type: 'UPSERT-COLLECTION', data })
 export const actionHandlerUpsertCollection = (_id, flag) => ({ type: 'HANDLER_UPSERT_COLLECTION', _id, flag })
+export const actionFullMyCollectionLoad = () => ({ type: 'LOAD_COLLECTION' })
 
 export const actionAddPostInCollections = (collectionId, newCollection) =>
     actionPromise('addInCollections', gql(`mutation addInCollections($collection:CollectionInput ){
@@ -260,8 +252,6 @@ export const actionFindMyCollections = (_id) =>
         }
     }`, { id: JSON.stringify([{ ___owner: _id }]) }))
 
-export const actionFullMyCollectionLoad = () => ({ type: 'LOAD_COLLECTION' })
-
 export const actionOnLoadMyCollection = (_id, skip) =>
     actionPromise('onLoadMyCollections', gql(`query loadCollections($id:String! ){
        CollectionFind(query:$id){
@@ -274,8 +264,6 @@ export const actionOnLoadMyCollection = (_id, skip) =>
             limit: [36]
         }])
     }))
-
-//  posts{ images { url _id originalFileName } } 
 
 
 //****************---Action Subscribe ---*************************//
@@ -293,6 +281,7 @@ export const actionLoadSubscribe = (myID, myFollowing, userId) =>
             following{_id}
         }
       }`, { user: { _id: myID, following: [...myFollowing || [], { _id: userId }] } }))
+
 export const actionloadUnSubscribe = (myID, myFollowing) =>
     actionPromise('unSubscribe', gql(`mutation followingUn($user:UserInput){
         UserUpsert( user:$user){
@@ -319,14 +308,10 @@ export const actionUpdateFollowers = (_id) =>
 
 
 export const actionAddCommentAC = (newResult) => ({ type: 'ADD-COMMENT', newResult })
-
 export const actionUpdateSubCommentAC = (findId, newResult) => ({ type: 'UPDATE-SUBCOMMENT', findId, newResult })
-
 export const actionEditCommentAC = (findId, newResult) => ({ type: 'EDIT-COMMENT', findId, newResult })
 export const actionEditComment = (commentId, text) => ({ type: 'COMMENT_EDIT', commentId, text })
-
 export const actionFullAddComment = (postId, text) => ({ type: 'COMMENT_POST', postId, text })
-
 export const actionAddSubComment = (commentId, text) => ({ type: 'ADD_SUB_COMMENT', commentId, text })
 export const actionSubComment = (commentId) => ({ type: 'FIND_SUBCOMMENT', commentId })
 
@@ -379,7 +364,6 @@ export const actionSubAddComment = (commentId, text) =>
         }
     }`, { comment: { answerTo: { _id: commentId }, text } }))
 
-
 export const actionFindCommentText = (findId) =>
     actionPromise('subComments', gql(`query commentFindOne ($id:String!){
         CommentFindOne(query:$id){
@@ -396,11 +380,12 @@ export const actionUpsertEditComment = (commentId, text) =>
         }
     }`, { comment: { _id: commentId, text } }))
 
+
 //****************---Action Udate Avatar ---*************************//
+
 
 export const actionUpdateAvatar = (file) => ({ type: 'UPDATE_AVATAR', file })
 export const actionUpdateMyAvatart = (data) => ({ type: 'ABOUTME-UPDATE-AVATAR', data })
-
 
 export const actionSetAvatar = (file, id) =>
     actionPromise('uploadPhoto', gql(`mutation avaUpsert($ava: UserInput){
@@ -409,12 +394,14 @@ export const actionSetAvatar = (file, id) =>
                 }
             }`, { ava: { _id: id, avatar: { _id: file._id } } })
     )
+
 export const actionGetAvatar = (id) =>
     actionPromise('uploadPhoto', gql(`query userOned($myID: String!){
         UserFindOne(query: $myID) {
                             avatar { _id url }
         }
     }`, { myID: JSON.stringify([{ _id: id }]) }))
+
 
 //****************--- Find FOllowing/Follovwrs---*************************//
 
@@ -456,6 +443,7 @@ export const actionGetFindLiked = (_id) =>
 
 //****************---Create Post ---*************************/
 
+
 export const actionFullSentPost = (images, title, text) => ({ type: 'CREATE_POST', images, text, title })
 
 export const actionUpsertPost = (upSertPostObj) =>
@@ -464,13 +452,3 @@ export const actionUpsertPost = (upSertPostObj) =>
                     _id images{_id url originalFileName}
                 }
             }`, { post: upSertPostObj }))
-
-
-
-
-        //запросить все коменты этого псота с ансвер (айди)
-        // по ансверс.файди найти дочерные коменты и засунуть в массив ансверс как елементы
-        // таким оюразом получтьь дерево
-        // отдать в рекувсивный компонкнт на отрисовку дерева.
-        // каждый лист дерева приконектить к экшонам лайк и добавление дочернего коммета.Там жк=е должен быть известен пост.айди для создания комментов
-

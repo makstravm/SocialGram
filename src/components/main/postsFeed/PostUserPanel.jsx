@@ -1,5 +1,5 @@
 import { HeartFilled, HeartOutlined } from "@ant-design/icons"
-import { Button, Col, Row, Tooltip } from "antd"
+import { Button, Col, Row} from "antd"
 import { useState } from "react"
 import { connect } from "react-redux"
 import { actionDelLikePost, actionHandlerUpsertCollection, actionLikePost, } from "../../../actions"

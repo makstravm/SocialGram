@@ -2,12 +2,13 @@ import { message, Spin } from 'antd'
 import { connect } from 'react-redux'
 import preloader from '../images/preloader.gif'
 
+<Spin size="large" />
 const PreloaderImg = () =>
     <div className='PreloaderImg'>
-        <Spin size="large" />
+        <img src={preloader} alt="preloader" />
     </div>
 
-const Preloader = ({ promiseName, promiseState}) =>
+const Preloader = ({ promiseName, promiseState }) =>
     <>
         {promiseState[promiseName]?.status === 'PENDING'
             ? <PreloaderImg />

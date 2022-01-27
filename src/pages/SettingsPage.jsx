@@ -96,7 +96,7 @@ const EditMyData = ({ myData, status, onUpsert }) => {
     return (
         <>
             <EditMyDataIput title='Nick' propValue={nick} propHandler={setNick} setChekEdit={setChekEdit} error={error} setError={setError} />
-            <EditMyDataIput title='Login' error={error} setError={setError} propValue={login} propHandler={setLogin} setChekEdit={setChekEdit} error={error} setError={setError} />
+            <EditMyDataIput title='Login' propValue={login} propHandler={setLogin} setChekEdit={setChekEdit} error={error} setError={setError} />
             <Button type='primary'
                 disabled={!error ? false : true}
                 className={!checkEdit && '--block'}
