@@ -9,7 +9,7 @@ import { CPostUserPanel } from '../components/main/postsFeed/PostUserPanel';
 import { Comment, Tooltip } from 'antd';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import { DeleteOutlined, EditOutlined, LikeFilled, LikeOutlined, MoreOutlined } from '@ant-design/icons';
+import {  EditOutlined, LikeFilled, LikeOutlined, MoreOutlined } from '@ant-design/icons';
 import { actionLikeComment, actionDelLikeComment, actionSubComment } from '../actions';
 import { CPostTitle } from '../components/main/post/PostTitle';
 import { UserAvatar } from '../components/header/UserAvatar';

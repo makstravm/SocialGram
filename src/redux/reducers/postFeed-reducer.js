@@ -1,6 +1,7 @@
 export const postsFeedReducer = (state = {}, { type, findId, newResult, userData = {}, count = null }) => {
     const { posts } = state
     const types = {
+
         'ADD-POSTS-FEED': () => ({
             ...state,
             posts: Array.isArray(newResult)
@@ -8,13 +9,16 @@ export const postsFeedReducer = (state = {}, { type, findId, newResult, userData
                 : { ...posts, ...newResult },
             count
         }),
+
         'GET-POST': () => ({ ...state, posts: { ...newResult } }),
+
         'ADD-PROFILE-DATA': () => ({
             ...state,
             posts: !!posts ? [...posts, ...newResult] : [...newResult],
             userData,
             count
         }),
+
         'REMOVE-POSTS-FEED': () => ({
             ...state,
             posts: [],
@@ -22,21 +26,25 @@ export const postsFeedReducer = (state = {}, { type, findId, newResult, userData
             count: 0,
             subComments: {},
         }),
+
         'ADD-POST-LIKE': () => ({
             ...state,
             posts: Array.isArray(posts)
                 ? posts.map(p => p._id === findId ? p = { ...p, likes: [...newResult] } : p)
                 : { ...state.posts, likes: [...newResult] },
         }),
+
         'REMOVE-POST-LIKE': () => ({
             ...state,
             posts: Array.isArray(posts)
                 ? posts.map(p => p._id === findId ? p = { ...p, likes: [...newResult] } : p)
                 : { ...state.posts, likes: [...newResult] },
         }),
+
         'ADD-COMMENT': () => ({
             ...state, posts: { ...state.posts, comments: [...newResult] }
         }),
+
         'UPDATE-SUBCOMMENT': () => {
             const upsertSubComments = (commentList, id, nR) => {
                 return commentList.map(c => {
@@ -56,6 +64,7 @@ export const postsFeedReducer = (state = {}, { type, findId, newResult, userData
                 ...state, posts: { ...state.posts, comments: upsertSubComments(posts.comments, findId, newResult) }
             })
         },
+
         'EDIT-COMMENT': () => {
             const { _id, text } = newResult
             const editComments = (commentList, id, nR) => {
@@ -99,6 +108,7 @@ export const postsFeedReducer = (state = {}, { type, findId, newResult, userData
                 }
             })
         },
+        
         'UPDATE-FOLLOWERS': () => ({
             ...state,
             userData: { ...state.userData, followers: [...newResult] }
