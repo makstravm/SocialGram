@@ -21,18 +21,12 @@ const HeartLike = ({ styleFontSize, likeStatus, changeLike }) =>
 
 const PostUserPanel = ({ myID, postId = '', likes = [], collections, styleFontSize, addLikePost, removeLikePost, handlerCollection }) => {
     const [open, setOpen] = useState(false)
-    let likeStatus = false
-    let likeId
-    likes.find(l => {
-        if (l?.owner?._id === myID) {
-            likeStatus = true
-            likeId = l._id
-        }
-    })
+
+    const likeId = likes.find(l => l?.owner?._id === myID)?._id
+
     const flag = collections?.posts.find(c => c._id === postId)
 
-    const changeLike = () => likeStatus ? removeLikePost(likeId, postId) : addLikePost(postId)
-
+    const changeLike = () => likeId ? removeLikePost(likeId, postId) : addLikePost(postId)
 
     return (
         <>
@@ -43,7 +37,7 @@ const PostUserPanel = ({ myID, postId = '', likes = [], collections, styleFontSi
                         <Col className='Post__heart' >
                             <HeartLike
                                 changeLike={changeLike}
-                                likeStatus={likeStatus}
+                                likeStatus={likeId}
                                 styleFontSize={styleFontSize} />
                         </Col>
                         <Col offset={1}>

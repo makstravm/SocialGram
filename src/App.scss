@@ -510,7 +510,7 @@ video {
             margin-bottom: 5px;
         }
         .ant-divider {
-            margin: 0;
+            margin: 0 0 15px 0;
         }
     }
     &__description-inner {
@@ -524,6 +524,22 @@ video {
         flex-grow: 1;
         overflow: auto;
         height: 100%;
+    }
+    &__comment-edit {
+        display: block;
+        text-align: right;
+        margin-right: 10px;
+        margin-top: -5px;
+        margin-bottom: -5px;
+        margin-left: auto;
+        color: rgba(0, 0, 0, 0.45);
+        font-size: 12px;
+        cursor: pointer;
+        transition: color 0.3s;
+        font-size: 0.7em;
+        &:hover {
+            color: #595959;
+        }
     }
     .ant-empty-image {
         height: auto;

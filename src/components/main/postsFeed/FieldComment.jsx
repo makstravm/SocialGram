@@ -4,7 +4,7 @@ import TextArea from 'antd/lib/input/TextArea'
 import { SendOutlined, } from '@ant-design/icons'
 import { connect } from 'react-redux'
 import { Button, Col, Row } from 'antd'
-import { actionAddSubComment, actionFullAddComment } from '../../../actions'
+import { actionAddSubComment, actionEditComment, actionFullAddComment } from '../../../actions'
 
 
 const FieldCommentSend = ({ id, sentComment, autoFocus, value = '', setOpen }) => {
@@ -28,7 +28,7 @@ const FieldCommentSend = ({ id, sentComment, autoFocus, value = '', setOpen }) =
         sendCommentValid(commentValue)
         setOpen(false)
     }
-    
+
     const onKeyPressHandler = e => {
         if (e.charCode === 13) {
             sendCommentValid(commentValue)
@@ -44,7 +44,7 @@ const FieldCommentSend = ({ id, sentComment, autoFocus, value = '', setOpen }) =
                     <TextArea value={commentValue}
                         autoFocus={autoFocus || false}
                         placeholder="Add a comment ..."
-                        autoSize={{ minRows: 1, maxRows: 2 }}
+                        autoSize={{ minRows: 1, maxRows: 1 }}
                         onChange={changeComentTextarea}
                         bordered={false}
                         onKeyPress={onKeyPressHandler}
@@ -65,3 +65,5 @@ const FieldCommentSend = ({ id, sentComment, autoFocus, value = '', setOpen }) =
 export const CFieldCommentSend = connect(null, { sentComment: actionFullAddComment })(FieldCommentSend)
 
 export const CFieldSubCommentSend = connect(null, { sentComment: actionAddSubComment })(FieldCommentSend)
+
+export const CFieldUpsertCommentSend = connect(null, { sentComment: actionEditComment })(FieldCommentSend)

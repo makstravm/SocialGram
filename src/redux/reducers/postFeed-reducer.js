@@ -1,9 +1,6 @@
-import React from 'react'
-
 export const postsFeedReducer = (state = {}, { type, findId, newResult, userData = {}, count = null }) => {
     const { posts } = state
     const types = {
-        //=== Array.isArray(newResult)
         'ADD-POSTS-FEED': () => ({
             ...state,
             posts: Array.isArray(newResult)
@@ -36,52 +33,76 @@ export const postsFeedReducer = (state = {}, { type, findId, newResult, userData
             posts: Array.isArray(posts)
                 ? posts.map(p => p._id === findId ? p = { ...p, likes: [...newResult] } : p)
                 : { ...state.posts, likes: [...newResult] },
-
         }),
         'ADD-COMMENT': () => ({
             ...state, posts: { ...state.posts, comments: [...newResult] }
-
         }),
         'UPDATE-SUBCOMMENT': () => {
-            const recursiya = (commentList, id, nR) => {
+            const upsertSubComments = (commentList, id, nR) => {
                 return commentList.map(c => {
                     if (c._id === id) {
                         return { ...c, answers: [...nR] }
                     } else if (c?.answers?.length) {
-                        return ({
+                        return {
                             ...c,
-                            answers: recursiya(c.answers, id, nR)
-                        })
+                            answers: upsertSubComments(c.answers, id, nR)
+                        }
                     } else {
-                        return ({ ...c })
+                        return { ...c }
                     }
                 })
             }
             return ({
-                ...state, posts: { ...state.posts, comments: recursiya(posts.comments, findId, newResult) }
+                ...state, posts: { ...state.posts, comments: upsertSubComments(posts.comments, findId, newResult) }
             })
         },
-        'ADD-LIKE-COMMENT': () => ({
-            ...state,
-            posts: {
-                ...state.posts,
-                comments: posts.comments.map(c => c._id === findId ? c = { ...c, likes: [...newResult] } : c)
+        'EDIT-COMMENT': () => {
+            const { _id, text } = newResult
+            const editComments = (commentList, id, nR) => {
+                return commentList.map(c => {
+                    if (c._id === id) {
+                        return { ...c, text: nR }
+                    } else if (c?.answers?.length) {
+                        return {
+                            ...c,
+                            answers: editComments(c.answers, id, nR)
+                        }
+                    } else {
+                        return { ...c }
+                    }
+                })
+            }
+            return ({
+                ...state, posts: { ...state.posts, comments: editComments(posts.comments, _id, text) }
+            })
+        },
 
+        'UPSERT-LIKE-COMMENT': () => {
+            const upsertLikeComments = (commentList, id, nR) => {
+                return commentList.map(c => {
+                    if (c._id === id) {
+                        return { ...c, likes: [...nR] }
+                    } else if (c?.answers?.length) {
+                        return {
+                            ...c,
+                            answers: upsertLikeComments(c.answers, id, nR)
+                        }
+                    } else {
+                        return { ...c }
+                    }
+                })
             }
-        }),
-        'REMOVE-LIKE-COMMENT': () => ({
-            ...state,
-            posts: {
-                ...state.posts,
-                comments: posts.comments.map(c => c._id === findId ? c = { ...c, likes: [...newResult] } : c)
-            }
-        }),
+
+            return ({
+                ...state, posts: {
+                    ...state.posts, comments: upsertLikeComments(posts.comments, findId, newResult)
+                }
+            })
+        },
         'UPDATE-FOLLOWERS': () => ({
             ...state,
             userData: { ...state.userData, followers: [...newResult] }
         }),
-
-
     }
     if (type in types) {
         return types[type]()

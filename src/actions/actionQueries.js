@@ -24,7 +24,9 @@ export const queries = {
                             }
                         }
                     }`,
-        variables: { id: JSON.stringify([{ _id: match.params.id }]) }
+        variables: {
+            id: JSON.stringify([{ _id: match.params.id }])
+        }
     }),
 }
 

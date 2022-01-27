@@ -214,8 +214,8 @@ export const actionMyLikePost = (findId) =>
 //****************---Action Like Comment ---*************************//
 
 
-export const actionAddLikeCommentAC = (findId, newResult) => ({ type: 'ADD-LIKE-COMMENT', findId, newResult })
-export const actionRemoveLikeCommentAC = (findId, newResult) => ({ type: 'REMOVE-LIKE-COMMENT', findId, newResult })
+export const actionUpsertLikeCommentAC = (findId, newResult) => ({ type: 'UPSERT-LIKE-COMMENT', findId, newResult })
+// export const actionRemoveLikeCommentAC = (findId, newResult) => ({ type: 'REMOVE-LIKE-COMMENT', findId, newResult })
 
 export const actionLikeComment = (commentId) => ({ type: 'LIKE_COMMENT', commentId })
 export const actionDelLikeComment = (likeId, commentId) => ({ type: 'DEL_LIKE_COMMENT', likeId, commentId })
@@ -276,6 +276,8 @@ export const actionOnLoadMyCollection = (_id, skip) =>
     }))
 
 //  posts{ images { url _id originalFileName } } 
+
+
 //****************---Action Subscribe ---*************************//
 
 
@@ -317,7 +319,11 @@ export const actionUpdateFollowers = (_id) =>
 
 
 export const actionAddCommentAC = (newResult) => ({ type: 'ADD-COMMENT', newResult })
+
 export const actionUpdateSubCommentAC = (findId, newResult) => ({ type: 'UPDATE-SUBCOMMENT', findId, newResult })
+
+export const actionEditCommentAC = (findId, newResult) => ({ type: 'EDIT-COMMENT', findId, newResult })
+export const actionEditComment = (commentId, text) => ({ type: 'COMMENT_EDIT', commentId, text })
 
 export const actionFullAddComment = (postId, text) => ({ type: 'COMMENT_POST', postId, text })
 
@@ -335,9 +341,12 @@ export const actionFindComment = (findId) =>
     actionPromise('findCommentPost', gql(`query commentFindPost ($id:String!){
         PostFindOne(query:$id){
             comments {
-                _id text owner{
+                _id text createdAt 
+                owner{
                     _id nick login
-                     avatar{_id url}
+                    avatar{
+                        _id url
+                        }
                     } 
                     likes{_id}
                 }
@@ -347,27 +356,45 @@ export const actionFindComment = (findId) =>
 export const actionFindSubComment = (findId) =>
     actionPromise('subComments', gql(`query commentFindOne ($id:String!){
         CommentFindOne(query:$id){
-        answers { 
+       _id text answers { 
                 _id text
                 post {_id }
                 answers { _id}
-                answerTo{_id owner{login, nick}}
-                likes{_id owner { login nick}}
-                 owner {
+                createdAt
+                likes { _id owner { login nick } }
+                owner {
                     _id login nick 
-                    avatar {url} 
+                    avatar { url } 
                     } 
                 }
         } 
-    }`, { id: JSON.stringify([{ _id: findId }]) }))
+    }`, {
+        id: JSON.stringify([{ _id: findId }])
+    }))
 
-export const actionSubAddComment = (commentId, text, _id) =>
+export const actionSubAddComment = (commentId, text) =>
     actionPromise('addSubcomment', gql(`mutation addSubcomment($comment: CommentInput ){
         CommentUpsert(comment:$comment){
             _id text
         }
     }`, { comment: { answerTo: { _id: commentId }, text } }))
 
+
+export const actionFindCommentText = (findId) =>
+    actionPromise('subComments', gql(`query commentFindOne ($id:String!){
+        CommentFindOne(query:$id){
+       _id text 
+        } 
+    }`, {
+        id: JSON.stringify([{ _id: findId }])
+    }))
+
+export const actionUpsertEditComment = (commentId, text) =>
+    actionPromise('editcomment', gql(`mutation addSubcomment($comment: CommentInput ){
+        CommentUpsert(comment:$comment){
+            _id text
+        }
+    }`, { comment: { _id: commentId, text } }))
 
 //****************---Action Udate Avatar ---*************************//
 
