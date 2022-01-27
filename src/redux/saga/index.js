@@ -210,7 +210,6 @@ function* delLikePostWorker({ likeId, postId }) {
 }
 
 function* addLikeCommentWorker({ commentId }) {
-    debugger
     yield call(promiseWorker, actionAddLikeComment(commentId))
     const { likes } = yield call(promiseWorker, actionFindLikeComment(commentId))
     if (likes) {

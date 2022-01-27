@@ -533,10 +533,16 @@ video {
         margin-bottom: -5px;
         margin-left: auto;
         color: rgba(0, 0, 0, 0.45);
-        font-size: 12px;
+        width: 20px;
+        height: 20px;
         cursor: pointer;
         transition: color 0.3s;
-        font-size: 0.7em;
+        font-size: 1em;
+        transform: rotate(90deg);
+        svg {
+            width: 15px;
+            height: 20px;
+        }
         &:hover {
             color: #595959;
         }

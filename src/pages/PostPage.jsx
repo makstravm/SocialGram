@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, Divider } from 'antd';
+import { Button, Divider, Dropdown, Menu } from 'antd';
 import { connect } from 'react-redux'
 import PostImage from '../components/main/postsFeed/PostImage'
 import { PostDescription } from './MainPostsFeed';
@@ -9,7 +9,7 @@ import { CPostUserPanel } from '../components/main/postsFeed/PostUserPanel';
 import { Comment, Tooltip } from 'antd';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import { EditOutlined, LikeFilled, LikeOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, LikeFilled, LikeOutlined, MoreOutlined } from '@ant-design/icons';
 import { actionLikeComment, actionDelLikeComment, actionSubComment } from '../actions';
 import { CPostTitle } from '../components/main/post/PostTitle';
 import { UserAvatar } from '../components/header/UserAvatar';
@@ -30,17 +30,28 @@ const PostCommentAuthor = ({ owner }) =>
     </>
 
 
-
+const EditMenu = ({ setEditComment }) =>
+    <Menu>
+        <Menu.Item key="1" onClick={() => setEditComment(true)}><EditOutlined /> Edit</Menu.Item>
+    </Menu>
 
 const PostCommentText = ({ myID, commentId, owner, text }) => {
     const [editComment, setEditComment] = useState(false)
     return (
         <>
-            {owner?._id === myID && <span className='PostOne__comment-edit' onClick={() => setEditComment(true)}>Edit <EditOutlined /></span >}
-            {!editComment ? <Paragraph ellipsis={{ rows: 2, expandable: true, symbol: 'more' }} >
-                {text}
-            </ Paragraph> :
-                <CFieldUpsertCommentSend value={text} id={commentId} autoFocus={true} setOpen={setEditComment} />}
+            {owner?._id === myID && <Dropdown overlay={<EditMenu setEditComment={setEditComment} />} placement="bottomRight">
+                <span className='PostOne__comment-edit'
+                >
+                    <MoreOutlined />
+                </span >
+            </Dropdown>}
+            {!editComment
+                ? <Dropdown overlay={owner?._id === myID && <EditMenu setEditComment={setEditComment} />} trigger={['contextMenu']}>
+                    <Paragraph ellipsis={{ rows: 2, expandable: true, symbol: 'more' }} >
+                        {text}
+                    </ Paragraph>
+                </Dropdown>
+                : <CFieldUpsertCommentSend value={text} id={commentId} autoFocus={true} setOpen={setEditComment} rows={4} bordered={true} />}
         </>)
 }
 
@@ -57,24 +68,14 @@ const PostCommentAction = ({ myID, commentId, likes, delLikeComment, addLikeComm
     const [open, setOpen] = useState(false);
     const likeId = likes.find(l => l?.owner?._id === myID)?._id
 
-    const changeLike = () => {
+    const changeLike = () => likeId ? delLikeComment(likeId, commentId) : addLikeComment(commentId)
 
-
-        if (likeId) {
-
-            delLikeComment(likeId, commentId)
-        } else {
-            
-            addLikeComment(commentId)
-
-        }
-    }
     return (
         <>
-            <Button onClick={changeLike}>
+            <span onClick={changeLike}>
                 {likeId ? <LikeFilled /> : <LikeOutlined />}
                 <span style={{ paddingLeft: 8, cursor: 'auto' }}>{likes.length ? likes.length : ''}</span>
-            </Button>
+            </span>
             <span onClick={() => setOpen(!open)}>Reply to</span>
             {open && <CFieldSubCommentSend autoFocus={true} id={commentId} setOpen={setOpen} />}
         </>
@@ -83,10 +84,10 @@ const PostCommentAction = ({ myID, commentId, likes, delLikeComment, addLikeComm
 
 const CPostCommentAction = connect(state => ({
     myID: state.auth.payload.sub.id || ''
-}, {
+}), {
     addLikeComment: actionLikeComment,
     delLikeComment: actionDelLikeComment
-}))(PostCommentAction)
+})(PostCommentAction)
 
 
 const PostComments = ({ comments, findSubComment, parentId, }) => {

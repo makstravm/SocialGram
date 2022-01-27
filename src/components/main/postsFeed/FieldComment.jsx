@@ -7,7 +7,7 @@ import { Button, Col, Row } from 'antd'
 import { actionAddSubComment, actionEditComment, actionFullAddComment } from '../../../actions'
 
 
-const FieldCommentSend = ({ id, sentComment, autoFocus, value = '', setOpen }) => {
+const FieldCommentSend = ({ id, sentComment, autoFocus, value = '', setOpen, rows = 1,bordered=false }) => {
     const [commentValue, setCommentValue] = useState(value)
     const [error, setError] = useState(false)
 
@@ -44,9 +44,9 @@ const FieldCommentSend = ({ id, sentComment, autoFocus, value = '', setOpen }) =
                     <TextArea value={commentValue}
                         autoFocus={autoFocus || false}
                         placeholder="Add a comment ..."
-                        autoSize={{ minRows: 1, maxRows: 1 }}
+                        autoSize={{ minRows: 1, maxRows: rows }}
                         onChange={changeComentTextarea}
-                        bordered={false}
+                        bordered={bordered}
                         onKeyPress={onKeyPressHandler}
                     />
                 </Col>
