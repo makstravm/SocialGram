@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Container } from './Content';
 import { CEditAvatar } from '../components/main/profilePage/EditAvatar'
-import { Button, Col, Divider, Input, message, Row } from 'antd'
+import { Button, Col, Divider, Input, message, Row, Space } from 'antd'
 import Title from 'antd/lib/typography/Title';
 import { connect } from 'react-redux';
-import { EditOutlined } from '@ant-design/icons';
+import { EditOutlined, LogoutOutlined } from '@ant-design/icons';
 import Text from 'antd/lib/typography/Text';
-import { actionFullAboutMeUpsert } from '../actions';
+import { actionAuthLogout, actionFullAboutMeUpsert, actionRemoveMyDataAC } from '../actions';
 
 
 const ContainerSettingsPage = ({ children }) =>
@@ -107,7 +107,11 @@ const EditMyData = ({ myData, status, onUpsert }) => {
 
 const CEditMyData = connect(state => ({ myData: state?.myData, status: state?.promise?.upsertAboutMe?.status }), { onUpsert: actionFullAboutMeUpsert })(EditMyData)
 
-export const SettingsPage = () => {
+const SettingsPage = ({ onLogOut, removeMydata }) => {
+    const handlerExitBtn = () => {
+        onLogOut()
+        removeMydata()
+    }
     return (
         <Container>
             <ContainerSettingsPage>
@@ -120,7 +124,12 @@ export const SettingsPage = () => {
                         <CEditMyData />
                     </Col>
                 </Row>
+                <Space className='Exit-box__btn'>
+                    <Button onClick={handlerExitBtn}><LogoutOutlined /> Exit</Button>
+                </Space>
             </ContainerSettingsPage>
         </Container>
     )
-};
+}
+
+export const CSettingsPage = connect(null, { onLogOut: actionAuthLogout, removeMydata: actionRemoveMyDataAC })(SettingsPage)

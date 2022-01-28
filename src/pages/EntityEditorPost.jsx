@@ -13,26 +13,28 @@ import { history } from '../App'
 const ContainEditorPost = ({ children }) =>
     <div className='ContainEditPost ContainerInner'>{children}</div>
 
-const EntityEditorPost = ({ match: { params: { _id } }, myID, entity, status, onSave, updatePost, clearState}) => {
+const EntityEditorPost = ({ match: { params: { _id } }, myID, entity, status, onSave, updatePost, clearState }) => {
 
     const [photos, setPhotos] = useState(entity?.images || []);
     const [titleSend, setTitleSend] = useState(entity?.title || '')
     const [description, setDescription] = useState(entity?.text || '');
 
-
     useEffect(() => {
         if (_id !== 'new') {
-            let newEntity
             if (Array.isArray(entity)) {
-                newEntity = entity.find(e => e._id === _id)
-                setPhotos(newEntity?.images || [])
-                setTitleSend(newEntity?.title || '')
-                setDescription(newEntity?.text || '')
-            } else if (!Object.keys(entity = {}).length) history.push('/edit/post/new')
-            updatePost(newEntity)
-            return () => {
-                clearState()
+                let findEntity = entity.find(e => e._id === _id)
+                setPhotos(findEntity?.images)
+                setTitleSend(findEntity?.title)
+                setDescription(findEntity?.text)
+                updatePost(findEntity)
             }
+        } else {
+            setPhotos([])
+            setTitleSend('')
+            setDescription('')
+        }
+        return () => {
+            clearState()
         }
     }, []);
 

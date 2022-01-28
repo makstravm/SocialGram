@@ -3,41 +3,12 @@ import logo from '../../logo.svg';
 import { Link, NavLink } from 'react-router-dom';
 import { CFieldSearch } from './Search';
 import { connect } from 'react-redux';
-import { actionAuthLogout, actionRemoveMyDataAC } from '../../actions';
 import { Header } from 'antd/lib/layout/layout';
-import { Col, Menu, Popover, Row } from 'antd';
-import { UserOutlined, CompassOutlined, SettingOutlined, HomeOutlined, ImportOutlined, MessageOutlined, PlusCircleOutlined } from '@ant-design/icons/lib/icons';
+import { Col, Row } from 'antd';
+import { CompassOutlined, HomeOutlined, MessageOutlined, PlusCircleOutlined } from '@ant-design/icons/lib/icons';
 import { UserAvatar } from './UserAvatar';
-import { CollectionEmptySvg } from '../../helpers';
 import MediaQuery from "react-responsive";
-
-
-export const UserNav = () =>
-    <div className='UserNav'>
-        <CUserNavIcon />
-    </div>
-
-const ProfileDropMenu = ({ myID, onLogOut, removeMydata }) =>
-    <Menu className='dropMenu'>
-        <Menu.Item key={'0'}>
-            <Link to={`/profile/${myID}`}><UserOutlined /> My Profile</Link>
-        </Menu.Item>
-        <Menu.Item key={'1'}>
-            <Link to={'/my-collection'}>< CollectionEmptySvg className='dropMenu__icon' />Collection</Link>
-        </Menu.Item>
-        <Menu.Item key={'2'}>
-            <Link to={'/my-settings'}><SettingOutlined /> Settings</Link>
-        </Menu.Item>
-        <Menu.Divider />
-        <Menu.Item key={'3'}>
-            <button onClick={() => {
-                onLogOut()
-                removeMydata()
-            }}><ImportOutlined /> Log out</button>
-        </Menu.Item>
-    </Menu>
-
-const CProfileDropMenu = connect(null, { onLogOut: actionAuthLogout, removeMydata: actionRemoveMyDataAC })(ProfileDropMenu)
+import { CollectionEmptySvg } from '../../helpers';
 
 
 const UserNavIcon = ({ userData: { _id, avatar, login } }) =>
@@ -54,21 +25,26 @@ const UserNavIcon = ({ userData: { _id, avatar, login } }) =>
         <Col >
             <NavLink to='/all'><CompassOutlined /></NavLink>
         </Col>
-        <Col>
-            <MediaQuery minWidth={768}>
-                <Popover placement="bottomRight" content={<CProfileDropMenu myID={_id} />}>
-                    <UserAvatar avatar={avatar} login={login} avatarSize={'45px'} />
-                </Popover>
-            </MediaQuery>
-            <MediaQuery maxWidth={768}>
-                <Popover placement="topRight"  content={<CProfileDropMenu myID={_id} />}>
-                    <UserAvatar avatar={avatar} login={login} avatarSize={'45px'} />
-                </Popover>
-            </MediaQuery>
+        <Col >
+            <NavLink to='/my-collection'><CollectionEmptySvg /></NavLink>
         </Col>
+        <MediaQuery minWidth={787}>
+            <Col>
+                <Link to={`/profile/${_id}`}>
+                    <UserAvatar avatar={avatar} login={login} avatarSize={'45px'} />
+                </Link>
+            </Col>
+        </MediaQuery>
+        <MediaQuery maxWidth={786}>
+            <Col>
+                <Link to={`/profile/${_id}`}>
+                    <UserAvatar avatar={avatar} login={login} avatarSize={'45px'} />
+                </Link>
+            </Col>
+        </MediaQuery>
     </Row >
 
-const CUserNavIcon = connect(state => ({ userData: state.myData || {} }))(UserNavIcon)
+export const CUserNavIcon = connect(state => ({ userData: state.myData || {} }))(UserNavIcon)
 
 
 const Logo = () =>
@@ -80,15 +56,15 @@ const Logo = () =>
 const HeaderComponent = () =>
     <Header style={{ position: 'fixed', zIndex: 3, width: '100%' }}>
         <Row justify="space-between" align="middle" className='Header__inner'>
-            <Col >
+            <Col flex={2}>
                 <Logo />
             </Col>
-            <Col >
+            <Col flex={1}>
                 <CFieldSearch />
             </Col>
-            <MediaQuery minWidth={768}>
-                <Col >
-                    <UserNav />
+            <MediaQuery minWidth={787}>
+                <Col flex={2}>
+                    <CUserNavIcon />
                 </Col>
             </MediaQuery>
         </Row>

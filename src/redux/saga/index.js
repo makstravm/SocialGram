@@ -19,7 +19,6 @@ function* promiseWorker({ name, promise }) {
     }
 }
 
-
 function* promiseWatcher() {
     yield takeEvery('PROMISE_START', promiseWorker)
 }
@@ -41,6 +40,7 @@ function* routeWorker({ match }) {
 function* routeWatcher() {
     yield takeEvery('ROUTE', routeWorker)
 }
+
 
 //*************** AUTHORIZATION ******************//
 
@@ -89,7 +89,6 @@ function* aboutMeUpsertWorker({ nick, login }) {
     }
 }
 
-
 function* aboutMeWatcher() {
     yield all([
         takeEvery('ABOUT_ME', aboutMeWorker),
@@ -119,6 +118,7 @@ function* postsFeedWorker() {
         }
     }
 }
+
 function* allPostsFeedWorker() {
     const {
         postsFeed: { posts, count }
@@ -127,15 +127,12 @@ function* allPostsFeedWorker() {
     if (posts?.length !== (count ? count : 1)) {
         const taskPosts = yield fork(promiseWorker, actionGetAllPosts(posts?.length))
         const taskCount = yield fork(promiseWorker, actionAllPostsCount())
-
         const [postsResult, countResult] = yield join([taskPosts, taskCount])
-
         if (postsResult && countResult) {
             yield put(actionAddPostsFeedAC(postsResult, countResult))
         }
     }
 }
-
 
 function* postsFeedWatcher() {
     yield all([

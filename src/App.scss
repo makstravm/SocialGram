@@ -1,53 +1,3 @@
-//     RESET STYLE
-html {
-    box-sizing: border-box;
-}
-
-*,
-*::after,
-*::before {
-    box-sizing: inherit;
-}
-
-ul[class],
-ol[class] {
-    padding: 0;
-}
-
-body,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-ul[class],
-ol[class],
-li,
-figure,
-figcaption,
-blockquote,
-dl,
-dd {
-    margin: 0;
-}
-
-ul[class] {
-    list-style: none;
-}
-
-img {
-    max-width: 100%;
-    display: block;
-}
-
-input,
-button,
-textarea,
-select {
-    font: inherit;
-}
 $defaultColorW: #fff;
 $defaultColorB: #000;
 
@@ -62,8 +12,8 @@ video {
     max-height: 500px;
 }
 .Header {
-    display: flex;
     background-color: #ececec;
+    display: flex;
     justify-content: space-between;
     align-items: center;
     .Logo {
@@ -109,6 +59,9 @@ video {
             &.active {
                 svg {
                     fill: $defaultColorB;
+                    polygon {
+                        stroke: $defaultColorB;
+                    }
                 }
             }
         }
@@ -147,38 +100,6 @@ video {
     }
 }
 
-.dropMenu {
-    max-width: 200px;
-    min-width: 150px;
-    .anticon.anticon-user,
-    li {
-        transition: all 0.3s;
-        &:hover {
-            background-color: rgba($color: #0057ff, $alpha: 0.12);
-        }
-    }
-    a {
-        transition: all 0.3s;
-    }
-    &__icon {
-        margin-right: 2px;
-        svg {
-            width: 15px;
-            height: 15px;
-        }
-    }
-    button {
-        cursor: pointer;
-        text-align-last: left;
-        width: 100%;
-        background-color: transparent;
-        border: none;
-        padding: 0;
-        margin: 0;
-        transition: all 0.3s;
-    }
-}
-
 .Authorization {
     height: 100%;
     background-position: right top;
@@ -210,11 +131,16 @@ video {
 
 .ant-layout-header,
 .ant-layout-footer {
-    height: 58px;
-    line-height: 58px;
-    padding: 0 20px;
+    height: 60px;
     background-color: $defaultColorW;
     box-shadow: 0 0 9px 5px rgba($color: #001529, $alpha: 0.4);
+}
+.ant-layout-header {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+.ant-layout-footer {
+    padding: 10px 20px;
 }
 
 .Main {
@@ -239,7 +165,6 @@ video {
         object-fit: contain;
     }
     &__dots.slick-dots {
-        bottom: -14px;
         z-index: 1;
         li {
             border-radius: 50%;
@@ -247,6 +172,7 @@ video {
             width: 10px;
             height: 10px;
             overflow: hidden;
+            border: 1px solid #000;
             &.slick-active {
                 border-radius: 5px;
                 width: 20px;
@@ -656,7 +582,7 @@ video {
 }
 .avatar-uploader {
     display: flex;
-justify-content: center;
+    justify-content: center;
     bottom: 10px;
 
     .ant-upload {
@@ -712,33 +638,42 @@ justify-content: center;
         }
     }
 }
+.Exit-box__btn {
+    button {
+        display: block;
+        margin-left: auto;
+    }
+}
 
 @media (max-width: 800px) {
     .PostOne {
         padding-top: 30px;
         &__inner {
-            display: block;
+            display: grid;
             grid-template-columns: 1fr;
             grid-template-rows: (45px, 1fr, 1fr);
             max-height: 100%;
         }
         &__title {
+            grid-area: 1 / 1 / 2 / 2;
         }
         &__image {
+            grid-area: 2 / 1 / 3 / 2;
             width: 100%;
-        }
-        &__description {
-        }
-        &__image img,
-        video {
-            height: auto;
-        }
-    }
-    .Profile {
-        &__box {
             img,
             video {
-                max-height: 120px;
+                height: auto;
+            }
+        }
+        &__description {
+            grid-area: 3 / 1 / 4 / 2;
+        }
+        .Profile {
+            &__box {
+                img,
+                video {
+                    max-height: 120px;
+                }
             }
         }
     }
@@ -749,6 +684,10 @@ justify-content: center;
         img {
             width: 35vw;
         }
+    }
+    .Main {
+        padding-left: 10px;
+        padding-right: 5px;
     }
     .ant-input-affix-wrapper {
         width: 45vw;

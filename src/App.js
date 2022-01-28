@@ -12,7 +12,7 @@ import { CRRoute } from './helpers';
 import { CPostPage } from './pages/PostPage';
 import { CAllPosts } from './pages/AllPosts';
 import { CEntityEditorPost } from './pages/EntityEditorPost';
-import { SettingsPage } from './pages/SettingsPage';
+import { CSettingsPage } from './pages/SettingsPage';
 import { Authorization } from './pages/Authorization';
 import { CCollectionPage } from './pages/CollectionPage';
 import { useMediaQuery } from 'react-responsive';
@@ -42,9 +42,8 @@ const AppContent = ({ isToken }) => {
                         <Route path='/feed' component={CMainPostsFeed} />
                         <Route path='/profile/:_id' component={CProfilePage} />
                         {/* <Route path='/message' component={Aside} /> */}
-                        <Route path='/edit/post/new' component={CEntityEditorPost} exact />
                         <Route path='/edit/post/:_id' component={CEntityEditorPost} />
-                        <Route path='/my-settings' component={SettingsPage} />
+                        <Route path='/my-settings' component={CSettingsPage} />
                         <Route path='/all' component={CAllPosts} />
                         <Route path='/my-collection' component={CCollectionPage} />
                         <CRRoute path='/post/:id' component={CPostPage} />
@@ -52,11 +51,11 @@ const AppContent = ({ isToken }) => {
                     </Switch>
                 </Main>
                 {isTabletDevice && <FooterComponent />}
-
             </Content >
         }
     </Router >
 }
+
 const CAppContent = connect(state => ({ isToken: state.auth?.token }))(AppContent)
 store.subscribe(() => console.log(store.getState()))
 

@@ -107,7 +107,7 @@ const ProfilePage = ({ match: { params: { _id } }, getProfileUser, clearDataProf
     }, [_id, checkScroll])
 
     const scrollHandler = (e) => {
-        if (e.target.documentElement.scrollHeight - (e.target.documentElement.scrollTop + window.innerHeight) < 500) {
+        if (e.target.documentElement.scrollHeight - (e.target.documentElement.scrollTop + window.innerHeight) < 300) {
             setCheckScroll(true)
         }
     }
