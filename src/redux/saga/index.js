@@ -389,10 +389,14 @@ function* handlerCollectionWorker({ _id, flag }) {
 function* loadCollectionWorker() {
     const { myData: { collections }, postsFeed } = yield select()
     !Array.isArray(postsFeed?.posts) && (yield put(actionRemovePostsFeedAC()))
-    const [{ posts: newResult }] = yield call(promiseWorker, actionOnLoadMyCollection(collections?._id, postsFeed?.posts?.length))
-    if (newResult) {
-        yield put(actionAddPostsFeedAC(newResult))
+    if (collections?._id) {
+        const [{ posts: newResult }] = yield call(promiseWorker, actionOnLoadMyCollection(collections?._id, postsFeed?.posts?.length))
+        if (newResult) {
+            yield put(actionAddPostsFeedAC(newResult))
+        }
     }
+
+
 
 }
 

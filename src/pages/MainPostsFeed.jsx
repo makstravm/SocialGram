@@ -13,6 +13,7 @@ import { CPostTitle } from '../components/main/post/PostTitle'
 import { CPreloader } from './Preloader'
 import { CFieldCommentSend } from '../components/main/postsFeed/FieldComment'
 import { PostCommentDate } from '../components/main/post/PostComment'
+import Title from 'antd/lib/typography/Title'
 
 
 export const PostDescription = ({ title, description, date }) =>
@@ -35,7 +36,7 @@ export const PostDescription = ({ title, description, date }) =>
 const CommentPostFeed = ({ comment }) =>
     <div className='CommentPostFeed'>
         <Link to={`/profile/${comment.owner._id}`}>
-            {comment?.owner?.login}
+            {comment?.owner?.nick || comment?.owner?.login}
         </Link>
         <PostCommentDate createdAt={comment.createdAt} />
         <Paragraph ellipsis={{ rows: 1, expandable: true, symbol: 'more' }}>
@@ -109,7 +110,12 @@ const MainPostsFeed = ({ posts, postsFollowing, clearState, following }) => {
     return (
         <Container>
             <CPreloader promiseName='followingPosts' />
-            {Array.isArray(posts) && posts.map(p => <Post key={p._id} postData={p} />)}
+            {Array.isArray(posts) && posts.length
+                ? posts.map(p => <Post key={p._id} postData={p} />)
+                : <Title level={4}>
+                    The tape is empty. Subscribe to users to see them
+                    posts or create your own
+                </Title>}
         </Container>
     )
 }

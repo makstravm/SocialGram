@@ -17,7 +17,6 @@ const FieldCommentSend = ({ id, sentComment, autoFocus, value = '', setOpen, row
     }
     const sendCommentValid = (value) => {
         if (value.trim() !== '') {
-            console.log(id);
             sentComment(id, value.trim())
             setCommentValue('')
         } else {

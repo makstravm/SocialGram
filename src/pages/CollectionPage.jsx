@@ -1,13 +1,13 @@
 import { Divider } from 'antd';
 import Title from 'antd/lib/typography/Title';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { actionFullMyCollectionLoad, actionRemovePostsFeedAC } from '../actions';
 import { CPosts } from '../components/main/Posts';
 import { Container } from './Content';
 import { CPreloader } from './Preloader';
 
-export const CollectionPage = ({ onLoadPosts, postsRemove }) => {
+export const CollectionPage = ({ posts, onLoadPosts, postsRemove }) => {
 
     useEffect(() => {
         onLoadPosts()
@@ -20,7 +20,11 @@ export const CollectionPage = ({ onLoadPosts, postsRemove }) => {
         <Container>
             <CPreloader promiseName='onLoadMyCollections' />
             <Divider><Title level={1}>Collections</Title></Divider>
-            <CPosts />
+            {posts.lenght
+                ? <CPosts />
+                : <Title level={4}>
+                    The collection is empty. Add posts to your collection
+                </Title>}
         </Container>
     )
 }
