@@ -35,13 +35,11 @@ const AppContent = ({ isToken }) => {
             </Switch>
             :
             <Content>
-
                 <HeaderComponent />
                 <Main>
                     <Switch>
                         <Route path='/feed' component={CMainPostsFeed} />
                         <Route path='/profile/:_id' component={CProfilePage} />
-                        {/* <Route path='/message' component={Aside} /> */}
                         <Route path='/edit/post/:_id' component={CEntityEditorPost} />
                         <Route path='/my-settings' component={CSettingsPage} />
                         <Route path='/all' component={CAllPosts} />

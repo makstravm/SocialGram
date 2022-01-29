@@ -75,7 +75,7 @@ export const actionPostsMyFollowing = (skip, myFollowing) =>
                 owner{_id, nick, login, avatar {url}}
                 likes { _id owner {_id}}   
                 images{ url _id originalFileName }
-                comments{_id}
+                comments{_id text  createdAt  owner {_id login nick}}
                 createdAt
         }
     }`, {
@@ -219,7 +219,7 @@ export const actionAddLikeComment = (_id) =>
     }`, { like: { comment: { _id } } }))
 
 export const actionRemoveLikeComment = (_id) =>
-    actionPromise('removelikePost', gql(`mutation LikeRemove($like:LikeInput){
+    actionPromise('removelikeComment', gql(`mutation LikeRemove($like:LikeInput){
             LikeDelete(like:$like){_id}
         }`, { like: { _id } }))
 
@@ -307,7 +307,7 @@ export const actionUpdateFollowers = (_id) =>
 //****************---Action Comments ---*************************//
 
 
-export const actionAddCommentAC = (newResult) => ({ type: 'ADD-COMMENT', newResult })
+export const actionAddCommentAC = (findId, newResult) => ({ type: 'ADD-COMMENT', findId, newResult })
 export const actionUpdateSubCommentAC = (findId, newResult) => ({ type: 'UPDATE-SUBCOMMENT', findId, newResult })
 export const actionEditCommentAC = (findId, newResult) => ({ type: 'EDIT-COMMENT', findId, newResult })
 export const actionEditComment = (commentId, text) => ({ type: 'COMMENT_EDIT', commentId, text })

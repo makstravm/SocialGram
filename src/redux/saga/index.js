@@ -273,13 +273,11 @@ function* subscribeWatcher() {
 //*************** COMMENTS ******************//
 
 
-function* addCommentWorker({ text }) {
-    const { postsFeed: { posts: { _id } } } = yield select()
-    yield call(promiseWorker, actionAddComment(_id, text))
-    const { comments } = yield call(promiseWorker, actionFindComment(_id))
-    console.log(comments, _id);
+function* addCommentWorker({ text, postId }) {
+    yield call(promiseWorker, actionAddComment(postId, text))
+    const { comments } = yield call(promiseWorker, actionFindComment(postId))
     if (comments) {
-        yield put(actionAddCommentAC(comments?.reverse()))
+        yield put(actionAddCommentAC(postId, comments.reverse()))
     }
 }
 

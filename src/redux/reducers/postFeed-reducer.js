@@ -42,7 +42,10 @@ export const postsFeedReducer = (state = {}, { type, findId, newResult, userData
         }),
 
         'ADD-COMMENT': () => ({
-            ...state, posts: { ...state.posts, comments: [...newResult] }
+            ...state,
+            posts: Array.isArray(posts)
+                ? posts.map(p => p._id === findId ? p = { ...p, comments: [...newResult] } : p)
+                : { ...state.posts, comments: [...newResult] }
         }),
 
         'UPDATE-SUBCOMMENT': () => {
@@ -108,7 +111,7 @@ export const postsFeedReducer = (state = {}, { type, findId, newResult, userData
                 }
             })
         },
-        
+
         'UPDATE-FOLLOWERS': () => ({
             ...state,
             userData: { ...state.userData, followers: [...newResult] }

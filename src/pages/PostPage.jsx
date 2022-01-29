@@ -30,7 +30,7 @@ const PostPageDescrption = ({ data: { _id, likes, text, title, createdAt, } }) =
             <Divider />
             <CPostUserPanel likes={likes} postId={_id}
                 styleFontSize='1.3em' />
-            <CFieldCommentSend setOpen={() => { }} /> {/* setOpen - функция заглушка для пропса компонента*/}
+            <CFieldCommentSend id={_id} setOpen={() => { }} /> {/* setOpen - функция заглушка для пропса компонента*/}
         </div>
     </div>
 

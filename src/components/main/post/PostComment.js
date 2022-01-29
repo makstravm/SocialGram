@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Divider, Dropdown, Menu } from 'antd';
 import { connect } from 'react-redux'
 import Text from 'antd/lib/typography/Text';
- import { Comment, Tooltip } from 'antd';
+import { Comment, Tooltip } from 'antd';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { EditOutlined, LikeFilled, LikeOutlined, MoreOutlined } from '@ant-design/icons';
@@ -49,7 +49,7 @@ const PostCommentText = ({ myID, commentId, owner, text }) => {
 const CPostCommentText = connect(state => ({ myID: state.auth.payload.sub.id || '' }))(PostCommentText)
 
 
-const PostCommentDate = ({ createdAt }) =>
+export const PostCommentDate = ({ createdAt }) =>
     <Tooltip title={moment(new Date(+createdAt)).format('DD-MM-YYYY HH:mm:ss')} >
         {moment(new Date(+createdAt)).startOf().fromNow()}
     </ Tooltip>

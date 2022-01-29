@@ -17,7 +17,7 @@ const UserNavIcon = ({ userData: { _id, avatar, login } }) =>
             <NavLink to='/feed'><HomeOutlined /></NavLink>
         </Col>
         <Col >
-            <NavLink to='/message'><MessageOutlined /></NavLink>
+            <NavLink to='/direct'><MessageOutlined /></NavLink>
         </Col>
         <Col >
             <NavLink to='/edit/post/new'><PlusCircleOutlined /></NavLink>

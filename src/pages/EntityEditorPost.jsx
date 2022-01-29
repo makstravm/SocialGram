@@ -48,7 +48,7 @@ const EntityEditorPost = ({ match: { params: { _id } }, myID, entity, status, on
         }
     }, [status])
 
-    const disabledBtn = photos.length && titleSend && description ? false : true
+    const disabledBtn = photos?.length && titleSend && description ? false : true
     const sentPost = () => onSave(photos, titleSend, description)
 
     return (

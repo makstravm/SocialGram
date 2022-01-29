@@ -11,6 +11,8 @@ import { CPostUserPanel } from '../components/main/postsFeed/PostUserPanel'
 import { Container } from './Content'
 import { CPostTitle } from '../components/main/post/PostTitle'
 import { CPreloader } from './Preloader'
+import { CFieldCommentSend } from '../components/main/postsFeed/FieldComment'
+import { PostCommentDate } from '../components/main/post/PostComment'
 
 
 export const PostDescription = ({ title, description, date }) =>
@@ -30,12 +32,37 @@ export const PostDescription = ({ title, description, date }) =>
         </Paragraph>
     </>
 
-export const Comments = ({ comments = [], _id }) =>
-    <Link to={`/post/${_id}`}>
-        <Divider orientation="left">
-            {comments?.length ? `View ${comments.length} comments` : 'No comments'}
-        </Divider>
-    </Link>
+const CommentPostFeed = ({ comment }) =>
+    <div className='CommentPostFeed'>
+        <Link to={`/profile/${comment.owner._id}`}>
+            {comment?.owner?.login}
+        </Link>
+        <PostCommentDate createdAt={comment.createdAt} />
+        <Paragraph ellipsis={{ rows: 1, expandable: true, symbol: 'more' }}>
+            {comment?.text}
+        </Paragraph>
+    </div>
+
+export const CommentSPostFeed = ({ comments = [], _id }) =>
+    <>
+        {
+            comments && comments.length
+                ? <>
+                    {(comments.length > 2) && <Link to={`/post/${_id}`}>
+                        <Divider orientation="left">
+                            {comments?.length ? `View ${comments.length} comments` : 'No comments'}
+                        </Divider>
+                    </Link>}
+                    {comments.slice(0, 2).map(c => <CommentPostFeed key={c._id} comment={c} />)}
+                </>
+                : <Link to={`/post/${_id}`}>
+                    <Divider orientation="left">
+                        {comments?.length ? `View ${comments.length} comments` : 'No comments'}
+                    </Divider>
+                </Link>
+        }
+        <CFieldCommentSend id={_id} setOpen={() => { }} />
+    </>
 
 const Post = ({ postData: { _id, text, title, owner, images, createdAt = '', comments, likes, collections } }) =>
     <div className='Post'>
@@ -48,7 +75,7 @@ const Post = ({ postData: { _id, text, title, owner, images, createdAt = '', com
                 collections={collections}
                 styleFontSize='1.7em' />
             <PostDescription title={title} description={text} date={createdAt} />
-            <Comments comments={comments} _id={_id} />
+            <CommentSPostFeed comments={comments} _id={_id} />
         </Card>
     </div>
 
