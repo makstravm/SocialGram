@@ -52,13 +52,15 @@ class PostImage extends React.Component {
                         <button onClick={() => this.handleNext()}
                             className={`Post__next Post__btn ${this.state.moveNext ? '--active' : ''}`}><RightCircleOutlined /></button>
                     </MediaQuery>
+                    <div className="PostOne__wrapper-img">
+                        {videoRegExp.test(i.originalFileName)
+                            ? <video controls loop preload="true" height="500">
+                                <source src={backURL + '/' + i.url} />
+                            </video>
+                            : <img src={backURL + '/' + i.url} />
+                        }
+                    </div>
 
-                    {videoRegExp.test(i.originalFileName)
-                        ? <video controls loop preload="true" height="500">
-                            <source src={backURL + '/' + i.url} />
-                        </video>
-                        : <img src={backURL + '/' + i.url} />
-                    }
                 </div>
                     : <Empty key={i._id} image={nodata} description={false} />)
                     : <Empty image={nodata} description={false} />
