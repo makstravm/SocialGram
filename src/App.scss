@@ -55,7 +55,6 @@ video {
             display: flex;
             align-items: center;
             justify-content: center;
-
             &.active {
                 svg {
                     fill: $defaultColorB;
@@ -101,7 +100,7 @@ video {
 }
 
 .Authorization {
-    height: 100%;
+    background-color: #fff;
     background-position: right top;
     background-repeat: no-repeat;
     background-size: cover;
@@ -115,7 +114,7 @@ video {
         margin-bottom: 10px;
     }
     &__form {
-        height: 100vh;
+        height: 96vh;
         padding-right: calc(10vw + 25px);
     }
     .login-form {
@@ -545,7 +544,7 @@ video {
 }
 
 .CommentPostFeed {
-    a{
+    a {
         font-size: 1.2em;
     }
     span {
@@ -670,6 +669,9 @@ video {
 }
 
 @media (max-width: 800px) {
+    .Authorization {
+        background-position: center top;
+    }
     .PostOne {
         padding-top: 30px;
         &__inner {
@@ -704,6 +706,15 @@ video {
 }
 
 @media (max-width: 560px) {
+        .Authorization {
+        background-position: center top;
+        &__form {
+            padding-right: 20px;
+        }
+        .ant-input-affix-wrapper {
+            width: 65vw;
+        }
+    }
     .Logo {
         img {
             width: 35vw;

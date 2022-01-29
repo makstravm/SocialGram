@@ -7,7 +7,7 @@ export const Authorization = ({ match: { params: { _id } } }) =>
     <div className='Authorization' style={{ backgroundImage: `url(${authBg})` }}>
         <Row justify="end" align="middle" className='Authorization__form'>
             <Col >
-                <Card style={{ width: 380 }} >
+                <Card  >
                     <NavLink activeClassName='active' to={`/auth/login`}><span>Log In</span></NavLink>
                     <Divider type="vertical" />
                     <NavLink activeClassName='active' to={'/auth/registration'}>Registration</NavLink>
