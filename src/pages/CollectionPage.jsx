@@ -15,16 +15,12 @@ export const CollectionPage = ({ posts, onLoadPosts, postsRemove }) => {
             postsRemove()
         }
     }, [])
-
+    console.log(posts);
     return (
         <Container>
             <CPreloader promiseName='onLoadMyCollections' />
             <Divider><Title level={1}>Collections</Title></Divider>
-            {posts.lenght
-                ? <CPosts />
-                : <Title level={4}>
-                    The collection is empty. Add posts to your collection
-                </Title>}
+            <CPosts />
         </Container>
     )
 }

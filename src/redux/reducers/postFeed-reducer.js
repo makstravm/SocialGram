@@ -1,5 +1,22 @@
 export const postsFeedReducer = (state = {}, { type, findId, newResult, userData = {}, count = null }) => {
+
     const { posts } = state
+
+    const upsertSubComments = (commentList, id, nR, find) => {
+        return commentList.map(c => {
+            if (c._id === id) {
+                return { ...c, [find]:  nR }
+            } else if (c?.answers?.length) {
+                return {
+                    ...c,
+                    answers: upsertSubComments(c.answers, id, nR, find)
+                }
+            } else {
+                return { ...c }
+            }
+        })
+    }
+
     const types = {
 
         'ADD-POSTS-FEED': () => ({
@@ -9,8 +26,6 @@ export const postsFeedReducer = (state = {}, { type, findId, newResult, userData
                 : { ...posts, ...newResult },
             count
         }),
-
-        'GET-POST': () => ({ ...state, posts: { ...newResult } }),
 
         'ADD-PROFILE-DATA': () => ({
             ...state,
@@ -48,78 +63,30 @@ export const postsFeedReducer = (state = {}, { type, findId, newResult, userData
                 : { ...state.posts, comments: [...newResult] }
         }),
 
-        'UPDATE-SUBCOMMENT': () => {
-            const upsertSubComments = (commentList, id, nR) => {
-                return commentList.map(c => {
-                    if (c._id === id) {
-                        return { ...c, answers: [...nR] }
-                    } else if (c?.answers?.length) {
-                        return {
-                            ...c,
-                            answers: upsertSubComments(c.answers, id, nR)
-                        }
-                    } else {
-                        return { ...c }
-                    }
-                })
-            }
-            return ({
-                ...state, posts: { ...state.posts, comments: upsertSubComments(posts.comments, findId, newResult) }
-            })
-        },
+        'UPDATE-SUBCOMMENT': () => ({
+            ...state, posts: { ...state.posts, comments: upsertSubComments(posts.comments, findId, newResult, 'answers') }
+        }),
 
-        'EDIT-COMMENT': () => {
-            const { _id, text } = newResult
-            const editComments = (commentList, id, nR) => {
-                return commentList.map(c => {
-                    if (c._id === id) {
-                        return { ...c, text: nR }
-                    } else if (c?.answers?.length) {
-                        return {
-                            ...c,
-                            answers: editComments(c.answers, id, nR)
-                        }
-                    } else {
-                        return { ...c }
-                    }
-                })
-            }
-            return ({
-                ...state, posts: { ...state.posts, comments: editComments(posts.comments, _id, text) }
-            })
-        },
+        'EDIT-COMMENT': () => ({
+            ...state, posts: { ...state.posts, comments: upsertSubComments(posts.comments, findId, newResult.text, 'text') }
+        }),
 
-        'UPSERT-LIKE-COMMENT': () => {
-            const upsertLikeComments = (commentList, id, nR) => {
-                return commentList.map(c => {
-                    if (c._id === id) {
-                        return { ...c, likes: [...nR] }
-                    } else if (c?.answers?.length) {
-                        return {
-                            ...c,
-                            answers: upsertLikeComments(c.answers, id, nR)
-                        }
-                    } else {
-                        return { ...c }
-                    }
-                })
+        'UPSERT-LIKE-COMMENT': () => ({
+            ...state, posts: {
+                ...state.posts, comments: upsertSubComments(posts.comments, findId, newResult, 'likes')
             }
-
-            return ({
-                ...state, posts: {
-                    ...state.posts, comments: upsertLikeComments(posts.comments, findId, newResult)
-                }
-            })
-        },
+        }),
 
         'UPDATE-FOLLOWERS': () => ({
             ...state,
             userData: { ...state.userData, followers: [...newResult] }
         }),
     }
+    
     if (type in types) {
         return types[type]()
     }
+
     return state
 }
 
