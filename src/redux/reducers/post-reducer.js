@@ -1,4 +1,4 @@
-export const postsFeedReducer = (state = {}, { type, findId, newResult, userData = {}, count = null }) => {
+export const postReducer = (state = {}, { type, findId, newResult, userData = {}, count = null }) => {
 
     const { posts } = state
 
@@ -19,7 +19,7 @@ export const postsFeedReducer = (state = {}, { type, findId, newResult, userData
 
     const types = {
 
-        'ADD-POSTS-FEED': () => ({
+        'ADD-POSTS': () => ({
             ...state,
             posts: Array.isArray(newResult)
                 ? [...posts, ...newResult]
@@ -34,7 +34,7 @@ export const postsFeedReducer = (state = {}, { type, findId, newResult, userData
             count
         }),
 
-        'REMOVE-POSTS-FEED': () => ({
+        'REMOVE-POSTS': () => ({
             ...state,
             posts: [],
             userData: {},

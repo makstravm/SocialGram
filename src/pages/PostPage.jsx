@@ -2,20 +2,20 @@ import React from 'react'
 import { Divider } from 'antd';
 import { connect } from 'react-redux'
 import PostImage from '../components/main/postsFeed/PostImage'
-import { PostDescription } from './MainPostsFeed';
 import Text from 'antd/lib/typography/Text';
 import { CFieldCommentSend } from '../components/main/postsFeed/FieldComment';
 import { CPostUserPanel } from '../components/main/postsFeed/PostUserPanel';
 import { CPostTitle } from '../components/main/post/PostTitle';
 import { CPreloader } from './Preloader';
 import { CPostComments } from '../components/main/post/PostComment';
+import { PostDescription } from './MainPostsFeed';
 
 
 
 const PostPageTitle = ({ data: { owner }, postId }) =>
     <CPostTitle owner={owner} postId={postId} />
 
-const CPostPageTitle = connect(state => ({ data: state?.postsFeed?.posts || {}, postId: state?.postsFeed?.posts?._id }))(PostPageTitle)
+const CPostPageTitle = connect(state => ({ data: state?.post?.posts || {}, postId: state?.post?.posts?._id }))(PostPageTitle)
 
 const PostPageDescrption = ({ data: { _id, likes, text, title, createdAt, } }) =>
     <div className='PostOne__description-inner'>
@@ -35,7 +35,7 @@ const PostPageDescrption = ({ data: { _id, likes, text, title, createdAt, } }) =
     </div>
 
 
-const CPostPageDescrption = connect(state => ({ data: state?.postsFeed?.posts || {} }))(PostPageDescrption)
+const CPostPageDescrption = connect(state => ({ data: state?.post?.posts || {} }))(PostPageDescrption)
 
 
 const PostPage = ({ data: { images } }) =>
@@ -54,4 +54,4 @@ const PostPage = ({ data: { images } }) =>
         </div>
     </div>
 
-export const CPostPage = connect(state => ({ data: state?.postsFeed?.posts || {} }))(PostPage)
+export const CPostPage = connect(state => ({ data: state?.post?.posts || {} }))(PostPage)

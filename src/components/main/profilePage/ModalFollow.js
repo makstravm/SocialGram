@@ -44,13 +44,13 @@ const ModalFolower = ({ id, status, statusModal, data, title, follow }) => {
 }
 
 export const CModalFollowers = connect(state => ({
-    id: state?.postsFeed?.userData?._id,
+    id: state?.post?.userData?._id,
     data: state?.promise?.findFollow?.payload?.followers || [],
     status: state?.promise?.findFollow?.status
 }), { follow: actionFindFollowers })(ModalFolower)
 
 export const CModalFollowing = connect(state => ({
-    id: state?.postsFeed?.userData?._id,
+    id: state?.post?.userData?._id,
     data: state?.promise?.findFollow?.payload?.following || [],
     status: state?.promise?.findFollow?.status
 }), { follow: actionFindFollowing })(ModalFolower)

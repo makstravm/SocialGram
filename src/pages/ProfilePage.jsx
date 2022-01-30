@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Button, Col, Row } from 'antd'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { actionProfilePageData, actionRemovePostsFeedAC, actionSubscribe, actionUnSubscribe } from '../actions'
+import { actionProfilePageData, actionRemovePostAC, actionSubscribe, actionUnSubscribe } from '../actions'
 import { CModalFollowers, CModalFollowing } from '../components/main/profilePage/ModalFollow'
 import { DateCreated } from '../components/main/DateCreated'
 import Text from 'antd/lib/typography/Text'
@@ -24,7 +24,7 @@ const ProfileFollowButton = ({ myID, userId, followers, onSubsuscribe, onUnSubsu
 
 export const CProfileFollowButton = connect(state => ({
     myID: state?.auth?.payload?.sub.id,
-    followers: state?.postsFeed?.userData?.followers || []
+    followers: state?.post?.userData?.followers || []
 }), { onSubsuscribe: actionSubscribe, onUnSubsuscribe: actionUnSubscribe })(ProfileFollowButton)
 
 
@@ -77,8 +77,8 @@ const ProfilePageData = ({ myID, data: { _id, avatar, login, nick, createdAt = '
 
 const CProfilePageData = connect(state => ({
     myID: state.auth.payload.sub.id || '',
-    data: state?.postsFeed?.userData || {},
-    count: state?.postsFeed?.count || null
+    data: state?.post?.userData || {},
+    count: state?.post?.count || null
 }))(ProfilePageData)
 
 
@@ -124,5 +124,5 @@ const ProfilePage = ({ match: { params: { _id } }, getProfileUser, clearDataProf
 }
 
 export const CProfilePage = connect(state => ({
-    posts: state?.postsFeed?.posts || []
-}), { getProfileUser: actionProfilePageData, clearDataProfile: actionRemovePostsFeedAC })(ProfilePage)
+    posts: state?.post?.posts || []
+}), { getProfileUser: actionProfilePageData, clearDataProfile: actionRemovePostAC })(ProfilePage)

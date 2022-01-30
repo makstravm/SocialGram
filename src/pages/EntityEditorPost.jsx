@@ -2,7 +2,7 @@ import { Button, Divider, message } from "antd"
 import Title from "antd/lib/typography/Title"
 import { useEffect, useState } from "react"
 import { connect } from "react-redux"
-import { actionAddPostsFeedAC, actionFullSentPost, actionRemovePostsFeedAC, } from "../actions"
+import { actionAddPostAC, actionFullSentPost, actionRemovePostAC, } from "../actions"
 import { EditPhotos } from "../components/uploadPhoto/EditPhotos"
 import { EditDescriptionPost } from "../components/uploadPhoto/EditDescriptionPost"
 import { EditTitlePost } from "../components/uploadPhoto/EditTitlePost"
@@ -67,11 +67,11 @@ const EntityEditorPost = ({ match: { params: { _id } }, myID, entity, status, on
 
 export const CEntityEditorPost = connect(state => ({
     myID: state?.auth?.payload?.sub?.id,
-    entity: state?.postsFeed.posts,
+    entity: state?.post.posts,
     status: state?.promise?.sentPost?.status
 }),
     {
-        updatePost: actionAddPostsFeedAC,
+        updatePost: actionAddPostAC,
         onSave: actionFullSentPost,
-        clearState: actionRemovePostsFeedAC,
+        clearState: actionRemovePostAC,
     })(EntityEditorPost)

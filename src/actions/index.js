@@ -63,8 +63,8 @@ export const actionUpsertAboutMe = (myData) =>
 //*************** Action Posts Feed ******************//
 
 
-export const actionAddPostsFeedAC = (postsData, count) => ({ type: 'ADD-POSTS-FEED', newResult: postsData, count })
-export const actionRemovePostsFeedAC = () => ({ type: 'REMOVE-POSTS-FEED' })
+export const actionAddPostAC = (postsData, count) => ({ type: 'ADD-POSTS', newResult: postsData, count })
+export const actionRemovePostAC = () => ({ type: 'REMOVE-POSTS' })
 export const actionPostsFeed = () => ({ type: 'POSTS_FEED' })
 
 export const actionPostsMyFollowing = (skip, myFollowing) =>

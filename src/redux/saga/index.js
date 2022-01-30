@@ -1,5 +1,5 @@
 import { all, call, delay, fork, join, put, select, takeEvery, takeLatest, takeLeading } from "redux-saga/effects";
-import { actionAboutMe, actionAboutMeAC, actionAddComment, actionAddCommentAC, actionAddLikeComment, actionAddLikePost, actionAddLikePostAC, actionAddPostInCollections, actionAddPostsFeedAC, actionAllPostsCount, actionAuthLogin, actionClearPromise, actionEditCommentAC, actionFindComment, actionFindCommentText, actionFindLikeComment, actionFindMyCollections, actionFindSubComment, actionFullAboutMe, actionFullLogIn, actionGetAllPosts, actionGetAvatar, actionGetFindFollowers, actionGetFindFollowing, actionGetFindLiked,  actionLoadSearchUsers, actionLoadSubscribe, actionloadUnSubscribe, actionLogIn, actionMyLikePost, actionOnLoadMyCollection, actionPending, actionPostsCount, actionPostsMyFollowing, actionProfileData, actionProfileDataAC, actionProfilePagePost, actionPromise, actionRegister, actionRejected, actionRemoveLikeComment, actionRemoveLikePost, actionRemoveLikePostAC, actionRemovePostsFeedAC, actionResolved, actionSetAvatar, actionSubAddComment, actionUpdateFollowers, actionUpdateFollowersAC, actionUpdateMyAvatart, actionUpdateMyFollowing, actionUpdateMyFollowingAC, actionUpdateSubCommentAC, actionUpsertAboutMe, actionUpsertCollectionAC, actionUpsertEditComment, actionUpsertLikeCommentAC, actionUpsertPost } from "../../actions";
+import { actionAboutMe, actionAboutMeAC, actionAddComment, actionAddCommentAC, actionAddLikeComment, actionAddLikePost, actionAddLikePostAC, actionAddPostInCollections, actionAddPostAC, actionAllPostsCount, actionAuthLogin, actionClearPromise, actionEditCommentAC, actionFindComment, actionFindCommentText, actionFindLikeComment, actionFindMyCollections, actionFindSubComment, actionFullAboutMe, actionFullLogIn, actionGetAllPosts, actionGetAvatar, actionGetFindFollowers, actionGetFindFollowing, actionGetFindLiked,  actionLoadSearchUsers, actionLoadSubscribe, actionloadUnSubscribe, actionLogIn, actionMyLikePost, actionOnLoadMyCollection, actionPending, actionPostsCount, actionPostsMyFollowing, actionProfileData, actionProfileDataAC, actionProfilePagePost, actionPromise, actionRegister, actionRejected, actionRemoveLikeComment, actionRemoveLikePost, actionRemoveLikePostAC, actionRemovePostAC, actionResolved, actionSetAvatar, actionSubAddComment, actionUpdateFollowers, actionUpdateFollowersAC, actionUpdateMyAvatart, actionUpdateMyFollowing, actionUpdateMyFollowingAC, actionUpdateSubCommentAC, actionUpsertAboutMe, actionUpsertCollectionAC, actionUpsertEditComment, actionUpsertLikeCommentAC, actionUpsertPost } from "../../actions";
 import { queries } from "../../actions/actionQueries";
 import { gql } from "../../helpers";
 
@@ -32,7 +32,7 @@ function* routeWorker({ match }) {
         const { name, query, variables } = queries[match.path](match)
         const result = yield call(promiseWorker, actionPromise(name, gql(query, variables)))
         if (result) {
-            yield put(actionAddPostsFeedAC({ ...result, comments: result?.comments?.reverse() }))
+            yield put(actionAddPostAC({ ...result, comments: result?.comments?.reverse() }))
         }
     }
 }
@@ -102,10 +102,10 @@ function* aboutMeWatcher() {
 
 function* postsFeedWorker() {
     const {
-        postsFeed: { posts, count },
+        post: { posts, count },
         myData: { following, _id }
     } = yield select()
-    !Array.isArray(posts) && (yield put(actionRemovePostsFeedAC()))
+    !Array.isArray(posts) && (yield put(actionRemovePostAC()))
     const newArrFollowing = following.map(f => f._id)
     if (posts?.length !== (count ? count : 1)) {
         const taskPosts = yield fork(promiseWorker, actionPostsMyFollowing(posts?.length, [...newArrFollowing, _id]))
@@ -114,22 +114,22 @@ function* postsFeedWorker() {
         const [postsResult, countResult] = yield join([taskPosts, taskCount])
 
         if (postsResult && countResult) {
-            yield put(actionAddPostsFeedAC(postsResult, countResult))
+            yield put(actionAddPostAC(postsResult, countResult))
         }
     }
 }
 
 function* allPostsFeedWorker() {
     const {
-        postsFeed: { posts, count }
+        post: { posts, count }
     } = yield select()
-    !Array.isArray(posts) && (yield put(actionRemovePostsFeedAC()))
+    !Array.isArray(posts) && (yield put(actionRemovePostAC()))
     if (posts?.length !== (count ? count : 1)) {
         const taskPosts = yield fork(promiseWorker, actionGetAllPosts(posts?.length))
         const taskCount = yield fork(promiseWorker, actionAllPostsCount())
         const [postsResult, countResult] = yield join([taskPosts, taskCount])
         if (postsResult && countResult) {
-            yield put(actionAddPostsFeedAC(postsResult, countResult))
+            yield put(actionAddPostAC(postsResult, countResult))
         }
     }
 }
@@ -146,10 +146,10 @@ function* postsFeedWatcher() {
 
 
 function* dataProfileWorker({ id }) {
-    const { postsFeed: { posts, count, userData } } = yield select()
+    const { post: { posts, count, userData } } = yield select()
     if ((posts?.length ? posts?.length : 0) < (count ? count : 1)) {
         if (!count) {
-            yield put(actionRemovePostsFeedAC())
+            yield put(actionRemovePostAC())
             const taskDataProfile = yield fork(promiseWorker, actionProfileData(id))
             const taskUserPosts = yield fork(promiseWorker, actionProfilePagePost(id, (posts?.length ? posts?.length : 0)))
             const taskCountPosts = yield fork(promiseWorker, actionPostsCount([id]))
@@ -358,7 +358,7 @@ function* findFollowWatcher() {
 
 function* sentPostWorker({ images, text, title }) {
     let imagesId = images.map(im => ({ _id: im._id }))
-    const { postsFeed: { posts: { _id } } } = yield select()
+    const { post: { posts: { _id } } } = yield select()
     const upSertPostObj = {
         _id,
         images: imagesId,
@@ -387,17 +387,14 @@ function* handlerCollectionWorker({ _id, flag }) {
 }
 
 function* loadCollectionWorker() {
-    const { myData: { collections }, postsFeed } = yield select()
-    !Array.isArray(postsFeed?.posts) && (yield put(actionRemovePostsFeedAC()))
+    const { myData: { collections }, post } = yield select()
+    !Array.isArray(post?.posts) && (yield put(actionRemovePostAC()))
     if (collections?._id) {
-        const [{ posts: newResult }] = yield call(promiseWorker, actionOnLoadMyCollection(collections?._id, postsFeed?.posts?.length))
+        const [{ posts: newResult }] = yield call(promiseWorker, actionOnLoadMyCollection(collections?._id, post?.posts?.length))
         if (newResult) {
-            yield put(actionAddPostsFeedAC(newResult))
+            yield put(actionAddPostAC(newResult))
         }
     }
-
-
-
 }
 
 function* handlerCollectionWatcher() {
@@ -407,7 +404,6 @@ function* handlerCollectionWatcher() {
     ])
 }
 
-// 
 
 
 export function* rootSaga() {

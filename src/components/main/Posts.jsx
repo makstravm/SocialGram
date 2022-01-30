@@ -33,4 +33,4 @@ const Posts = ({ posts }) =>
         }
     </Row >
     
-export const CPosts = connect(state => ({ posts: state.postsFeed?.posts || [] }))(Posts)
+export const CPosts = connect(state => ({ posts: state.post?.posts || [] }))(Posts)

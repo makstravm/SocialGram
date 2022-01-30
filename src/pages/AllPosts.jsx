@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { actionAllPosts, actionRemovePostsFeedAC } from '../actions';
+import { actionAllPosts, actionRemovePostAC } from '../actions';
 import { CPosts } from '../components/main/Posts';
 import { Container } from './Content';
 import { CPreloader } from './Preloader';
@@ -37,4 +37,4 @@ const AllPosts = ({ onAllPosts, postsRemove }) => {
     )
 }
 
-export const CAllPosts = connect(null, { onAllPosts: actionAllPosts, postsRemove: actionRemovePostsFeedAC, })(AllPosts)
+export const CAllPosts = connect(null, { onAllPosts: actionAllPosts, postsRemove: actionRemovePostAC, })(AllPosts)

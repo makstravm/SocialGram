@@ -1,7 +1,7 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { authReducer } from './reducers/auth-reducer';
 import { myProfileReducer } from './reducers/myProfile-reducer';
-import { postsFeedReducer } from './reducers/postFeed-reducer';
+import { postReducer } from './reducers/post-reducer';
 import { promiseReducer } from './reducers/promise-reducer';
 import createSagaMiddleware from 'redux-saga'
 import { rootSaga } from './saga';
@@ -14,7 +14,7 @@ const store = createStore(combineReducers({
     auth: authReducer,
     promise: promiseReducer,
     myData: myProfileReducer,
-    postsFeed: postsFeedReducer,
+    post: postReducer,
     route: routeReducer,
 }),
     applyMiddleware(sagaMiddleware))

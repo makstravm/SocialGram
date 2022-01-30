@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Paragraph from 'antd/lib/typography/Paragraph'
 import Text from 'antd/lib/typography/Text'
-import { actionPostsFeed, actionRemovePostsFeedAC } from '../actions'
+import { actionPostsFeed, actionRemovePostAC } from '../actions'
 import { DateCreated } from '../components/main/DateCreated'
 import PostImage from '../components/main/postsFeed/PostImage'
 import { CPostUserPanel } from '../components/main/postsFeed/PostUserPanel'
@@ -121,9 +121,9 @@ const MainPostsFeed = ({ posts, postsFollowing, clearState, following }) => {
 }
 
 export const CMainPostsFeed = connect(state => ({
-    posts: state?.postsFeed?.posts || [],
+    posts: state?.post?.posts || [],
     following: state?.myData?.following || []
 }), {
     postsFollowing: actionPostsFeed,
-    clearState: actionRemovePostsFeedAC,
+    clearState: actionRemovePostAC,
 })(MainPostsFeed)

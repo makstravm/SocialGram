@@ -13,6 +13,7 @@ import { actionDelLikeComment, actionLikeComment, actionSubComment } from '../..
 
 
 
+
 const PostCommentAuthor = ({ owner }) =>
     <>
         <Link className='PostCommentAuthor' to={`/profile/${owner?._id}`} >
@@ -114,6 +115,6 @@ const PostComments = ({ comments, findSubComment, parentId, }) => {
 }
 
 export const CPostComments = connect(state => ({
-    comments: state?.postsFeed?.posts?.comments || [],
+    comments: state?.post?.posts?.comments || [],
 
 }), { findSubComment: actionSubComment })(PostComments)
