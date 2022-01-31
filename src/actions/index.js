@@ -275,24 +275,18 @@ export const actionUpdateFollowersAC = (newResult) => ({ type: 'UPDATE-FOLLOWERS
 export const actionSubscribe = (userId) => ({ type: 'SUBSCRIBE', userId })
 export const actionUnSubscribe = (userId) => ({ type: 'UN_SUBSCRIBE', userId })
 
-export const actionLoadSubscribe = (myID, myFollowing, userId) =>
+export const actionChangeSubscribe = (newFollowing) =>
     actionPromise('subscribe', gql(`mutation following($user:UserInput){
         UserUpsert( user:$user){
             following{_id}
         }
-      }`, { user: { _id: myID, following: [...myFollowing || [], { _id: userId }] } }))
+      }`, { user: newFollowing }))
 
-export const actionloadUnSubscribe = (myID, myFollowing) =>
-    actionPromise('unSubscribe', gql(`mutation followingUn($user:UserInput){
-        UserUpsert( user:$user){
-            following{_id}
-        }
-      }`, { user: { _id: myID, following: [...myFollowing] } }))
 
 export const actionUpdateMyFollowing = (_id) =>
     actionPromise('upDateFollowing', gql(` query followers($id:String!){
         UserFindOne(query: $id){
-                            following {_id nick login}
+                            following {_id}
         }
     }`, { id: JSON.stringify([{ _id }]) }))
 

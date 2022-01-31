@@ -2,7 +2,7 @@ import { Button, Divider, message } from "antd"
 import Title from "antd/lib/typography/Title"
 import { useEffect, useState } from "react"
 import { connect } from "react-redux"
-import { actionAddPostAC, actionFullSentPost, actionRemovePostAC, } from "../actions"
+import { actionAddPostAC, actionClearPromise, actionFullSentPost, actionRemovePostAC, } from "../actions"
 import { EditPhotos } from "../components/uploadPhoto/EditPhotos"
 import { EditDescriptionPost } from "../components/uploadPhoto/EditDescriptionPost"
 import { EditTitlePost } from "../components/uploadPhoto/EditTitlePost"
@@ -13,7 +13,7 @@ import { history } from '../App'
 const ContainEditorPost = ({ children }) =>
     <div className='ContainEditPost ContainerInner'>{children}</div>
 
-const EntityEditorPost = ({ match: { params: { _id } }, myID, entity, status, onSave, updatePost, clearState }) => {
+const EntityEditorPost = ({ match: { params: { _id } }, myID, entity, status, onSave, updatePost, clearState, clearStatus }) => {
 
     const [photos, setPhotos] = useState(entity?.images || []);
     const [titleSend, setTitleSend] = useState(entity?.title || '')
@@ -35,6 +35,7 @@ const EntityEditorPost = ({ match: { params: { _id } }, myID, entity, status, on
         }
         return () => {
             clearState()
+            clearStatus('sentPost')
         }
     }, []);
 
@@ -74,4 +75,5 @@ export const CEntityEditorPost = connect(state => ({
         updatePost: actionAddPostAC,
         onSave: actionFullSentPost,
         clearState: actionRemovePostAC,
+        clearStatus: actionClearPromise
     })(EntityEditorPost)
