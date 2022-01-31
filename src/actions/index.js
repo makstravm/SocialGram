@@ -340,7 +340,7 @@ export const actionFindSubComment = (findId) =>
                 post {_id }
                 answers { _id}
                 createdAt
-                likes { _id owner { login nick } }
+                likes { _id owner { _id login nick } }
                 owner {
                     _id login nick 
                     avatar { url } 

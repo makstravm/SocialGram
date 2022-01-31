@@ -58,8 +58,9 @@ export const PostCommentDate = ({ createdAt }) =>
 
 const PostCommentAction = ({ myID, commentId, likes, delLikeComment, addLikeComment }) => {
     const [open, setOpen] = useState(false);
+    debugger
     const likeId = likes.find(l => l?.owner?._id === myID)?._id
-
+    console.log(likeId)
     const changeLike = () => likeId ? delLikeComment(likeId, commentId) : addLikeComment(commentId)
 
     return (
