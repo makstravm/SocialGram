@@ -60,7 +60,7 @@ const SortableItem = SortableElement(props => {
 });
 
 
-const SortableList = SortableContainer(({ items=[], ...restProps }) => {
+const SortableList = SortableContainer(({ items = [], ...restProps }) => {
     return (
         <div className='SortableList'>
             {items?.map((item, index) => (
@@ -76,16 +76,16 @@ const SortableList = SortableContainer(({ items=[], ...restProps }) => {
 });
 
 
-export function EditPhotos({ photos=[], setPhotos }) {
+export function EditPhotos({ photos = [], setPhotos }) {
     const [progress, setProgress] = useState(0);
     const [loading, setLoading] = useState(false);
-    const handlerChange = async ({ file }) => {
+    const handlerChange = async ({ file, fileList }) => {
         if (file.status === "uploading") {
             setLoading(true)
             setProgress(file.percent)
         } else if (file.status === 'done') {
             message.success(`${file.name} file uploaded successfully`);
-            setPhotos([...photos||[], file.response])
+            setPhotos([...photos || [], file.response])
         } else if (file.status === 'error') {
             message.error(`${file.name} file upload failed.`);
         }
@@ -101,6 +101,7 @@ export function EditPhotos({ photos=[], setPhotos }) {
                 : <Dragger {...propsUploadFile}
                     className="EditPhotos__box"
                     multiple={true}
+                    maxCount={8}
                     listType="picture-card"
                     showUploadList={false}
                     onChange={handlerChange}>
