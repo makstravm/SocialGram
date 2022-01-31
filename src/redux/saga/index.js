@@ -1,5 +1,5 @@
 import { all, call, delay, fork, join, put, select, takeEvery, takeLatest, takeLeading } from "redux-saga/effects";
-import { actionAboutMe, actionAboutMeAC, actionAddComment, actionAddCommentAC, actionAddLikeComment, actionAddLikePost, actionAddLikePostAC, actionAddPostInCollections, actionAddPostAC, actionAllPostsCount, actionAuthLogin, actionClearPromise, actionEditCommentAC, actionFindComment, actionFindCommentText, actionFindLikeComment, actionFindMyCollections, actionFindSubComment, actionFullAboutMe, actionFullLogIn, actionGetAllPosts, actionGetAvatar, actionGetFindFollowers, actionGetFindFollowing, actionGetFindLiked, actionLoadSearchUsers, actionLoadSubscribe, actionloadUnSubscribe, actionLogIn, actionMyLikePost, actionOnLoadMyCollection, actionPending, actionPostsCount, actionPostsMyFollowing, actionProfileData, actionProfileDataAC, actionProfilePagePost, actionPromise, actionRegister, actionRejected, actionRemoveLikeComment, actionRemoveLikePost, actionRemoveLikePostAC, actionRemovePostAC, actionResolved, actionSetAvatar, actionSubAddComment, actionUpdateFollowers, actionUpdateFollowersAC, actionUpdateMyAvatart, actionUpdateMyFollowing, actionUpdateMyFollowingAC, actionUpdateSubCommentAC, actionUpsertAboutMe, actionUpsertCollectionAC, actionUpsertEditComment, actionUpsertLikeCommentAC, actionUpsertPost, actionChangeSubscribe } from "../../actions";
+import { actionAboutMe, actionAboutMeAC, actionAddComment, actionAddCommentAC, actionAddLikeComment, actionAddLikePost, actionAddLikePostAC, actionAddPostInCollections, actionAddPostAC, actionAllPostsCount, actionAuthLogin, actionClearPromise, actionEditCommentAC, actionFindComment, actionFindCommentText, actionFindLikeComment, actionFindMyCollections, actionFindSubComment, actionFullAboutMe, actionFullLogIn, actionGetAllPosts, actionGetAvatar, actionGetFindFollowers, actionGetFindFollowing, actionGetFindLiked, actionLoadSearchUsers,  actionloadUnSubscribe, actionLogIn, actionMyLikePost, actionOnLoadMyCollection, actionPending, actionPostsCount, actionPostsMyFollowing, actionProfileData, actionProfileDataAC, actionProfilePagePost, actionPromise, actionRegister, actionRejected, actionRemoveLikeComment, actionRemoveLikePost, actionRemoveLikePostAC, actionRemovePostAC, actionResolved, actionSetAvatar, actionSubAddComment, actionUpdateFollowers, actionUpdateFollowersAC, actionUpdateMyAvatart, actionUpdateMyFollowing, actionUpdateMyFollowingAC, actionUpdateSubCommentAC, actionUpsertAboutMe, actionUpsertCollectionAC, actionUpsertEditComment, actionUpsertLikeCommentAC, actionUpsertPost, actionChangeSubscribe } from "../../actions";
 import { queries } from "../../actions/actionQueries";
 import { gql } from "../../helpers";
 
@@ -200,7 +200,6 @@ function* addLikePostWorker({ postId }) {
 function* delLikePostWorker({ likeId, postId }) {
     yield call(promiseWorker, actionRemoveLikePost(likeId))
     const { likes } = yield call(promiseWorker, actionMyLikePost(postId))
-    console.log(likes);
     if (likes) {
         yield put(actionRemoveLikePostAC(postId, likes))
     }
@@ -217,7 +216,6 @@ function* addLikeCommentWorker({ commentId }) {
 function* delLikeCommentWorker({ likeId, commentId }) {
     yield call(promiseWorker, actionRemoveLikeComment(likeId))
     const { likes } = yield call(promiseWorker, actionFindLikeComment(commentId))
-    console.log(likes);
     if (likes) {
         yield put(actionUpsertLikeCommentAC(commentId, likes))
     }
@@ -241,7 +239,7 @@ function* subscribeWorker({ userId }) {
         myData: { following: f } } = yield select()
     const newFollowingArray = {
         _id: id,
-        following: [...f, { _id: userId }]
+        following: [...f ||[], { _id: userId }]
     }
     yield call(promiseWorker, actionChangeSubscribe(newFollowingArray))
     const taskFollowers = yield fork(promiseWorker, actionUpdateFollowers(userId))
@@ -260,7 +258,6 @@ function* unSubscribeWorker({ userId }) {
         _id: id,
         following: [...f.filter(f => f._id !== userId)]
     }
-    console.log(newArrFollowing);
     yield call(promiseWorker, actionChangeSubscribe(newArrFollowing))
     const taskFollowers = yield fork(promiseWorker, actionUpdateFollowers(userId))
     const taskMyFollowing = yield fork(promiseWorker, actionUpdateMyFollowing(id))
@@ -322,10 +319,8 @@ function* addCommentWatcher() {
 
 function* updateAvatarWorker({ file }) {
     const { auth: { payload: { sub: { id } } } } = yield select()
-    console.log(file, id);
     yield call(promiseWorker, actionSetAvatar(file, id))
     const { avatar } = yield call(promiseWorker, actionGetAvatar(id))
-    console.log(avatar);
     if (avatar) {
         yield put(actionUpdateMyAvatart(avatar))
     }

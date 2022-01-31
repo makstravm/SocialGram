@@ -15,7 +15,7 @@ export const CollectionPage = ({ posts, onLoadPosts, postsRemove }) => {
             postsRemove()
         }
     }, [])
-    console.log(posts);
+
     return (
         <Container>
             <CPreloader promiseName='onLoadMyCollections' />
