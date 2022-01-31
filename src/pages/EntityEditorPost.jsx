@@ -37,7 +37,7 @@ const EntityEditorPost = ({ match: { params: { _id } }, myID, entity, status, on
             clearState()
             clearStatus('sentPost')
         }
-    }, []);
+    }, [_id]);
 
 
     useEffect(() => {

@@ -55,7 +55,6 @@ const AppContent = ({ isToken }) => {
 }
 
 const CAppContent = connect(state => ({ isToken: state.auth?.token }))(AppContent)
-store.subscribe(() => console.log(store.getState()))
 
 function App() {
     return (
