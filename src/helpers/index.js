@@ -1,14 +1,7 @@
 import Icon from '@ant-design/icons';
-import { useEffect } from 'react';
-import { connect } from 'react-redux';
-import { Route } from 'react-router-dom';
-
-
-export const backURL = 'http://hipstagram.asmer.fs.a-level.com.ua'
-
+import { backURL } from '../actions/actionsGetGql';
 
 export const videoRegExp = (/\.(mp4|mov|avi|wmv|flv|flv|3gp|mpg)$/i)
-
 
 export const propsUploadFile = {
     name: 'photo',
@@ -16,39 +9,6 @@ export const propsUploadFile = {
     headers: localStorage.authToken || sessionStorage.authToken ? { Authorization: 'Bearer ' + (localStorage.authToken || sessionStorage.authToken) } : {}
 }
 
-
-export const jwtDecode = (token) => {
-    try {
-        let arrToken = token.split('.')
-        let base64Token = atob(arrToken[1])
-        return JSON.parse(base64Token)
-    }
-    catch (e) {
-        console.log('Ой, ошибочка вышла ' + e);
-    }
-}
-
-const getGQL = url =>
-    async (query, variables = {}) => {
-        let obj = await fetch(url, {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json",
-                ...(localStorage.authToken
-                    ? { Authorization: 'Bearer ' + localStorage.authToken }
-                    : sessionStorage.authToken
-                        ? { Authorization: 'Bearer ' + sessionStorage.authToken }
-                        : {})
-            },
-            body: JSON.stringify({ query, variables })
-        })
-        let a = await obj.json()
-        if (!a.data && a.errors)
-            throw new Error(JSON.stringify(a.errors))
-        return a.data[Object.keys(a.data)[0]]
-    }
-
-export const gql = getGQL(backURL + '/graphql');
 
 
 const CircularGallerySvg = () =>
@@ -74,15 +34,5 @@ export const CollectionSvgFill = props =>
     <Icon component={CollectionFillSvg} {...props} />
 
 
-const RRoute = ({ action, component: Component, ...routeProps }) => {
-    const WrapperComponent = (componentProps) => {
-        useEffect(() => {
-            action(componentProps.match)
-        })
-        return <Component {...componentProps} />
-    }
-    return <Route {...routeProps} component={WrapperComponent} />
-}
 
-export const CRRoute = connect(null, { action: match => ({ type: 'ROUTE', match }) })(RRoute)
 

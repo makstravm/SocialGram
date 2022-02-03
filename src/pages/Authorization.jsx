@@ -1,6 +1,7 @@
 import { Card, Col, Divider, Row } from "antd";
 import { NavLink } from "react-router-dom";
 import { CLoginForm, CRegisterForm } from "../components/FormAuthorization";
+
 import authBg from "../images/authBg.png"
 
 export const Authorization = ({ match: { params: { _id } } }) =>

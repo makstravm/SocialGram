@@ -4,10 +4,11 @@ import TextArea from 'antd/lib/input/TextArea'
 import { SendOutlined, } from '@ant-design/icons'
 import { connect } from 'react-redux'
 import { Button, Col, Row } from 'antd'
-import { actionAddSubComment, actionEditComment, actionFullAddComment } from '../../../actions'
+import { actionAddCommentPostInTapeSagaAC, actionAddCommentPostOneSagaAC, actionAddSubComment, actionEditCommentSagaAC } from '../actions/actonsCreators'
 
 
-const FieldCommentSend = ({ id, sentComment, autoFocus, value = '', setOpen, rows = 1,bordered=false }) => {
+
+const CommentField = ({ id, sentComment, autoFocus, value = '', setOpen, rows = 2, bordered = false }) => {
     const [commentValue, setCommentValue] = useState(value)
     const [error, setError] = useState(false)
 
@@ -15,30 +16,26 @@ const FieldCommentSend = ({ id, sentComment, autoFocus, value = '', setOpen, row
         setCommentValue(e.currentTarget.value)
         setError(false)
     }
-    const sendCommentValid = (value) => {
-        if (value.trim() !== '') {
-            sentComment(id, value.trim())
+
+    const sendCommentValid = () => {
+        if (commentValue.trim() !== '') {
+            sentComment(id, commentValue.trim())
             setCommentValue('')
+            setOpen(false)
         } else {
             setError(true)
         }
     }
 
-    const handlerClickBtn = () => {
-        sendCommentValid(commentValue)
-        setOpen(false)
-    }
-
-    const onKeyPressHandler = e => {
-        if (e.charCode === 13) {
-            sendCommentValid(commentValue)
-            setOpen(false)
-        }
-    }
-
     return (
-        <>
-            {error && <Text type='danger'>Field is required</Text>}
+        <div>
+            {error &&
+                <Text
+                    type='danger'
+                    style={{ display: 'inherit', textAlign: 'center' }}
+                >
+                    Field is required
+                </Text>}
             <Row align='middle' className='Post__send-comment'>
                 <Col flex='auto' offset={1}>
                     <TextArea value={commentValue}
@@ -47,23 +44,25 @@ const FieldCommentSend = ({ id, sentComment, autoFocus, value = '', setOpen, row
                         autoSize={{ minRows: 1, maxRows: rows }}
                         onChange={changeComentTextarea}
                         bordered={bordered}
-                        onKeyPress={onKeyPressHandler}
+                        maxLength={150}
                     />
                 </Col>
                 <Col span={2}>
                     <Button
-                        onClick={handlerClickBtn}
+                        onClick={sendCommentValid}
                         icon={< SendOutlined
                             style={{ fontSize: '1.2em', opacity: .6 }} />}
                     />
                 </Col>
             </Row>
-        </>
+        </div>
     )
 }
 
-export const CFieldCommentSend = connect(null, { sentComment: actionFullAddComment })(FieldCommentSend)
+export const CCommentFieldPostTape = connect(null, { sentComment: actionAddCommentPostInTapeSagaAC })(CommentField)
 
-export const CFieldSubCommentSend = connect(null, { sentComment: actionAddSubComment })(FieldCommentSend)
+export const CCommentFieldPostOne = connect(null, { sentComment: actionAddCommentPostOneSagaAC })(CommentField)
 
-export const CFieldUpsertCommentSend = connect(null, { sentComment: actionEditComment })(FieldCommentSend)
+export const CFieldSubComment = connect(null, { sentComment: actionAddSubComment })(CommentField)
+
+export const CFieldEditCommentSend = connect(null, { sentComment: actionEditCommentSagaAC})(CommentField)

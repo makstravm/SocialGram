@@ -1,5 +1,14 @@
-import { jwtDecode } from '../../helpers'
 
+const jwtDecode = (token) => {
+    try {
+        let arrToken = token.split('.')
+        let base64Token = atob(arrToken[1])
+        return JSON.parse(base64Token)
+    }
+    catch (e) {
+        console.log('Ой, ошибочка вышла ' + e);
+    }
+}
 
 export const authReducer = (state, { type, token, remember }) => {
     if (!state) {

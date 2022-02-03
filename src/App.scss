@@ -429,13 +429,13 @@ video {
             max-width: 100%;
             height: 100%;
             margin: 0 auto;
-            object-fit:cover;
+            object-fit: cover;
         }
     }
     &__description {
         grid-area: 2 / 2 / 3 / 3;
         background-color: $defaultColorW;
-        padding: 5px 20px;
+        padding: 5px 5px 5px 20px;
         height: 100%;
         .ant-typography {
             overflow-wrap: anywhere;
@@ -458,6 +458,8 @@ video {
     &__comments {
         max-height: 300px;
         overflow: auto;
+        display: flex;
+        flex-direction: column-reverse;
     }
     &__comment-edit {
         display: block;
@@ -483,6 +485,9 @@ video {
     }
     .ant-empty-image {
         height: auto;
+        img {
+            margin: 0 auto;
+        }
     }
 }
 

@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { actionAllPosts, actionRemovePostAC } from '../actions';
-import { CPosts } from '../components/main/Posts';
-import { Container } from './Content';
-import { CPreloader } from './Preloader';
+import { actionAllGetPostsSagaAC, actionClearPostsTapeAC, actionGetAllPostsSagaAC } from '../actions/actonsCreators';
+import { Container } from '../components/Container';
+import { CGalleryMediaPostsUser } from '../components/GalleryMediaPostsUser';
+import { CPreloader } from '../components/Preloader';
 
-const AllPosts = ({ onAllPosts, postsRemove }) => {
+
+const AllPostsTape = ({ onGetAllPosts, clearPostsTape }) => {
     const [checkScroll, setCheckScroll] = useState(true)
 
     useEffect(() => {
         if (checkScroll) {
-            onAllPosts()
+            onGetAllPosts()
             setCheckScroll(false)
         }
     }, [checkScroll])
@@ -19,7 +20,7 @@ const AllPosts = ({ onAllPosts, postsRemove }) => {
         document.addEventListener('scroll', scrollHandler)
         return () => {
             document.removeEventListener('scroll', scrollHandler)
-            postsRemove()
+            clearPostsTape()
         }
     }, [])
 
@@ -32,9 +33,9 @@ const AllPosts = ({ onAllPosts, postsRemove }) => {
     return (
         <Container>
             <CPreloader promiseName='allPosts' />
-            <CPosts />
+            <CGalleryMediaPostsUser />
         </Container>
     )
 }
 
-export const CAllPosts = connect(null, { onAllPosts: actionAllPosts, postsRemove: actionRemovePostAC, })(AllPosts)
+export const CAllPostsTape = connect(null, { onGetAllPosts: actionGetAllPostsSagaAC, clearPostsTape: actionClearPostsTapeAC })(AllPostsTape)

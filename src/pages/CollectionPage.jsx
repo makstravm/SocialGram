@@ -2,17 +2,18 @@ import { Divider } from 'antd';
 import Title from 'antd/lib/typography/Title';
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { actionFullMyCollectionLoad, actionRemovePostAC } from '../actions';
-import { CPosts } from '../components/main/Posts';
-import { Container } from './Content';
-import { CPreloader } from './Preloader';
+import { actionClearPostsTapeAC, actionGetPostsMyCollectionSagaAC } from '../actions/actonsCreators';
+import { Container } from '../components/Container';
+import { CGalleryMediaPostsUser } from '../components/GalleryMediaPostsUser';
+import { CPreloader } from '../components/Preloader';
 
-export const CollectionPage = ({ posts, onLoadPosts, postsRemove }) => {
+
+export const CollectionPage = ({ onLoadPosts, clearPostsTape }) => {
 
     useEffect(() => {
         onLoadPosts()
         return () => {
-            postsRemove()
+            clearPostsTape()
         }
     }, [])
 
@@ -20,8 +21,11 @@ export const CollectionPage = ({ posts, onLoadPosts, postsRemove }) => {
         <Container>
             <CPreloader promiseName='onLoadMyCollections' />
             <Divider><Title level={1}>Collections</Title></Divider>
-            <CPosts />
+            <CGalleryMediaPostsUser />
         </Container>
     )
 }
-export const CCollectionPage = connect(state => ({ posts: state?.post?.posts || [] }), { onLoadPosts: actionFullMyCollectionLoad, postsRemove: actionRemovePostAC })(CollectionPage)
+export const CCollectionPage = connect(null, {
+    onLoadPosts: actionGetPostsMyCollectionSagaAC,
+    clearPostsTape: actionClearPostsTapeAC
+})(CollectionPage)

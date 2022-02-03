@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { Form, Input, Button, Checkbox, message } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import { actionFullLogIn, actionFullRegister } from '../actions';
+import { actionFullLogInSagaAC, actionFullRegisterSagaAC } from '../actions/actonsCreators';
+
 
 const FormAuthorization = ({ buttonTitle, onSignIn, loginChek }) => {
     const [loading, setLoading] = useState(false);
     useEffect(() => {
         if (loginChek?.status === "PENDING") {
-            setLoading(loading => loading = true)
+            setLoading(true)
         }
         if (loginChek?.status === "RESOLVED" && loginChek?.payload === null) {
             message.error({
@@ -18,10 +19,9 @@ const FormAuthorization = ({ buttonTitle, onSignIn, loginChek }) => {
                     marginTop: '20vh',
                 },
             })
-            setLoading(loading => loading = false)
+            setLoading(false)
         }
     }, [loginChek?.status]);
-
 
     const onFinish = ({ login, password, remember }) => {
         onSignIn(login, password, remember)
@@ -82,6 +82,6 @@ const FormAuthorization = ({ buttonTitle, onSignIn, loginChek }) => {
     )
 }
 
-export const CLoginForm = connect(state => ({ loginChek: state?.promise?.login || {} }), { onSignIn: actionFullLogIn, })(FormAuthorization)
+export const CLoginForm = connect(state => ({ loginChek: state?.promise?.login || {} }), { onSignIn: actionFullLogInSagaAC, })(FormAuthorization)
 
-export const CRegisterForm = connect(state => ({ status: state?.promise?.login }), { onSignIn: actionFullRegister, })(FormAuthorization)
+export const CRegisterForm = connect(state => ({ status: state?.promise?.login }), { onSignIn: actionFullRegisterSagaAC, })(FormAuthorization)

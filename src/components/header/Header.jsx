@@ -6,15 +6,15 @@ import { connect } from 'react-redux';
 import { Header } from 'antd/lib/layout/layout';
 import { Col, Row } from 'antd';
 import { CompassOutlined, HomeOutlined, MessageOutlined, PlusCircleOutlined } from '@ant-design/icons/lib/icons';
-import { UserAvatar } from './UserAvatar';
 import MediaQuery from "react-responsive";
 import { CollectionEmptySvg } from '../../helpers';
+import { UserAvatar } from '../UserAvatar';
 
 
 const UserNavIcon = ({ userData: { _id, avatar, login } }) =>
     < Row justify="end" align="middle" className='Header__userNav' >
         <Col >
-            <NavLink to='/feed'><HomeOutlined /></NavLink>
+            <NavLink to='/tape'><HomeOutlined /></NavLink>
         </Col>
         <Col >
             <NavLink to='/direct'><MessageOutlined /></NavLink>
@@ -28,27 +28,27 @@ const UserNavIcon = ({ userData: { _id, avatar, login } }) =>
         <Col >
             <NavLink to='/my-collection'><CollectionEmptySvg /></NavLink>
         </Col>
-        <MediaQuery minWidth={787}>
+        {/* <MediaQuery minWidth={787}> */}
+        <Col>
+            <Link to={`/profile/${_id}`}>
+                <UserAvatar avatar={avatar} login={login} avatarSize={'45px'} />
+            </Link>
+        </Col>
+        {/* </MediaQuery> */}
+        {/* <MediaQuery maxWidth={786}>
             <Col>
                 <Link to={`/profile/${_id}`}>
                     <UserAvatar avatar={avatar} login={login} avatarSize={'45px'} />
                 </Link>
             </Col>
-        </MediaQuery>
-        <MediaQuery maxWidth={786}>
-            <Col>
-                <Link to={`/profile/${_id}`}>
-                    <UserAvatar avatar={avatar} login={login} avatarSize={'45px'} />
-                </Link>
-            </Col>
-        </MediaQuery>
+        </MediaQuery> */}
     </Row >
 
-export const CUserNavIcon = connect(state => ({ userData: state.myData || {} }))(UserNavIcon)
+export const CUserNavIcon = connect(state => ({ userData: state?.aboutMe || {} }))(UserNavIcon)
 
 
 const Logo = () =>
-    <Link className='Logo' to='/'>
+    <Link className='Logo' to='/tape'>
         <img src={logo} alt='logo' width='180vw' />
     </Link>
 

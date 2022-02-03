@@ -1,5 +1,5 @@
 import { DeleteOutlined, EyeOutlined, InboxOutlined } from "@ant-design/icons";
-import { Button, message, Image, Progress } from "antd";
+import { Button, message, Image, Progress, Upload } from "antd";
 import Dragger from "antd/lib/upload/Dragger";
 import React, { useState } from "react";
 import {
@@ -8,7 +8,8 @@ import {
     SortableElement,
     SortableHandle
 } from "react-sortable-hoc";
-import { backURL, propsUploadFile, videoRegExp } from "../../helpers";
+import { backURL } from "../../actions/actionsGetGql";
+import { propsUploadFile, videoRegExp } from "../../helpers";
 
 
 const SortableItemMask = ({ removePhotosItem, chekMedia, setVisible, id }) =>
@@ -79,17 +80,30 @@ const SortableList = SortableContainer(({ items = [], ...restProps }) => {
 export function EditPhotos({ photos = [], setPhotos }) {
     const [progress, setProgress] = useState(0);
     const [loading, setLoading] = useState(false);
-    const handlerChange = async ({ file, fileList }) => {
+    let count = []
+    const handlerChange = ({ file, fileList }) => {
         if (file.status === "uploading") {
             setLoading(true)
             setProgress(file.percent)
         } else if (file.status === 'done') {
+            console.log(file, fileList)
+            count = []
             message.success(`${file.name} file uploaded successfully`);
             setPhotos([...photos || [], file.response])
         } else if (file.status === 'error') {
             message.error(`${file.name} file upload failed.`);
         }
     }
+
+    const beforeUpload = (file) => {
+        if (count.length + photos.length > 8) {
+            message.error('Error, upload Max 8 elements')
+            return false
+        } else {
+            count = [...count, file]
+        }
+    }
+
     const removePhotosItem = (id) => setPhotos(photos.filter(p => p._id !== id))
     const onSortEnd = ({ oldIndex, newIndex }) => {
         setPhotos(arrayMove(photos, oldIndex, newIndex));
@@ -97,20 +111,22 @@ export function EditPhotos({ photos = [], setPhotos }) {
 
     return (
         <div className="EditPhotos" >
-            {photos?.length >= 8 ? null
-                : <Dragger {...propsUploadFile}
+            {photos.length < 8 &&
+                <Dragger {...propsUploadFile}
                     className="EditPhotos__box"
-                    multiple={true}
                     maxCount={8}
+                    beforeUpload={beforeUpload}
+                    multiple={true}
                     listType="picture-card"
                     showUploadList={false}
                     onChange={handlerChange}>
                     <p className="ant-upload-drag-icon">
                         <InboxOutlined />
                     </p>
-                    <p className="ant-upload-text">
+                    <div className="ant-upload-text">
                         Click or drag file to this area to upload
-                    </p>
+                        <p>{photos?.length} / 8</p>
+                    </div>
                 </Dragger>
             }
             {loading &&

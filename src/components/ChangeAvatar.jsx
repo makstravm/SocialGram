@@ -1,13 +1,13 @@
-import { EditOutlined,} from '@ant-design/icons';
+import { EditOutlined, } from '@ant-design/icons';
 import { connect } from 'react-redux';
 import { Upload, message, } from 'antd';
-import {  propsUploadFile } from '../../../helpers';
-import { actionUpdateAvatar } from '../../../actions';
 import ImgCrop from 'antd-img-crop';
-import { UserAvatar } from '../../header/UserAvatar';
+import { actionChangeAvatarSagaAC } from '../actions/actonsCreators';
+import { propsUploadFile } from '../helpers';
+import { UserAvatar } from './UserAvatar';
 
 
-const EditAvatar = ({ avatar, onUploadFile }) => {
+const ChangeAvatar = ({ avatar, onUploadFile }) => {
     const handleChange = ({ file }) => {
         if (file.status === 'done') {
             message.success(`${file.name} file uploaded successfully`);
@@ -32,4 +32,4 @@ const EditAvatar = ({ avatar, onUploadFile }) => {
     )
 }
 
-export const CEditAvatar = connect(state => ({ avatar: state?.myData?.avatar }), { onUploadFile: actionUpdateAvatar })(EditAvatar)
+export const CChangeAvatar = connect(state => ({ avatar: state?.aboutMe?.avatar }), { onUploadFile: actionChangeAvatarSagaAC })(ChangeAvatar)

@@ -1,32 +1,41 @@
-import { gql } from "../helpers";
+import { actionPromise } from "./actonsCreators"
 
+const getGQL = url =>
+    async (query, variables = {}) => {
+        let obj = await fetch(url, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json",
+                ...(localStorage.authToken
+                    ? { Authorization: 'Bearer ' + localStorage.authToken }
+                    : sessionStorage.authToken
+                        ? { Authorization: 'Bearer ' + sessionStorage.authToken }
+                        : {})
+            },
+            body: JSON.stringify({ query, variables })
+        })
+        let a = await obj.json()
+        if (!a.data && a.errors)
+            throw new Error(JSON.stringify(a.errors))
+        return a.data[Object.keys(a.data)[0]]
+    }
 
-//*************** ACTIONS PROMISE ******************//
+export const backURL = 'http://hipstagram.asmer.fs.a-level.com.ua'
 
+export const gql = getGQL(backURL + '/graphql');
 
-export const actionPending = name => ({ type: 'PROMISE', status: 'PENDING', name })
-export const actionResolved = (name, payload) => ({ type: 'PROMISE', status: 'RESOLVED', name, payload })
-export const actionRejected = (name, error) => ({ type: 'PROMISE', status: 'REJECTED', name, error })
-export const actionClearPromise = (name) => ({ type: 'CLEAR-PROMISE', name })
-export const actionPromise = (name, promise) => ({ type: 'PROMISE_START', name, promise })
 
 
 //*************** ACTIONS AUTHORIZATION ******************//
 
-
-export const actionAuthLogin = (token, remember) => ({ type: 'AUTH-LOGIN', token, remember })
-export const actionAuthLogout = () => ({ type: 'AUTH-LOGOUT' })
 
 export const actionLogIn = (login, password) =>
     actionPromise('login', gql(`query login($login:String!, $password:String!){
                 login(login:$login, password:$password)
             }`, { login, password }))
 
-export const actionFullLogIn = (login, password, remember) => ({ type: 'FULL_LOGIN', login, password, remember })
-export const actionFullRegister = (login, password, remember) => ({ type: 'FULL_REGISTER', login, password, remember })
-
 export const actionRegister = (login, password) =>
-    actionPromise('register', gql(`mutation rega ($login:String!, $password:String!){
+    actionPromise('register', gql(`mutation rega ($login:String!,           $password:String!){
                                     createUser(login: $login, password: $password){
                                         _id login
                                     }
@@ -35,13 +44,8 @@ export const actionRegister = (login, password) =>
 
 //*************** Action ABOUT ME ******************//
 
-export const actionAboutMeAC = (data) => ({ type: 'ABOUTME-DATA-ADD', data })
-export const actionFullAboutMe = () => ({ type: 'ABOUT_ME' })
-export const actionRemoveMyDataAC = () => ({ type: 'REMOVE-MYDATA' })
-export const actionFullAboutMeUpsert = (nick, login) => ({ type: 'ABOUT_ME_UPSERT', nick, login })
 
-
-export const actionAboutMe = (id) =>
+export const actionGetAboutMe = (id) =>
     actionPromise('aboutMe', gql(`query userOned($myID:String!){
                         UserFindOne(query: $myID){
                             _id  login nick
@@ -53,21 +57,15 @@ export const actionAboutMe = (id) =>
 export const actionUpsertAboutMe = (myData) =>
     actionPromise('upsertAboutMe', gql(`mutation editAboutMe($user:UserInput){
                         UserUpsert(user:$user){
-                            _id   _id  login nick
-                            avatar { _id url }
-                            following{ _id}
+                            _id 
                         }
                 }`, { user: myData }))
 
 
-//*************** Action Posts Feed ******************//
+//*************** Action Posts Tape ******************//
 
 
-export const actionAddPostAC = (postsData, count) => ({ type: 'ADD-POSTS', newResult: postsData, count })
-export const actionRemovePostAC = () => ({ type: 'REMOVE-POSTS' })
-export const actionPostsFeed = () => ({ type: 'POSTS_FEED' })
-
-export const actionPostsMyFollowing = (skip, myFollowing) =>
+export const actionGetPostsMyFollowing = (skip, myFollowing) =>
     actionPromise('followingPosts',
         gql(`query allposts($query: String!){
             PostFind(query:$query){
@@ -89,19 +87,16 @@ export const actionPostsMyFollowing = (skip, myFollowing) =>
             }])
         }))
 
-export const actionPostsCount = (_id) =>
+export const actionGetPostsTapeCount = (_id) =>
     actionPromise('userPostsCount', gql(` query userPostsCount($id:String!){
                 PostCount(query:$id)
                 }`, { id: JSON.stringify([{ ___owner: { $in: _id } }]) }))
 
 
-//*************** Action Posts Profile ******************//
+//*************** Action Profile Data ******************//
 
 
-export const actionProfileDataAC = (postsData, count, userData) => ({ type: 'ADD-PROFILE-DATA', newResult: postsData, count, userData })
-export const actionProfilePageData = (id) => ({ type: 'DATA_PROFILE', id })
-
-export const actionProfileData = (_id) =>
+export const actionGetProfileData = (_id) =>
     actionPromise('userOneData', gql(` query userOned($id:String!){
                         UserFindOne(query: $id){
                             _id  login nick
@@ -112,7 +107,7 @@ export const actionProfileData = (_id) =>
                 
             } `, { id: JSON.stringify([{ _id }]) }))
 
-export const actionProfilePagePost = (_id, skip) => actionPromise('userOneDataPosts', gql(` query userOned($id:String!){
+export const actionGetProfilePagePosts = (_id, skip) => actionPromise('profilePosts', gql(` query userOned($id:String!){
                     PostFind(query:$id){
                         _id   images{ url _id originalFileName }
                     }
@@ -130,8 +125,6 @@ export const actionProfilePagePost = (_id, skip) => actionPromise('userOneDataPo
 
 //****************---All FIND POSTS---*************************//
 
-
-export const actionAllPosts = () => ({ type: 'ALL_POSTS' })
 
 export const actionGetAllPosts = (skip) =>
     actionPromise('allPosts', gql(` query allPosts($id:String!){
@@ -152,12 +145,10 @@ export const actionAllPostsCount = () =>
                 }`, { id: JSON.stringify([{}]) }))
 
 
-//****************---Action FindUsers ---*************************//
+//****************---Action getAllUsers ---*************************//
 
 
-export const actionSearchUsers = (value) => ({ type: 'SEARCH_USERS', value })
-
-export const actionLoadSearchUsers = (value) =>
+export const actionGetAllUsers = (value) =>
     actionPromise('findUsersAll', gql(`query findUsersAll($query:String!) {
                                 UserFind(query: $query) {
                                     _id login nick 
@@ -177,82 +168,78 @@ export const actionLoadSearchUsers = (value) =>
 //****************---Action Like Post ---*************************//
 
 
-export const actionAddLikePostAC = (findId, newResult) => ({ type: 'ADD-POST-LIKE', findId, newResult })
-export const actionRemoveLikePostAC = (findId, newResult) => ({ type: 'REMOVE-POST-LIKE', findId, newResult })
-export const actionLikePost = (postId) => ({ type: 'LIKE_POST', postId })
-export const actionDelLikePost = (likeId, postId) => ({ type: 'DEL_LIKE_POST', likeId, postId })
-
-export const actionAddLikePost = (_id) =>
-    actionPromise('likePost', gql(`mutation LikePost($like:LikeInput){
+export const actionOnLikePost = (_id) =>
+    actionPromise('onLikePost', gql(`mutation LikePost($like:LikeInput){
         LikeUpsert(like:$like){
             _id
         }
     }`, { like: { post: { _id } } }))
 
-export const actionRemoveLikePost = (_id) =>
-    actionPromise('removelikePost', gql(`mutation LikeRemove($like:LikeInput){
+export const actionDelLikePost = (_id) =>
+    actionPromise('delLikePost', gql(`mutation LikeRemove($like:LikeInput){
             LikeDelete(like:$like){
                 _id
             }
         }`, { like: { _id } }))
 
-export const actionMyLikePost = (findId) =>
-    actionPromise('myLikes', gql(`query likeFindPost ($id:String!){
+export const actionGetMyLikePosts = (findId) =>
+    actionPromise('getMyLikes', gql(`query likeFindPost ($id:String!){
         PostFindOne(query:$id){
         likes { _id owner {_id}}
         }
     }`, { id: JSON.stringify([{ _id: findId }]) }))
 
+export const actionGetPostUsersLiked = (_id) =>
+    actionPromise('usersPostLiked', gql(` query usersPostLiked($id:String!) {
+                                        LikeFind(query:$id){
+                                          owner { _id nick login
+                                                avatar{_id url}
+                                    }
+                }
+            } `, { id: JSON.stringify([{ "post._id": _id }]) }))
+
 
 //****************---Action Like Comment ---*************************//
 
 
-export const actionUpsertLikeCommentAC = (findId, newResult) => ({ type: 'UPSERT-LIKE-COMMENT', findId, newResult })
-export const actionLikeComment = (commentId) => ({ type: 'LIKE_COMMENT', commentId })
-export const actionDelLikeComment = (likeId, commentId) => ({ type: 'DEL_LIKE_COMMENT', likeId, commentId })
-
-export const actionAddLikeComment = (_id) =>
+export const actionOnLikeComment = (_id) =>
     actionPromise('likePost', gql(`mutation LikePost($like:LikeInput){
         LikeUpsert(like:$like){
             _id
         }
     }`, { like: { comment: { _id } } }))
 
-export const actionRemoveLikeComment = (_id) =>
+export const actionDelLikeComment = (_id) =>
     actionPromise('removelikeComment', gql(`mutation LikeRemove($like:LikeInput){
             LikeDelete(like:$like){_id}
         }`, { like: { _id } }))
 
-export const actionFindLikeComment = (findId) =>
+export const actionGetLikeComment = (commentId) =>
     actionPromise('findLikeComment', gql(`query findLikeComment ($id:String!){
         CommentFindOne(query:$id){
         likes { _id owner {_id}}
         }
-    }`, { id: JSON.stringify([{ _id: findId }]) }))
+    }`, { id: JSON.stringify([{ _id: commentId }]) }))
 
 
 //****************---Collection---*************************//
 
 
-export const actionUpsertCollectionAC = (data) => ({ type: 'UPSERT-COLLECTION', data })
-export const actionHandlerUpsertCollection = (_id, flag) => ({ type: 'HANDLER_UPSERT_COLLECTION', _id, flag })
-export const actionFullMyCollectionLoad = () => ({ type: 'LOAD_COLLECTION' })
+export const actionGetMyCollection = (_id) =>
+    actionPromise('getMyCollection', gql(`query getCollections($id:String! ){
+        CollectionFindOne(query:$id){
+        _id posts{ _id }
+        }
+    }`, { id: JSON.stringify([{ ___owner: _id }]) }))
 
-export const actionAddPostInCollections = (collectionId, newCollection) =>
+export const actionUpsertPostsInCollections = (collectionId, newCollection) =>
     actionPromise('addInCollections', gql(`mutation addInCollections($collection:CollectionInput ){
         CollectionUpsert(collection:$collection){
             _id 
         }
     }`, { collection: { _id: collectionId, posts: newCollection } }))
 
-export const actionFindMyCollections = (_id) =>
-    actionPromise('findMyCollections', gql(`query findCollections($id:String! ){
-        CollectionFindOne(query:$id){
-        _id text posts{_id }
-        }
-    }`, { id: JSON.stringify([{ ___owner: _id }]) }))
-
-export const actionOnLoadMyCollection = (_id, skip) =>
+export const actionGetPostsMyCollection = (_id, skip) =>
     actionPromise('onLoadMyCollections', gql(`query loadCollections($id:String! ){
        CollectionFind(query:$id){
          posts { _id  images{ _id url originalFileName}}
@@ -268,29 +255,21 @@ export const actionOnLoadMyCollection = (_id, skip) =>
 
 //****************---Action Subscribe ---*************************//
 
-
-export const actionUpdateMyFollowingAC = (data) => ({ type: 'UPDATE-MY-FOLLOWING', data })
-export const actionUpdateFollowersAC = (newResult) => ({ type: 'UPDATE-FOLLOWERS', newResult })
-
-export const actionSubscribe = (userId) => ({ type: 'SUBSCRIBE', userId })
-export const actionUnSubscribe = (userId) => ({ type: 'UN_SUBSCRIBE', userId })
-
-export const actionChangeSubscribe = (newFollowing) =>
+export const actionChangeSubscribed = (newFollowing) =>
     actionPromise('subscribe', gql(`mutation following($user:UserInput){
         UserUpsert( user:$user){
             following{_id}
         }
       }`, { user: newFollowing }))
 
-
-export const actionUpdateMyFollowing = (_id) =>
+export const actiongetMyFollowing = (_id) =>
     actionPromise('upDateFollowing', gql(` query followers($id:String!){
         UserFindOne(query: $id){
                             following {_id}
         }
     }`, { id: JSON.stringify([{ _id }]) }))
 
-export const actionUpdateFollowers = (_id) =>
+export const actionGetUserFollowers = (_id) =>
     actionPromise('upDateFollowers', gql(` query followers($id:String!){
         UserFindOne(query: $id){
                             followers {_id nick login}
@@ -301,14 +280,6 @@ export const actionUpdateFollowers = (_id) =>
 //****************---Action Comments ---*************************//
 
 
-export const actionAddCommentAC = (findId, newResult) => ({ type: 'ADD-COMMENT', findId, newResult })
-export const actionUpdateSubCommentAC = (findId, newResult) => ({ type: 'UPDATE-SUBCOMMENT', findId, newResult })
-export const actionEditCommentAC = (findId, newResult) => ({ type: 'EDIT-COMMENT', findId, newResult })
-export const actionEditComment = (commentId, text) => ({ type: 'COMMENT_EDIT', commentId, text })
-export const actionFullAddComment = (postId, text) => ({ type: 'COMMENT_POST', postId, text })
-export const actionAddSubComment = (commentId, text) => ({ type: 'ADD_SUB_COMMENT', commentId, text })
-export const actionSubComment = (commentId) => ({ type: 'FIND_SUBCOMMENT', commentId })
-
 export const actionAddComment = (postId, text) =>
     actionPromise('addcomment', gql(`mutation addcomment($comment: CommentInput ){
         CommentUpsert(comment:$comment){
@@ -316,8 +287,8 @@ export const actionAddComment = (postId, text) =>
         }
     }`, { comment: { post: { _id: postId }, text } }))
 
-export const actionFindComment = (findId) =>
-    actionPromise('findCommentPost', gql(`query commentFindPost ($id:String!){
+export const actionGetCommentPost = (findId) =>
+    actionPromise('commentPost', gql(`query commentFindPost ($id:String!){
         PostFindOne(query:$id){
             comments {
                 _id text createdAt 
@@ -332,23 +303,23 @@ export const actionFindComment = (findId) =>
         }
     }`, { id: JSON.stringify([{ _id: findId }]) }))
 
-export const actionFindSubComment = (findId) =>
+export const actionGetSubComment = (commentId) =>
     actionPromise('subComments', gql(`query commentFindOne ($id:String!){
-        CommentFindOne(query:$id){
-       _id text answers { 
-                _id text
-                post {_id }
-                answers { _id}
-                createdAt
-                likes { _id owner { _id login nick } }
-                owner {
-                    _id login nick 
-                    avatar { url } 
-                    } 
-                }
-        } 
-    }`, {
-        id: JSON.stringify([{ _id: findId }])
+                                CommentFindOne(query:$id){
+                                _id text answers { 
+                                        _id text
+                                        post {_id }
+                                        answers { _id}
+                                        createdAt
+                                        likes { _id owner { _id login nick } }
+                                        owner {
+                                            _id login nick 
+                                            avatar { url } 
+                                            } 
+                                        }
+                                } 
+                            }`, {
+        id: JSON.stringify([{ _id: commentId }])
     }))
 
 export const actionSubAddComment = (commentId, text) =>
@@ -358,7 +329,7 @@ export const actionSubAddComment = (commentId, text) =>
         }
     }`, { comment: { answerTo: { _id: commentId }, text } }))
 
-export const actionFindCommentText = (findId) =>
+export const actionGetCommentOne = (findId) =>
     actionPromise('subComments', gql(`query commentFindOne ($id:String!){
         CommentFindOne(query:$id){
        _id text 
@@ -367,7 +338,7 @@ export const actionFindCommentText = (findId) =>
         id: JSON.stringify([{ _id: findId }])
     }))
 
-export const actionUpsertEditComment = (commentId, text) =>
+export const actionEditComment = (commentId, text) =>
     actionPromise('editcomment', gql(`mutation addSubcomment($comment: CommentInput ){
         CommentUpsert(comment:$comment){
             _id text
@@ -377,9 +348,6 @@ export const actionUpsertEditComment = (commentId, text) =>
 
 //****************---Action Udate Avatar ---*************************//
 
-
-export const actionUpdateAvatar = (file) => ({ type: 'UPDATE_AVATAR', file })
-export const actionUpdateMyAvatart = (data) => ({ type: 'ABOUTME-UPDATE-AVATAR', data })
 
 export const actionSetAvatar = (file, id) =>
     actionPromise('uploadPhoto', gql(`mutation avaUpsert($ava: UserInput){
@@ -397,11 +365,8 @@ export const actionGetAvatar = (id) =>
     }`, { myID: JSON.stringify([{ _id: id }]) }))
 
 
-//****************--- Find FOllowing/Follovwrs---*************************//
+//****************--- Get user FOllowing/Follovwrs---*************************//
 
-export const actionFindFollowing = (_id) => ({ type: 'FIND_FOLLOWING', _id })
-export const actionFindFollowers = (_id) => ({ type: 'FIND_FOLLOWERS', _id })
-export const actionFindLiked = (_id) => ({ type: 'FIND_LIKED', _id })
 
 export const actionGetFindFollowing = (_id) =>
     actionPromise('findFollow', gql(` query findFollowing($id:String!){
@@ -425,22 +390,11 @@ export const actionGetFindFollowers = (_id) =>
                 }
             } `, { id: JSON.stringify([{ _id }]) }))
 
-export const actionGetFindLiked = (_id) =>
-    actionPromise('findLiked', gql(` query LikeFindPost($id:String!) {
-                                        LikeFind(query:$id){
-                                          owner { _id nick login
-                                                avatar{_id url}
-                                    }
-                }
-            } `, { id: JSON.stringify([{ "post._id": _id }]) }))
+
+//****************--- Create / Edit Post ---*************************/
 
 
-//****************---Create Post ---*************************/
-
-
-export const actionFullSentPost = (images, title, text) => ({ type: 'CREATE_POST', images, text, title })
-
-export const actionUpsertPost = (upSertPostObj) =>
+export const actionCreatOrEditPost = (upSertPostObj) =>
     actionPromise('sentPost', gql(`mutation sentPost($post: PostInput){
               PostUpsert(post: $post){
                     _id images{_id url originalFileName}

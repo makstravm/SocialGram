@@ -1,11 +1,9 @@
 import { message, Spin } from 'antd'
 import { connect } from 'react-redux'
-import preloader from '../images/preloader.gif'
 
 const PreloaderImg = () =>
     <div className='PreloaderImg'>
-{/* <Spin size="large" /> */}
-        <img src={preloader} alt="preloader" />
+        <Spin size="large" />
     </div>
 
 const Preloader = ({ promiseName, promiseState }) =>
