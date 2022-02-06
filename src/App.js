@@ -28,7 +28,6 @@ const Main = ({ children }) =>
 const Content = ({ children }) =>
     <>{children}</>
 
-
 const AppContent = ({ isToken }) => {
     const isTabletDevice = useMediaQuery({
         query: "(max-width: 786px)"
@@ -56,7 +55,7 @@ const AppContent = ({ isToken }) => {
                         <Redirect from='/*' to='/tape' />
                     </Switch>
                 </Main>
-                {isTabletDevice && <FooterComponet  />}
+                {isTabletDevice && <FooterComponet />}
             </Content >
         }
     </Router >
@@ -65,9 +64,7 @@ const AppContent = ({ isToken }) => {
 
 const CAppContent = connect(state => ({ isToken: state.auth?.token }))(AppContent)
 
-
 store.subscribe(() => console.log(store.getState()))
-
 
 function App() {
     return (

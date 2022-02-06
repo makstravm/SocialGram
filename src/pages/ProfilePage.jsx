@@ -161,7 +161,7 @@ const ProfilePage = ({ match: { params: { _id } }, getProfileUser, clearProfileD
 
     return (
         <Container>
-            <CPreloader promiseName='userOneDataPosts'/>
+            <CPreloader promiseName='userOneData'/>
             <CProfilePageData />
             <CGalleryMediaPostsUser />
         </Container>
